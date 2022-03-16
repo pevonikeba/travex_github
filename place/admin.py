@@ -1,16 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 # Register your models here.
-from django.contrib.admin import ModelAdmin
+from django.contrib.admin import ModelAdmin, TabularInline
 
-from place.models import Place, Groups
+from place.models import Place, Group, Image
 
+class ImageInline(TabularInline):
+    model = Image
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    pass
+    inlines = [ImageInline]
 
-@admin.register(Groups)
+@admin.register(Group)
 class GroupAdmin(ModelAdmin):
     pass
 
