@@ -1,2 +1,5 @@
 # macbook default file
 .DS_Store
+
+# venv
+venv
