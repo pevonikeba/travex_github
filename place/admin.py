@@ -6,34 +6,29 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, WhereToTakeAPicture
 
 
+class TransportInline(TabularInline):
+    model = Transport
+
 class ImageInline(TabularInline):
     model = Image
 
+class AccommodationOptionsInline(TabularInline):
+    model = AccommodationOptions
+
+class UniquenessPlaceInline(TabularInline):
+    model = UniquenessPlace
+
+class MustSeeInline(TabularInline):
+    model = MustSee
+
+class WhereToTakeAPictureInline(TabularInline):
+    model = WhereToTakeAPicture
+
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline]
+    inlines = [ImageInline, TransportInline, AccommodationOptionsInline, UniquenessPlaceInline, MustSeeInline, WhereToTakeAPictureInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):
-    pass
-
-@admin.register(Transport)
-class TransportAdmin(ModelAdmin):
-    pass
-
-@admin.register(AccommodationOptions)
-class AccommodationOptionsAdmin(ModelAdmin):
-    pass
-
-@admin.register(UniquenessPlace)
-class UniquenessPlaceAdmin(ModelAdmin):
-    pass
-
-@admin.register(MustSee)
-class MustSeeAdmin(ModelAdmin):
-    pass
-
-@admin.register(WhereToTakeAPicture)
-class WhereToTakeAPictureAdmin(ModelAdmin):
     pass
 
