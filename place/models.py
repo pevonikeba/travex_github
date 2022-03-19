@@ -74,11 +74,6 @@ TYPES_OF_TRANSPORT_CHOICES =(
     ("Funiculars", "Funiculars"),
 )
 
-
-class ImageField(models.ImageField):
-    def value_to_string(self, obj): # obj is Model instance, in this case, obj is 'Class'
-        return obj.fig.url # not return self.url
-
 class Place(models.Model):
     name = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255, null=True, blank=True)
