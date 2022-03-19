@@ -82,12 +82,6 @@ class ImageField(models.ImageField):
 class Place(models.Model):
     name = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255, null=True, blank=True)
-    continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
-    country = CountryField()
-    region = models.CharField(max_length=255, null=True, blank=True)
-    city = models.CharField(max_length=255, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
     description = models.TextField(null=True)
     nearest_place = models.TextField(null=True, blank=True)
 
@@ -96,10 +90,6 @@ class Place(models.Model):
 
     how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
     rating_danger = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
-
-    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255, blank=True)
-    climate_description = models.TextField(null=True, blank=True)
-    tips_for_every_season = models.TextField(null=True, blank=True)
 
     types_of_ecosystem = models.CharField(choices=TYPES_OF_ECOSYSTEMS_CHOICES, max_length=255, blank=True)
     types_of_ecosystem_description = models.TextField(null=True, blank=True)
@@ -122,12 +112,28 @@ class Place(models.Model):
     internet = models.TextField(null=True, blank=True)
     pay_online_or_by_card = models.TextField(null=True, blank=True)
 
-
-
     rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
 
     def __str__(self):
         return f'{self.id}:  {self.name}'
+
+
+class Location(models.Model):
+    place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
+    continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
+    country = CountryField()
+    region = models.CharField(max_length=255, null=True, blank=True)
+    city = models.CharField(max_length=255, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}: {self.country} - {self.region} - {self.city}'
+
+class Climate(models.Model):
+    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255, blank=True)
+    climate_description = models.TextField(null=True, blank=True)
+    tips_for_every_season = models.TextField(null=True, blank=True)
 
 
 class Transport(models.Model):

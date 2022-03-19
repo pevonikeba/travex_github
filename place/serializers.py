@@ -5,7 +5,7 @@ from place.models import Place, Group, Image
 
 
 class PlaceSerializer(ModelSerializer):
-
+    locations = serializers.StringRelatedField(many=True)
     images = serializers.StringRelatedField(many=True)
     transports = serializers.StringRelatedField(many=True)
     accommodationOptions = serializers.StringRelatedField(many=True)
