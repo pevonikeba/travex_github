@@ -2,14 +2,26 @@
 .DS_Store
 
 # venv
+<<<<<<< HEAD
 venv
 
 # media
 media
+=======
+venv/
+
+# media
+media/
+>>>>>>> 5de9eae20b039ebd4598cd5f21e261e498c31edf
 
 # static
 static/
 
+<<<<<<< HEAD
 place/migrations/
 place/__pycache__/
+=======
+place/__pycache__/
+
+>>>>>>> 5de9eae20b039ebd4598cd5f21e261e498c31edf
 travex/__pycache__/
