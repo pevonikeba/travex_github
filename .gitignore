@@ -2,4 +2,14 @@
 .DS_Store
 
 # venv
-venv
+venv/
+
+# media
+media/
+
+# static
+static/
+
+place/__pycache__/
+
+travex/__pycache__/
