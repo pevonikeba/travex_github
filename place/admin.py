@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 # Register your models here.
 from django.contrib.admin import ModelAdmin, TabularInline
 
-from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, WhereToTakeAPicture
+from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, WhereToTakeAPicture, Location
 
+class LocationInline(TabularInline):
+    model = Location
 
 class TransportInline(TabularInline):
     model = Transport
@@ -26,7 +28,7 @@ class WhereToTakeAPictureInline(TabularInline):
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline, TransportInline, AccommodationOptionsInline, UniquenessPlaceInline, MustSeeInline, WhereToTakeAPictureInline]
+    inlines = [LocationInline, ImageInline, TransportInline, AccommodationOptionsInline, UniquenessPlaceInline, MustSeeInline, WhereToTakeAPictureInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):
