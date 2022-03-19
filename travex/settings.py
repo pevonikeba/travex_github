@@ -97,7 +97,7 @@ DATABASES = {
         'NAME': 'travex_db',
         'USER': 'travex_user',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        'HOST': '',
         'PORT': '',
     }
 }
