@@ -6,7 +6,7 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, Location, ClimaticConditions, Civilization, Safe, Turist, Cuisine, Entertainment, \
     NaturalPhenomena, \
-    Socialization, TypeOfTerrain, Vibe, FloraAndFauna
+    Socialization, TypeOfTerrain, Vibe, FloraAndFauna, Satisfaction
 
 
 class CivilizationInline(TabularInline):
@@ -73,9 +73,13 @@ class FloraAndFaunaInline(TabularInline):
     extra = 1
     model = FloraAndFauna
 
+class SatisfactionInline(TabularInline):
+    extra = 1
+    model = Satisfaction
+
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline, LocationInline, CivilizationInline, SafeInline, TuristInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, SocializationInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, FloraAndFaunaInline]
+    inlines = [ImageInline, LocationInline, CivilizationInline, SafeInline, TuristInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, SocializationInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, FloraAndFaunaInline, SatisfactionInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):

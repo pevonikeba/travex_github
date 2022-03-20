@@ -5,6 +5,7 @@ from place.models import Place, Group, Image, ClimaticConditions, TypeOfTerrain
 
 
 class PlaceSerializer(ModelSerializer):
+    satisfactions = serializers.StringRelatedField(many=True)
     locations = serializers.StringRelatedField(many=True)
     images = serializers.StringRelatedField(many=True)
     transports = serializers.StringRelatedField(many=True)

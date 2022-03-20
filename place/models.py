@@ -105,7 +105,6 @@ class Place(models.Model):
 
     how_to_get_there = models.TextField(null=True, blank=True)
 
-    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
 
     def __str__(self):
         return f'{self.id}:  {self.name}'
@@ -270,6 +269,15 @@ class FloraAndFauna(models.Model):
 
     def __str__(self):
         return f'{self.id}: {self.flora} - {self.fauna}'
+
+
+class Satisfaction(models.Model):
+    place = models.ForeignKey(Place, related_name="satisfactions", on_delete=models.CASCADE)
+    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], blank=False)
+    description_rating = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}: {self.place.name} - {self.rating}'
 
 class Group(models.Model):
     name = models.CharField(max_length=255)
