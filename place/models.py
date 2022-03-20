@@ -135,7 +135,7 @@ class Transport(models.Model):
 
 
     def __str__(self):
-        return f'{self.id}: {self.name} - {self.price}$'
+        return f'{self.id}: {self.name}  - {self.price}$'
 
 class Civilization(models.Model):
     place = models.ForeignKey(Place, related_name="civilizations", on_delete=models.CASCADE)
