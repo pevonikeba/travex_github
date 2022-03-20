@@ -281,7 +281,7 @@ class FloraAndFauna(models.Model):
 
 class Satisfaction(models.Model):
     place = models.ForeignKey(Place, related_name="satisfactions", on_delete=models.CASCADE)
-    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], blank=False)
+    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(10.0)], blank=False)
     description_rating = models.TextField(null=True, blank=True)
 
     def __str__(self):
