@@ -77,17 +77,17 @@ TYPES_OF_TRANSPORT_CHOICES =(
 
 class ClimaticConditions(models.Model):
     conditions = models.CharField(max_length=255)
-    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255, blank=True)
+    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255)
 
     def __str__(self):
-        return f'{self.id}:  {self.conditions}'
+        return f'{self.id}:  {self.conditions} - {self.climate}'
 
 class TypeOfTerrain(models.Model):
     types_of_ecosystem = models.CharField(max_length=255, blank=True)
     types_of_ecosystem_description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.id}:  {self.conditions}'
+        return f'{self.id}:  {self.types_of_ecosystem} - {self.types_of_ecosystem_description}'
 
 
 class Place(models.Model):
