@@ -243,6 +243,14 @@ class MustSee(models.Model):
     def __str__(self):
         return f'{self.id}: {self.name} - {self.description}'
 
+class Vibe(models.Model):
+    place = models.ForeignKey(Place, related_name="vibes", on_delete=models.CASCADE)
+    vibe = models.CharField(max_length=255, null=True, blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}: {self.vibe}'
+
 class WhereToTakeAPicture(models.Model):
     name = models.CharField(max_length=255)
     place = models.ForeignKey(Place, related_name="where_to_take_a_picture", on_delete=models.CASCADE)
