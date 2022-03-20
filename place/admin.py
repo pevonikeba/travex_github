@@ -6,12 +6,13 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, Location, ClimaticConditions, Civilization, Safe, Turist, Cuisine, Entertainment, \
     NaturalPhenomena, \
-    Socialization, TypeOfTerrain, Vibe, FloraAndFauna, Satisfaction
+    Socialization, TypeOfTerrain, Vibe, FloraAndFauna, Satisfaction, TypeOfPeople
 
 
 class CivilizationInline(TabularInline):
     extra = 1
     model = Civilization
+
 
 class SafeInline(TabularInline):
     extra = 1
@@ -91,5 +92,9 @@ class ClimaticConditionsAdmin(ModelAdmin):
 
 @admin.register(TypeOfTerrain)
 class TypeOfTerrainAdmin(ModelAdmin):
+    pass
+
+@admin.register(TypeOfPeople)
+class TypeOfPeopleAdmin(ModelAdmin):
     pass
 
