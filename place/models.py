@@ -75,42 +75,35 @@ TYPES_OF_TRANSPORT_CHOICES =(
 )
 
 
-class ImageField(models.ImageField):
-    def value_to_string(self, obj): # obj is Model instance, in this case, obj is 'Class'
-        return obj.fig.url # not return self.url
+class ClimaticConditions(models.Model):
+    conditions = models.CharField(max_length=255)
+    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255, blank=True)
+
+    def __str__(self):
+        return f'{self.id}:  {self.conditions}'
+
+class TypeOfTerrain(models.Model):
+    types_of_ecosystem = models.CharField(max_length=255, blank=True)
+    types_of_ecosystem_description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}:  {self.conditions}'
+
 
 class Place(models.Model):
     name = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)
-    nearest_place = models.TextField(null=True, blank=True)
 
-    population = models.BigIntegerField(null=True, blank=True)
-    type_of_people_around = models.CharField(choices=TYPE_OF_PEOPLE_AROUND_CHOICES, max_length=255, blank=True)
+    climate = models.ForeignKey(ClimaticConditions, on_delete=models.CASCADE, null=True, blank=True)
+    climate_description = models.TextField(null=True, blank=True)
 
-    how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
-    rating_danger = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
+    type_of_terrain = models.ForeignKey(TypeOfTerrain, on_delete=models.CASCADE, null=True, blank=True)
+    type_of_terrain_description = models.TextField(null=True, blank=True)
 
-    types_of_ecosystem = models.CharField(choices=TYPES_OF_ECOSYSTEMS_CHOICES, max_length=255, blank=True)
-    types_of_ecosystem_description = models.TextField(null=True, blank=True)
-
-    tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
-
-    transport = models.TextField(null=True, blank=True)
     nearest_airport = models.TextField(null=True, blank=True)
 
-    kitchen = models.TextField(null=True, blank=True)
-    local_kitchen = models.TextField(null=True, blank=True)
-    price_and_average_kitchen = models.TextField(null=True, blank=True)
-
-    currency = models.TextField(null=True, blank=True)
-    currency_buying_advice = models.TextField(null=True, blank=True)
-    simcards = models.TextField(null=True, blank=True)
-    internet = models.TextField(null=True, blank=True)
-    pay_online_or_by_card = models.TextField(null=True, blank=True)
+    how_to_get_there = models.TextField(null=True, blank=True)
 
     rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
 
@@ -126,14 +119,10 @@ class Location(models.Model):
     city = models.CharField(max_length=255, null=True, blank=True)
     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
     longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+    nearest_place = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.id}: {self.country} - {self.region} - {self.city}'
-
-class Climate(models.Model):
-    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255, blank=True)
-    climate_description = models.TextField(null=True, blank=True)
-    tips_for_every_season = models.TextField(null=True, blank=True)
 
 
 class Transport(models.Model):
@@ -148,10 +137,78 @@ class Transport(models.Model):
     def __str__(self):
         return f'{self.id}: {self.name} - {self.price}$'
 
+class Civilization(models.Model):
+    place = models.ForeignKey(Place, related_name="civilizations", on_delete=models.CASCADE)
+    population = models.BigIntegerField(null=True, blank=True)
+    type_of_people_around = models.CharField(choices=TYPE_OF_PEOPLE_AROUND_CHOICES, max_length=255, blank=True)
+    nation = models.TextField(blank=True, null=True)
+    language = models.CharField(blank=True, null=True, max_length=255)
+    culture = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.id}: {self.nation}'
+
+class Safe(models.Model):
+    place = models.ForeignKey(Place, related_name="safes", on_delete=models.CASCADE)
+    how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
+    rating_danger = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
+    description = models.TextField(blank=True, null=True)
+    def __str__(self):
+        return f"{self.id}: {self.how_dangerous}"
+
+class Turist(models.Model):
+    place = models.ForeignKey(Place, related_name="turists", on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
+    tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
+    tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
+    tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.id}: {self.place.name}"
+
+class Cuisine(models.Model):
+    place = models.ForeignKey(Place, related_name="cuisines", on_delete=models.CASCADE)
+    kitchen = models.TextField(null=True, blank=True)
+    local_kitchen = models.TextField(null=True, blank=True)
+    price_and_average_kitchen = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.id}: {self.kitchen}"
+
+class Entertainment(models.Model):
+    place = models.ForeignKey(Place, related_name="entertainments", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
+
+
+class NaturalPhenomena(models.Model):
+    place = models.ForeignKey(Place, related_name="natural_phenomena", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
+
+class Socialization(models.Model):
+    place = models.ForeignKey(Place, related_name="socializations", on_delete=models.CASCADE)
+    currency = models.TextField(null=True, blank=True)
+    currency_buying_advice = models.TextField(null=True, blank=True)
+    simcards = models.BooleanField()
+    internet = models.TextField(null=True, blank=True)
+    pay_online_or_by_card = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.id}: {self.currency}"
 
 
 class Image(models.Model):
-    path = ImageField(upload_to='images/', null=True, blank=True)
+    path = models.ImageField(upload_to='images/', null=True, blank=True)
     place = models.ForeignKey(Place, related_name="images", on_delete=models.CASCADE)
 
     def __str__(self):
