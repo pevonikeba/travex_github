@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from place.models import Place, Group, Image
+from place.models import Place, Group, Image, ClimaticConditions, TypeOfTerrain
 
 
 class PlaceSerializer(ModelSerializer):
@@ -32,5 +32,17 @@ class GroupSerializer(ModelSerializer):
 
     class Meta:
         model = Group
+        fields = '__all__'
+
+class ClimateSerializer(ModelSerializer):
+
+    class Meta:
+        model = ClimaticConditions
+        fields = '__all__'
+
+class TypeOfTerrainSerializer(ModelSerializer):
+
+    class Meta:
+        model = TypeOfTerrain
         fields = '__all__'
 

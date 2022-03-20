@@ -22,20 +22,20 @@ from django.urls import path, include
 from django.views.static import serve
 from rest_framework.routers import SimpleRouter
 
-from place.views import PlaceViewSet, GroupViewSet
+from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet
 
 router = SimpleRouter()
 
 router.register(r'api/places', PlaceViewSet)
 router.register(r'api/groups', GroupViewSet)
 
+router.register(r'api/climates', ClimateViewSet)
+router.register(r'api/terrains', TypeOfTerrainViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('social_django.urls', namespace='social')),
 
-
-    # path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    # path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
 
 if settings.DEBUG:
