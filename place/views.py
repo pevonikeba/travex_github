@@ -8,7 +8,6 @@ from place.serializers import PlaceSerializer, GroupSerializer
 
 
 class PlaceViewSet(ModelViewSet, ListView):
-    paginate_by = 1
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]

@@ -261,7 +261,15 @@ class WhereToTakeAPicture(models.Model):
         return f'{self.id}: {self.name} - {self.description}'
 
 
+class FloraAndFauna(models.Model):
+    place = models.ForeignKey(Place, related_name="flora_fauna", on_delete=models.CASCADE)
+    flora = models.TextField(null=True, blank=True)
+    flora_image = models.ImageField(upload_to='images/', null=True, blank=True)
+    fauna = models.TextField(null=True, blank=True)
+    fauna_image = models.ImageField(upload_to='images/', null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.id}: {self.flora} - {self.fauna}'
 
 class Group(models.Model):
     name = models.CharField(max_length=255)
