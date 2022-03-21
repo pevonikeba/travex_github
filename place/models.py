@@ -127,7 +127,7 @@ class Location(models.Model):
     nearest_place = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.continent} {self.country} {self.region} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"
+        return f"{self.continent} {self.country} {self.region} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"
 
 
 class Transport(models.Model):
@@ -140,7 +140,7 @@ class Transport(models.Model):
 
 
     def __str__(self):
-        return f"{self.id}: {self.name} {self.price} {self.description} {self.comfortable} {self.image}"
+        return f"{self.name} {self.price} {self.description} {self.comfortable} {self.image}"
 
 
 
@@ -153,7 +153,7 @@ class Civilization(models.Model):
     culture = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.id}: {self.population} {self.type_of_people_around} {self.nation} {self.language} {self.culture}"
+        return f"{self.population} {self.type_of_people_around} {self.nation} {self.language} {self.culture}"
 
 class Safe(models.Model):
     place = models.ForeignKey(Place, related_name="safes", on_delete=models.CASCADE)
@@ -161,7 +161,7 @@ class Safe(models.Model):
     rating_danger = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
     description = models.TextField(blank=True, null=True)
     def __str__(self):
-        return f"{self.id}: {self.how_dangerous} {self.rating_danger} {self.description}"
+        return f"{self.how_dangerous} {self.rating_danger} {self.description}"
 
 class Turist(models.Model):
     place = models.ForeignKey(Place, related_name="turists", on_delete=models.CASCADE)
@@ -172,7 +172,7 @@ class Turist(models.Model):
     tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.description} {self.tourist_population_per_season_winter} {self.tourist_population_per_season_spring} {self.tourist_population_per_season_summer} {self.tourist_population_per_season_autumn}"
+        return f"{self.description} {self.tourist_population_per_season_winter} {self.tourist_population_per_season_spring} {self.tourist_population_per_season_summer} {self.tourist_population_per_season_autumn}"
 
 class Cuisine(models.Model):
     place = models.ForeignKey(Place, related_name="cuisines", on_delete=models.CASCADE)
@@ -181,7 +181,7 @@ class Cuisine(models.Model):
     price_and_average_kitchen = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.kitchen} {self.local_kitchen} {self.price_and_average_kitchen}"
+        return f"{self.kitchen} {self.local_kitchen} {self.price_and_average_kitchen}"
 
 class Entertainment(models.Model):
     place = models.ForeignKey(Place, related_name="entertainments", on_delete=models.CASCADE)
@@ -190,7 +190,7 @@ class Entertainment(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.name} {self.description} {self.image}"
+        return f"{self.name} {self.description} {self.image}"
 
 
 class NaturalPhenomena(models.Model):
@@ -200,7 +200,7 @@ class NaturalPhenomena(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.name} {self.description} {self.image}"
+        return f"{self.name} {self.description} {self.image}"
 
 class Socialization(models.Model):
     place = models.ForeignKey(Place, related_name="socializations", on_delete=models.CASCADE)
@@ -211,7 +211,7 @@ class Socialization(models.Model):
     pay_online_or_by_card = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.currency} {self.currency_buying_advice} {self.simcards} {self.internet} {self.pay_online_or_by_card}"
+        return f"{self.currency} {self.currency_buying_advice} {self.simcards} {self.internet} {self.pay_online_or_by_card}"
 
 
 
@@ -230,7 +230,7 @@ class AccommodationOptions(models.Model):
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.name} {self.price} {self.description}"
+        return f"{self.name} {self.price} {self.description}"
 
 
 class UniquenessPlace(models.Model):
@@ -240,7 +240,7 @@ class UniquenessPlace(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.name} {self.description} {self.image}"
+        return f"{self.name} {self.description} {self.image}"
 
 class MustSee(models.Model):
     name = models.CharField(max_length=255)
@@ -249,7 +249,7 @@ class MustSee(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.name} {self.description} {self.image}"
+        return f"{self.name} {self.description} {self.image}"
 
 class Vibe(models.Model):
     place = models.ForeignKey(Place, related_name="vibes", on_delete=models.CASCADE)
@@ -257,7 +257,7 @@ class Vibe(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.vibe} {self.image}"
+        return f"{self.vibe} {self.image}"
 
 class WhereToTakeAPicture(models.Model):
     name = models.CharField(max_length=255)
@@ -266,7 +266,7 @@ class WhereToTakeAPicture(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.name} {self.description} {self.image}"
+        return f"{self.name} {self.description} {self.image}"
 
 
 class FloraAndFauna(models.Model):
@@ -277,7 +277,7 @@ class FloraAndFauna(models.Model):
     fauna_image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.flora} {self.flora_image} {self.fauna} {self.fauna_image}"
+        return f"{self.flora} {self.flora_image} {self.fauna} {self.fauna_image}"
 
 
 class Satisfaction(models.Model):
@@ -286,7 +286,7 @@ class Satisfaction(models.Model):
     description_rating = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id}: {self.rating} {self.description_rating}"
+        return f"{self.rating} {self.description_rating}"
 
 class Group(models.Model):
     name = models.CharField(max_length=255)
@@ -295,4 +295,4 @@ class Group(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return  f'{self.id}: {self.name}'
+        return  f'{self.name}'
