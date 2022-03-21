@@ -114,6 +114,7 @@ class Place(models.Model):
     def __str__(self):
         return f'{self.id}:  {self.name}'
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Location(models.Model):
     place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
@@ -219,7 +220,7 @@ class Image(models.Model):
     place = models.ForeignKey(Place, related_name="images", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.id}: {self.path}"
+        return f"{self.path}"
 
 
 class AccommodationOptions(models.Model):
