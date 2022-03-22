@@ -226,7 +226,7 @@ class Location(models.Model):
 class Transport(models.Model):
     place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
     name = models.CharField(choices=TYPES_OF_TRANSPORT_CHOICES, null=True, max_length=255)
-    price = models.DecimalField(max_digits=13, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField(max_digits=13, decimal_places=2, default=10, blank=False)
     description = models.TextField(null=True, blank=True)
     comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, max_length=255)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -252,7 +252,7 @@ class Cuisine(models.Model):
     type_cuisine = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=None)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=10, blank=False)
 
     def __str__(self):
         return f"{self.kitchen} {self.local_kitchen} {self.price_and_average_kitchen}"
@@ -289,7 +289,7 @@ class Image(models.Model):
 class AccommodationOptions(models.Model):
     name = models.CharField(max_length=255, null=True)
     place = models.ForeignKey(Place, related_name="accommodationOptions", on_delete=models.CASCADE, null=True)
-    price = models.DecimalField(max_digits=13, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField(max_digits=13, decimal_places=2, blank=False, default=10)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
