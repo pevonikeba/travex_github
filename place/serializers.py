@@ -1,12 +1,13 @@
+from django_countries.serializers import CountryFieldMixin
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from place.models import Place, Group, Image, ClimaticConditions, TypeOfTerrain, TypeOfPeople, Location, Satisfaction, \
-    FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, Socialization, \
-    NaturalPhenomena, Entertainment, Cuisine, Turist, Safe, Civilization, Transport
+from place.models import Place, Group, Image, ClimaticConditions, TypeOfTerrain, TypeOfPeople, Location, \
+    FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
+    NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation
 
 
-class LocationSerializer(ModelSerializer):
+class LocationSerializer(CountryFieldMixin, ModelSerializer):
     class Meta:
         model = Location
         fields = '__all__'
@@ -16,20 +17,12 @@ class TransportSerializer(ModelSerializer):
         model = Transport
         fields = '__all__'
 
-class CivilizationSerializer(ModelSerializer):
-    class Meta:
-        model = Civilization
-        fields = '__all__'
 
 class SafeSerializer(ModelSerializer):
     class Meta:
         model = Safe
         fields = '__all__'
 
-class TuristSerializer(ModelSerializer):
-    class Meta:
-        model = Turist
-        fields = '__all__'
 
 
 class CuisineSerializer(ModelSerializer):
@@ -47,12 +40,6 @@ class EntertainmentSerializer(ModelSerializer):
 class NaturalPhenomenaSerializer(ModelSerializer):
     class Meta:
         model = NaturalPhenomena
-        fields = '__all__'
-
-
-class SocializationSerializer(ModelSerializer):
-    class Meta:
-        model = Socialization
         fields = '__all__'
 
 
@@ -91,17 +78,18 @@ class FloraAndFaunaSerializer(ModelSerializer):
         model = FloraAndFauna
         fields = '__all__'
 
-class SatisfactionSerializer(ModelSerializer):
+class CategorySerializer(ModelSerializer):
     class Meta:
-        model = Satisfaction
+        model = Category
         fields = '__all__'
+
 
 class PlaceSerializer(ModelSerializer):
 
+    categories = CategorySerializer(many=True, read_only=True)
+
     images = serializers.StringRelatedField(many=True)
 
-
-    satisfactions = SatisfactionSerializer(many=True)
     locations = LocationSerializer(many=True, read_only=True)
     transports = TransportSerializer(many=True)
     accommodationOptions = AccommodationOptionsSerializer(many=True)
@@ -109,18 +97,21 @@ class PlaceSerializer(ModelSerializer):
     must_see = MustSeeSerializer(many=True)
     where_to_take_a_picture = WhereToTakeAPictureSerializer(many=True)
     cuisines = CuisineSerializer(many=True)
-    turists = TuristSerializer(many=True)
-    civilizations = CivilizationSerializer(many=True)
     safes = SafeSerializer(many=True)
     entertainments = EntertainmentSerializer(many=True)
     natural_phenomena = NaturalPhenomenaSerializer(many=True)
-    socializations = SocializationSerializer(many=True)
     vibes = VibeSerializer(many=True)
     flora_fauna = FloraAndFaunaSerializer(many=True)
 
     class Meta:
         model = Place
         fields = '__all__'
+
+class UserPlaceRelationSerializer(ModelSerializer):
+    class Meta:
+        model = UserPlaceRelation
+        fields = ('place', 'in_bookmarks', 'rating', 'description_rating')
+
 
 class GroupSerializer(ModelSerializer):
 

@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django_countries',
 
     'django_extensions',
-    
+
+    'mptt',
+
     'place',
 ]
 
@@ -171,3 +173,6 @@ SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 SOCIAL_AUTH_GITHUB_KEY = '4b67f6944142c331f5ea'
 SOCIAL_AUTH_GITHUB_SECRET = 'aae4618e66c98dcf25e3e51cc1f447eb0e4b3ebf'
+
+
+MPTT_ADMIN_LEVEL_INDENT = 20

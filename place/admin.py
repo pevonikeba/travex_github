@@ -2,25 +2,17 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 # Register your models here.
 from django.contrib.admin import ModelAdmin, TabularInline
+from mptt.admin import MPTTModelAdmin
 
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
-    WhereToTakeAPicture, Location, ClimaticConditions, Civilization, Safe, Turist, Cuisine, Entertainment, \
+    WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
-    Socialization, TypeOfTerrain, Vibe, FloraAndFauna, Satisfaction, TypeOfPeople
-
-
-class CivilizationInline(TabularInline):
-    extra = 1
-    model = Civilization
+    TypeOfTerrain, Vibe, FloraAndFauna, TypeOfPeople, Category, UserPlaceRelation
 
 
 class SafeInline(TabularInline):
     extra = 1
     model = Safe
-
-class TuristInline(TabularInline):
-    extra = 1
-    model = Turist
 
 class CuisineInline(TabularInline):
     extra = 1
@@ -33,10 +25,6 @@ class EntertainmentInline(TabularInline):
 class NaturalPhenomenaInline(TabularInline):
     extra = 1
     model = NaturalPhenomena
-
-class SocializationInline(TabularInline):
-    extra = 1
-    model = Socialization
 
 class LocationInline(TabularInline):
     extra = 1
@@ -74,16 +62,23 @@ class FloraAndFaunaInline(TabularInline):
     extra = 1
     model = FloraAndFauna
 
-class SatisfactionInline(TabularInline):
-    extra = 1
-    model = Satisfaction
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline, LocationInline, CivilizationInline, SafeInline, TuristInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, SocializationInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, FloraAndFaunaInline, SatisfactionInline]
+    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, FloraAndFaunaInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):
+    pass
+
+class CategoryMPTTModelAdmin(MPTTModelAdmin):
+    # specify pixel amount for this ModelAdmin only:
+    mptt_level_indent = 20
+
+admin.site.register(Category, CategoryMPTTModelAdmin)
+
+@admin.register(UserPlaceRelation)
+class UserPlaceRelationAdmin(ModelAdmin):
     pass
 
 @admin.register(ClimaticConditions)

@@ -1,6 +1,10 @@
+import mptt
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django_countries.fields import CountryField
+from mptt.models import MPTTModel, TreeForeignKey
+
 # Create your models here.
 
 CONTINENT_CHOICES =(
@@ -74,6 +78,27 @@ TYPES_OF_TRANSPORT_CHOICES =(
     ("Funiculars", "Funiculars"),
 )
 
+# class Category(MPTTModel):
+#     class Meta:
+#         db_table = 'category'
+#         verbose_name_plural = "Category"
+#         verbose_name = "Category"
+#         ordering = ('tree_id', 'level')
+#     name = models.CharField(max_length=255, verbose_name="Category", unique=True)
+#     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children', verbose_name="Parent class")
+#
+#     def __unicode__(self):
+#         return self.name
+#
+#     class MPTTMeta:
+#         order_insertion_by = ['name']
+#
+#     def __str__(self):
+#         return f'{self.name}'
+#
+# mptt.register(Category, order_insertion_by=['name'])
+
+
 class TypeOfPeople(models.Model):
     type = models.CharField(max_length=255)
 
@@ -94,11 +119,27 @@ class TypeOfTerrain(models.Model):
     def __str__(self):
         return f'{self.id}:  {self.types_of_ecosystem} - {self.types_of_ecosystem_description}'
 
+class Category(MPTTModel):
+    name = models.CharField(max_length=255, blank=True, unique=True)
+    description = models.TextField(blank=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return f'{self.name}'
+
+mptt.register(Category, order_insertion_by=['name'])
 
 class Place(models.Model):
     name = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)
+
+    category = models.ManyToManyField(Category, verbose_name="categories", related_name="categories",
+                                      blank=True)
 
     climate = models.ForeignKey(ClimaticConditions, on_delete=models.CASCADE, null=True, blank=True)
     climate_description = models.TextField(null=True, blank=True)
@@ -110,16 +151,52 @@ class Place(models.Model):
 
     how_to_get_there = models.TextField(null=True, blank=True)
 
+    population = models.BigIntegerField(null=True, blank=True)
+    type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True,
+                                              related_name="civilizations")
+    nation = models.TextField(blank=True, null=True)
+    language = models.CharField(blank=True, null=True, max_length=255)
+    culture = models.TextField(blank=True, null=True)
 
+    turist_description = models.TextField(blank=True, null=True)
+    tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
+    tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
+    tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
+    tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
+
+
+    currency = models.TextField(null=True, blank=True)
+    currency_buying_advice = models.TextField(null=True, blank=True)
+    simcards = models.TextField(blank=True, null=True)
+    internet = models.TextField(null=True, blank=True)
+    pay_online_or_by_card = models.TextField(null=True, blank=True)
+
+    views = models.ManyToManyField(User, through="UserPlaceRelation", related_name="views")
+
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
+
+    # category = TreeForeignKey(Category, verbose_name="categorys", related_name="categorys", on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
-        return f'{self.id}:  {self.name}'
+        return f'{self.id}: {self.name}'
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+class UserPlaceRelation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name="user_place")
+    in_bookmarks = models.BooleanField(default=False)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
+    description_rating = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} {self.place.name}, {self.rating}"
 
 class Location(models.Model):
     place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
-    country = CountryField()
+    country = CountryField(null=True, blank=True)
     region = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
@@ -129,6 +206,22 @@ class Location(models.Model):
     def __str__(self):
         return f"{self.continent} {self.country} {self.region} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"
 
+
+# class Location(MPTTModel):
+#     place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
+#     name = models.CharField(max_length=50, unique=True)
+#     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+#
+#     def __unicode__(self):
+#         return self.name
+#
+#     class MPTTMeta:
+#         order_insertion_by = ['name']
+#
+#     def __str__(self):
+#         return f'{self.name}'
+#
+# mptt.register(Location, order_insertion_by=['name'])
 
 class Transport(models.Model):
     place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
@@ -143,42 +236,23 @@ class Transport(models.Model):
         return f"{self.name} {self.price} {self.description} {self.comfortable} {self.image}"
 
 
-
-class Civilization(models.Model):
-    place = models.ForeignKey(Place, related_name="civilizations", on_delete=models.CASCADE)
-    population = models.BigIntegerField(null=True, blank=True)
-    type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True, related_name="civilizations")
-    nation = models.TextField(blank=True, null=True)
-    language = models.CharField(blank=True, null=True, max_length=255)
-    culture = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.population} {self.type_of_people_around} {self.nation} {self.language} {self.culture}"
-
 class Safe(models.Model):
+    name = models.CharField(max_length=255, blank=True)
     place = models.ForeignKey(Place, related_name="safes", on_delete=models.CASCADE)
     how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
-    rating_danger = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], default=5.0)
+    rating_danger = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
     description = models.TextField(blank=True, null=True)
     def __str__(self):
         return f"{self.how_dangerous} {self.rating_danger} {self.description}"
 
-class Turist(models.Model):
-    place = models.ForeignKey(Place, related_name="turists", on_delete=models.CASCADE)
-    description = models.TextField(blank=True, null=True)
-    tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.description} {self.tourist_population_per_season_winter} {self.tourist_population_per_season_spring} {self.tourist_population_per_season_summer} {self.tourist_population_per_season_autumn}"
 
 class Cuisine(models.Model):
     place = models.ForeignKey(Place, related_name="cuisines", on_delete=models.CASCADE)
-    kitchen = models.TextField(null=True, blank=True)
-    local_kitchen = models.TextField(null=True, blank=True)
-    price_and_average_kitchen = models.TextField(null=True, blank=True)
+    name = models.CharField(max_length=255, blank=True)
+    type_cuisine = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=None)
 
     def __str__(self):
         return f"{self.kitchen} {self.local_kitchen} {self.price_and_average_kitchen}"
@@ -201,17 +275,6 @@ class NaturalPhenomena(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
-
-class Socialization(models.Model):
-    place = models.ForeignKey(Place, related_name="socializations", on_delete=models.CASCADE)
-    currency = models.TextField(null=True, blank=True)
-    currency_buying_advice = models.TextField(null=True, blank=True)
-    simcards = models.BooleanField()
-    internet = models.TextField(null=True, blank=True)
-    pay_online_or_by_card = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.currency} {self.currency_buying_advice} {self.simcards} {self.internet} {self.pay_online_or_by_card}"
 
 
 
@@ -271,28 +334,19 @@ class WhereToTakeAPicture(models.Model):
 
 class FloraAndFauna(models.Model):
     place = models.ForeignKey(Place, related_name="flora_fauna", on_delete=models.CASCADE)
-    flora = models.TextField(null=True, blank=True)
-    flora_image = models.ImageField(upload_to='images/', null=True, blank=True)
-    fauna = models.TextField(null=True, blank=True)
-    fauna_image = models.ImageField(upload_to='images/', null=True, blank=True)
+    name = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.flora} {self.flora_image} {self.fauna} {self.fauna_image}"
+        return f"{self.place.name} {self.name}"
 
 
-class Satisfaction(models.Model):
-    place = models.ForeignKey(Place, related_name="satisfactions", on_delete=models.CASCADE)
-    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(10.0)], blank=False)
-    description_rating = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.rating} {self.description_rating}"
 
 class Group(models.Model):
     name = models.CharField(max_length=255)
     places = models.ManyToManyField(Place, verbose_name="places", related_name="places",
                                     blank=True, )
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return  f'{self.name}'
+        return f'{self.name}'
