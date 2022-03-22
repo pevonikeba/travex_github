@@ -274,7 +274,7 @@ class NaturalPhenomena(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.name} {self.description} {self.image}"
+        return f"{self.name}  {self.description} {self.image}"
 
 
 
