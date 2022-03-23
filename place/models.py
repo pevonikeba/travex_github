@@ -255,7 +255,7 @@ class Cuisine(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=10, blank=False)
 
     def __str__(self):
-        return f"{self.kitchen} {self.local_kitchen} {self.price_and_average_kitchen}"
+        return f"{self.place.name} {self.name}"
 
 class Entertainment(models.Model):
     place = models.ForeignKey(Place, related_name="entertainments", on_delete=models.CASCADE)
