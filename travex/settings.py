@@ -46,6 +46,8 @@ INSTALLED_APPS = [
 
     'mptt',
 
+    'rest_framework',
+
     'place',
 ]
 

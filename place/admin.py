@@ -7,7 +7,7 @@ from mptt.admin import MPTTModelAdmin
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
-    TypeOfTerrain, Vibe, FloraAndFauna, TypeOfPeople, Category, UserPlaceRelation
+    TypeOfTerrain, Vibe, FloraAndFauna, TypeOfPeople, Category, UserPlaceRelation, InterestingFacts
 
 
 class SafeInline(TabularInline):
@@ -62,10 +62,14 @@ class FloraAndFaunaInline(TabularInline):
     extra = 1
     model = FloraAndFauna
 
+class InterestingFactsInline(TabularInline):
+    extra = 1
+    model = InterestingFacts
+
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, FloraAndFaunaInline]
+    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, FloraAndFaunaInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):

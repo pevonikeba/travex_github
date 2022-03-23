@@ -4,7 +4,7 @@ from rest_framework.serializers import ModelSerializer
 
 from place.models import Place, Group, Image, ClimaticConditions, TypeOfTerrain, TypeOfPeople, Location, \
     FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
-    NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation
+    NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts
 
 
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
@@ -83,6 +83,11 @@ class CategorySerializer(ModelSerializer):
         model = Category
         fields = '__all__'
 
+class InterestingFactsSerializer(ModelSerializer):
+    class Meta:
+        model = InterestingFacts
+        fields = '__all__'
+
 
 class PlaceSerializer(ModelSerializer):
 
@@ -101,6 +106,7 @@ class PlaceSerializer(ModelSerializer):
     entertainments = EntertainmentSerializer(many=True)
     natural_phenomena = NaturalPhenomenaSerializer(many=True)
     vibes = VibeSerializer(many=True)
+    interesting_facts = InterestingFactsSerializer(many=True)
     flora_fauna = FloraAndFaunaSerializer(many=True)
 
     class Meta:

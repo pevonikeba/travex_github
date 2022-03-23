@@ -331,6 +331,13 @@ class WhereToTakeAPicture(models.Model):
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
 
+class InterestingFacts(models.Model):
+    place = models.ForeignKey(Place, related_name="interesting_facts", on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.place.name} {self.description}"
 
 class FloraAndFauna(models.Model):
     place = models.ForeignKey(Place, related_name="flora_fauna", on_delete=models.CASCADE)
