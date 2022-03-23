@@ -11,27 +11,27 @@ from place.models import Place, Group, Image, Transport, AccommodationOptions, U
 
 
 class SafeInline(TabularInline):
-    extra = 1
+    extra = 0
     model = Safe
 
 class CuisineInline(TabularInline):
-    extra = 1
+    extra = 0
     model = Cuisine
 
 class EntertainmentInline(TabularInline):
-    extra = 1
+    extra = 0
     model = Entertainment
 
 class NaturalPhenomenaInline(TabularInline):
-    extra = 1
+    extra = 0
     model = NaturalPhenomena
 
 class LocationInline(TabularInline):
-    extra = 1
+    extra = 0
     model = Location
 
 class TransportInline(TabularInline):
-    extra = 1
+    extra = 0
     model = Transport
 
 class ImageInline(TabularInline):
@@ -39,31 +39,31 @@ class ImageInline(TabularInline):
     model = Image
 
 class AccommodationOptionsInline(TabularInline):
-    extra = 1
+    extra = 0
     model = AccommodationOptions
 
 class UniquenessPlaceInline(TabularInline):
-    extra = 1
+    extra = 0
     model = UniquenessPlace
 
 class MustSeeInline(TabularInline):
-    extra = 1
+    extra = 0
     model = MustSee
 
 class VibeInline(TabularInline):
-    extra = 1
+    extra = 0
     model = Vibe
 
 class WhereToTakeAPictureInline(TabularInline):
-    extra = 1
+    extra = 0
     model = WhereToTakeAPicture
 
 class FloraAndFaunaInline(TabularInline):
-    extra = 1
+    extra = 0
     model = FloraAndFauna
 
 class InterestingFactsInline(TabularInline):
-    extra = 1
+    extra = 0
     model = InterestingFacts
 
 

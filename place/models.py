@@ -134,7 +134,7 @@ class Category(MPTTModel):
 mptt.register(Category, order_insertion_by=['name'])
 
 class Place(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=False, default=None)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)
 
@@ -225,7 +225,7 @@ class Location(models.Model):
 
 class Transport(models.Model):
     place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
-    name = models.CharField(choices=TYPES_OF_TRANSPORT_CHOICES, null=True, max_length=255)
+    name = models.CharField(choices=TYPES_OF_TRANSPORT_CHOICES, blank=False, default=None, max_length=255)
     price = models.DecimalField(max_digits=13, decimal_places=2, default=10, blank=False)
     description = models.TextField(null=True, blank=True)
     comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, max_length=255)
@@ -237,7 +237,7 @@ class Transport(models.Model):
 
 
 class Safe(models.Model):
-    name = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="safes", on_delete=models.CASCADE)
     how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
     rating_danger = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
@@ -248,7 +248,7 @@ class Safe(models.Model):
 
 class Cuisine(models.Model):
     place = models.ForeignKey(Place, related_name="cuisines", on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, blank=False, default=None)
     type_cuisine = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -259,7 +259,7 @@ class Cuisine(models.Model):
 
 class Entertainment(models.Model):
     place = models.ForeignKey(Place, related_name="entertainments", on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
@@ -269,7 +269,7 @@ class Entertainment(models.Model):
 
 class NaturalPhenomena(models.Model):
     place = models.ForeignKey(Place, related_name="natural_phenomena", on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
@@ -279,7 +279,7 @@ class NaturalPhenomena(models.Model):
 
 
 class Image(models.Model):
-    path = models.ImageField(upload_to='images/', null=True, blank=True)
+    path = models.ImageField(upload_to='images/', blank=False, default=None)
     place = models.ForeignKey(Place, related_name="images", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -287,7 +287,7 @@ class Image(models.Model):
 
 
 class AccommodationOptions(models.Model):
-    name = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="accommodationOptions", on_delete=models.CASCADE, null=True)
     price = models.DecimalField(max_digits=13, decimal_places=2, blank=False, default=10)
     description = models.TextField(null=True, blank=True)
@@ -297,7 +297,7 @@ class AccommodationOptions(models.Model):
 
 
 class UniquenessPlace(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="uniqueness_place", on_delete=models.CASCADE, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -306,7 +306,7 @@ class UniquenessPlace(models.Model):
         return f"{self.name} {self.description} {self.image}"
 
 class MustSee(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="must_see", on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -316,14 +316,14 @@ class MustSee(models.Model):
 
 class Vibe(models.Model):
     place = models.ForeignKey(Place, related_name="vibes", on_delete=models.CASCADE)
-    vibe = models.CharField(max_length=255, null=True, blank=True)
+    vibe = models.CharField(max_length=255, blank=False, default=None)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.vibe} {self.image}"
 
 class WhereToTakeAPicture(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="where_to_take_a_picture", on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -341,9 +341,9 @@ class InterestingFacts(models.Model):
 
 class FloraAndFauna(models.Model):
     place = models.ForeignKey(Place, related_name="flora_fauna", on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/', blank=False, default=None)
 
     def __str__(self):
         return f"{self.place.name} {self.name}"
