@@ -1,4 +1,5 @@
 import mptt
+from colorfield.fields import ColorField
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -123,6 +124,7 @@ class Category(MPTTModel):
     name = models.CharField(max_length=255, blank=True, unique=True)
     description = models.TextField(blank=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    color = ColorField(default='#FF0000')
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     class MPTTMeta:
