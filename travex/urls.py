@@ -18,9 +18,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.static import serve
 from rest_framework.routers import SimpleRouter
+from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
 from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
     UserPlaceRelationView
@@ -38,7 +39,14 @@ router.register(r'api/terrains', TypeOfTerrainViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/drf-auth/', include('rest_framework.urls')),
     path('', include('social_django.urls', namespace='social')),
+    path('api/auth/', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls.authtoken')),
+
+    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
 ]
 

@@ -103,21 +103,21 @@ class TypeOfPeople(models.Model):
     type = models.CharField(max_length=255)
 
     def __str__(self):
-        return f'{self.id}:  {self.type}'
+        return f'{self.type}'
 
 class ClimaticConditions(models.Model):
     conditions = models.CharField(max_length=255)
     climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255)
 
     def __str__(self):
-        return f'{self.id}:  {self.conditions} - {self.climate}'
+        return f'{self.conditions} - {self.climate}'
 
 class TypeOfTerrain(models.Model):
     types_of_ecosystem = models.CharField(max_length=255, blank=True)
     types_of_ecosystem_description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.id}:  {self.types_of_ecosystem} - {self.types_of_ecosystem_description}'
+        return f'{self.types_of_ecosystem} - {self.types_of_ecosystem_description}'
 
 class Category(MPTTModel):
     name = models.CharField(max_length=255, blank=True, unique=True)
@@ -134,6 +134,11 @@ class Category(MPTTModel):
 mptt.register(Category, order_insertion_by=['name'])
 
 class Place(models.Model):
+
+    writer_user = models.ForeignKey(User, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
+
+    home_page = models.BooleanField(default=False)
+
     name = models.CharField(max_length=255, blank=False, default=None)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)

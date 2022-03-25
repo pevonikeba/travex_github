@@ -91,6 +91,8 @@ class InterestingFactsSerializer(ModelSerializer):
 
 class PlaceSerializer(ModelSerializer):
 
+    writer_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     categories = CategorySerializer(many=True, read_only=True)
 
     images = serializers.StringRelatedField(many=True)
