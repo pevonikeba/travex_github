@@ -40,7 +40,6 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = PlaceAPIListPagination
 
 
 class GroupViewSet(ModelViewSet):
