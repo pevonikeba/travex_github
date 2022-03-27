@@ -51,9 +51,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
 
-    'oauth2_provider',
     'social_django',
-    'rest_framework_social_oauth2',
 
     "colorfield",
 
@@ -61,10 +59,12 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GooglePlusAuth',
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    # 'social_core.backends.google.GooglePlusAuth',
+    # 'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
+# APPEND_SLASH=False
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -215,6 +215,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
 
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))

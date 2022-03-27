@@ -20,7 +20,7 @@ class PlaceViewSet(ModelViewSet, ListView):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['category']
+    filterset_fields = ['category', 'home_page']
     search_fields = ['name', 'nickname']
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PlaceAPIListPagination
