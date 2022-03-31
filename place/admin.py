@@ -7,7 +7,7 @@ from mptt.admin import MPTTModelAdmin
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
-    TypeOfTerrain, Vibe, FloraAndFauna, TypeOfPeople, Category, UserPlaceRelation, InterestingFacts
+    TypeOfTerrain, Vibe, FloraAndFauna, TypeOfPeople, Category, UserPlaceRelation, InterestingFacts, CustomUser
 
 
 class SafeInline(TabularInline):
@@ -73,6 +73,10 @@ class PlaceAdmin(ModelAdmin):
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):
+    pass
+
+@admin.register(CustomUser)
+class CustomUserAdmin(ModelAdmin):
     pass
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):

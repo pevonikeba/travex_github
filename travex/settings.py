@@ -51,19 +51,25 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
 
+
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+
     'social_django',
 
     "colorfield",
 
     'place',
+
 ]
+AUTH_USER_MODEL = 'place.CustomUser'
 
 AUTHENTICATION_BACKENDS = (
     # 'social_core.backends.google.GooglePlusAuth',
     # 'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
-# APPEND_SLASH=False
+# APPEND_SLASH = False
 
 
 MIDDLEWARE = [
@@ -73,6 +79,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 

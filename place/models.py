@@ -1,10 +1,13 @@
 import mptt
 from colorfield.fields import ColorField
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django_countries.fields import CountryField
 from mptt.models import MPTTModel, TreeForeignKey
+from django.utils.translation import gettext_lazy as _
+
+
 
 # Create your models here.
 
@@ -99,6 +102,17 @@ TYPES_OF_TRANSPORT_CHOICES =(
 #
 # mptt.register(Category, order_insertion_by=['name'])
 
+class CustomUser(AbstractUser):
+    email = models.EmailField(_('email address'), blank=False, unique=True)
+
+    email_verify = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    def __str__(self):
+        return self.email
+
 
 class TypeOfPeople(models.Model):
     type = models.CharField(max_length=255)
@@ -121,7 +135,7 @@ class TypeOfTerrain(models.Model):
         return f'{self.types_of_ecosystem} - {self.types_of_ecosystem_description}'
 
 class Category(MPTTModel):
-    name = models.CharField(max_length=255, blank=True, unique=True)
+    name = models.CharField(max_length=255, blank=False, unique=True)
     description = models.TextField(blank=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     color = ColorField(default='#FF0000')
@@ -137,7 +151,7 @@ mptt.register(Category, order_insertion_by=['name'])
 
 class Place(models.Model):
 
-    writer_user = models.ForeignKey(User, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
+    writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
 
     home_page = models.BooleanField(default=False)
 
@@ -145,7 +159,7 @@ class Place(models.Model):
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)
 
-    category = models.ManyToManyField(Category, verbose_name="categories", related_name="categories",
+    category = models.ManyToManyField(Category,
                                       blank=True)
 
     climate = models.ForeignKey(ClimaticConditions, on_delete=models.CASCADE, null=True, blank=True)
@@ -178,7 +192,7 @@ class Place(models.Model):
     internet = models.TextField(null=True, blank=True)
     pay_online_or_by_card = models.TextField(null=True, blank=True)
 
-    views = models.ManyToManyField(User, through="UserPlaceRelation", related_name="views")
+    views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", related_name="views")
 
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
 
@@ -191,7 +205,7 @@ class Place(models.Model):
 
 
 class UserPlaceRelation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name="user_place")
     in_bookmarks = models.BooleanField(default=False)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
@@ -199,6 +213,7 @@ class UserPlaceRelation(models.Model):
 
     def __str__(self):
         return f"{self.user.username} {self.place.name}, {self.rating}"
+
 
 class Location(models.Model):
     place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
@@ -212,6 +227,8 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.continent} {self.country} {self.region} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"
+
+
 
 
 # class Location(MPTTModel):

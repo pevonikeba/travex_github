@@ -24,7 +24,7 @@ from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
 from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
-    UserPlaceRelationView
+    UserPlaceRelationView, LocationViewSet
 
 router = SimpleRouter()
 
@@ -32,6 +32,7 @@ router.register(r'api/place_relation', UserPlaceRelationView)
 router.register(r'api/categories', CategoryViewSet)
 
 router.register(r'api/places', PlaceViewSet)
+router.register(r'api/locations', LocationViewSet)
 router.register(r'api/groups', GroupViewSet)
 
 router.register(r'api/climates', ClimateViewSet)
@@ -45,8 +46,10 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 
 
+
+
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/token/refresh/', TokenRefreshView.as_view() s, name='token_refresh'),
     # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
 ]
