@@ -7,7 +7,8 @@ from mptt.admin import MPTTModelAdmin
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
-    TypeOfTerrain, Vibe, FloraAndFauna, TypeOfPeople, Category, UserPlaceRelation, InterestingFacts, CustomUser
+    Vibe, FloraAndFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
+    PracticalInformation
 
 
 class SafeInline(TabularInline):
@@ -66,10 +67,14 @@ class InterestingFactsInline(TabularInline):
     extra = 0
     model = InterestingFacts
 
+class PracticalInformationInline(TabularInline):
+    extra = 0
+    model = PracticalInformation
+
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, FloraAndFaunaInline]
+    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):
@@ -93,11 +98,8 @@ class UserPlaceRelationAdmin(ModelAdmin):
 class ClimaticConditionsAdmin(ModelAdmin):
     pass
 
-@admin.register(TypeOfTerrain)
-class TypeOfTerrainAdmin(ModelAdmin):
+@admin.register(GeographicalFeature)
+class GeographicalFeatureAdmin(ModelAdmin):
     pass
 
-@admin.register(TypeOfPeople)
-class TypeOfPeopleAdmin(ModelAdmin):
-    pass
 

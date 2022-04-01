@@ -3,10 +3,10 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from place.models import Place, Group, Image, ClimaticConditions, TypeOfTerrain, TypeOfPeople, Location, \
+from place.models import Place, Group, Image, ClimaticConditions, Location, \
     FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
-    NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts
-
+    NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
+    GeographicalFeature, PracticalInformation
 
 
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
@@ -168,6 +168,12 @@ class InterestingFactsSerializer(ModelSerializer):
 
         return InterestingFacts.objects.create(data=data, image=image)
 
+class PracticalInformationSerializer(ModelSerializer):
+    class Meta:
+        model = PracticalInformation
+        fields = ('description',)
+
+
 class ImageSerializer(ModelSerializer):
     path = Base64ImageField()  # From DRF Extra Fields
     class Meta:
@@ -199,7 +205,7 @@ class PlaceSerializer(ModelSerializer):
     id = serializers.ReadOnlyField()
     writer_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
-    category = CategorySerializer(many=True, required=False)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
 
     # images = serializers.StringRelatedField(many=True, required=False)
 
@@ -217,6 +223,7 @@ class PlaceSerializer(ModelSerializer):
     natural_phenomena = NaturalPhenomenaSerializer(many=True, required=False)
     vibes = VibeSerializer(many=True, required=False)
     interesting_facts = InterestingFactsSerializer(many=True, required=False)
+    practical_information = PracticalInformationSerializer(many=True, required=False)
     flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
 
     class Meta:
@@ -238,14 +245,14 @@ class PlaceSerializer(ModelSerializer):
         natural_phenomena_data = validated_data.pop('natural_phenomena')
         vibes_data = validated_data.pop('vibes')
         interesting_facts_data = validated_data.pop('interesting_facts')
+        practical_information_data = validated_data.pop('practical_information')
         flora_fauna_data = validated_data.pop('flora_fauna')
 
         place = Place.objects.create(**validated_data)
+        place.category.set(category_data)
 
         for image_data in images_data:
             Image.objects.create(place=place, **image_data)
-        for categor_data in category_data:
-            Category.objects.get_or_create(place=place, **categor_data)
         for item in locations_data:
             Location.objects.create(place=place, **item)
         for transport_data in transports_data:
@@ -270,6 +277,8 @@ class PlaceSerializer(ModelSerializer):
             Vibe.objects.create(place=place, **vibe_data)
         for interesting_fact_data in interesting_facts_data:
             InterestingFacts.objects.create(place=place, **interesting_fact_data)
+        for item in practical_information_data:
+            PracticalInformation.objects.create(place=place, **item)
         for flora_faun_data in flora_fauna_data:
             FloraAndFauna.objects.create(place=place, **flora_faun_data)
         return place
@@ -300,17 +309,11 @@ class ClimateSerializer(ModelSerializer):
         model = ClimaticConditions
         fields = '__all__'
 
-class TypeOfTerrainSerializer(ModelSerializer):
+class GeographicalFeatureSerializer(ModelSerializer):
 
     class Meta:
-        model = TypeOfTerrain
+        model = GeographicalFeature
         fields = '__all__'
 
-class TypeOfPeopleSerializer(ModelSerializer):
 
-    civilizations = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = TypeOfPeople
-        fields = '__all__'
 

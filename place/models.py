@@ -114,11 +114,11 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-class TypeOfPeople(models.Model):
-    type = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f'{self.type}'
+# class TypeOfPeople(models.Model):
+#     type = models.CharField(max_length=255)
+#
+#     def __str__(self):
+#         return f'{self.type}'
 
 class ClimaticConditions(models.Model):
     conditions = models.CharField(max_length=255)
@@ -127,7 +127,7 @@ class ClimaticConditions(models.Model):
     def __str__(self):
         return f'{self.conditions} - {self.climate}'
 
-class TypeOfTerrain(models.Model):
+class GeographicalFeature(models.Model):
     types_of_ecosystem = models.CharField(max_length=255, blank=True)
     types_of_ecosystem_description = models.TextField(null=True, blank=True)
 
@@ -165,25 +165,29 @@ class Place(models.Model):
     climate = models.ForeignKey(ClimaticConditions, on_delete=models.CASCADE, null=True, blank=True)
     climate_description = models.TextField(null=True, blank=True)
 
-    type_of_terrain = models.ForeignKey(TypeOfTerrain, on_delete=models.CASCADE, null=True, blank=True)
-    type_of_terrain_description = models.TextField(null=True, blank=True)
+    geographical_feature = models.ForeignKey(GeographicalFeature, on_delete=models.CASCADE, null=True, blank=True)
+    geographical_feature_description = models.TextField(null=True, blank=True)
 
     nearest_airport = models.TextField(null=True, blank=True)
 
     how_to_get_there = models.TextField(null=True, blank=True)
 
     population = models.BigIntegerField(null=True, blank=True)
-    type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True,
-                                              related_name="civilizations")
+    # type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True,
+    #                                           related_name="civilizations")
+    type_of_people_around = models.TextField()
     nation = models.TextField(blank=True, null=True)
     language = models.CharField(blank=True, null=True, max_length=255)
     culture = models.TextField(blank=True, null=True)
 
-    turist_description = models.TextField(blank=True, null=True)
-    tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
-    tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
+    turist_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
+
+
+    # turist_description = models.TextField(blank=True, null=True)
+    # tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
+    # tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
+    # tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
+    # tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
 
 
     currency = models.TextField(null=True, blank=True)
@@ -247,9 +251,15 @@ class Location(models.Model):
 #
 # mptt.register(Location, order_insertion_by=['name'])
 
+class TypeTransport(models.Model):
+    type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.type}'
+
 class Transport(models.Model):
     place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
-    name = models.CharField(choices=TYPES_OF_TRANSPORT_CHOICES, blank=False, default=None, max_length=255)
+    name = models.ForeignKey(TypeTransport, on_delete=models.CASCADE, blank=False)
     price = models.DecimalField(max_digits=13, decimal_places=2, default=10, blank=False)
     description = models.TextField(null=True, blank=True)
     comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, max_length=255)
@@ -269,11 +279,17 @@ class Safe(models.Model):
     def __str__(self):
         return f"{self.how_dangerous} {self.rating_danger} {self.description}"
 
+class TypeCuisine(models.Model):
+    type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.type}'
+
 
 class Cuisine(models.Model):
     place = models.ForeignKey(Place, related_name="cuisines", on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, blank=False, default=None)
-    type_cuisine = models.CharField(max_length=255, blank=True)
+    name = models.ForeignKey(TypeCuisine, on_delete=models.CASCADE, blank=False)
+    # type_cuisine = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=10, blank=False)
@@ -359,6 +375,13 @@ class InterestingFacts(models.Model):
     place = models.ForeignKey(Place, related_name="interesting_facts", on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.place.name} {self.description}"
+
+class PracticalInformation(models.Model):
+    place = models.ForeignKey(Place, related_name="practical_informations", on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.place.name} {self.description}"
