@@ -24,12 +24,15 @@ from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
 from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
-    UserPlaceRelationView
+    UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet
 
 router = SimpleRouter()
 
 router.register(r'api/place_relation', UserPlaceRelationView)
 router.register(r'api/categories', CategoryViewSet)
+
+router.register(r'api/type_transport', TypeTransportViewSet)
+router.register(r'api/type_cuisine', TypeCuisineViewSet)
 
 router.register(r'api/places', PlaceViewSet)
 router.register(r'api/groups', GroupViewSet)

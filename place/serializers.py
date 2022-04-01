@@ -6,7 +6,7 @@ from rest_framework.serializers import ModelSerializer
 from place.models import Place, Group, Image, ClimaticConditions, Location, \
     FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine
 
 
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
@@ -14,6 +14,10 @@ class LocationSerializer(CountryFieldMixin, ModelSerializer):
         model = Location
         fields = ('continent', 'country', 'region', 'city', 'latitude', 'longitude', 'nearest_place',)
 
+class TypeTransportSerializer(ModelSerializer):
+    class Meta:
+        model = TypeTransport
+        fields = ('id', 'type',)
 
 class TransportSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
@@ -35,19 +39,30 @@ class SafeSerializer(ModelSerializer):
         model = Safe
         fields = ('name', 'how_dangerous', 'rating_danger', 'description',)
 
+class TypeCuisineSerializer(ModelSerializer):
+    class Meta:
+        model = TypeCuisine
+        fields = ('id', 'type',)
 
 class CuisineSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
+    # name = TypeCuisineSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Cuisine
-        fields = ('name', 'type_cuisine', 'description', 'image', 'price',)
+        fields = ('name', 'description', 'image', 'price',)
 
     def create(self, validated_data):
+        # name_data = validated_data.pop('name')
         image = validated_data.pop('image')
         data = validated_data.pop('data')
 
-        return Cuisine.objects.create(data=data, image=image)
+        cuisine = Cuisine.objects.create(data=data, image=image)
+
+        # cuisine.name.set(name_data)
+
+        return cuisine
+
 
 
 class EntertainmentSerializer(ModelSerializer):
@@ -223,7 +238,7 @@ class PlaceSerializer(ModelSerializer):
     natural_phenomena = NaturalPhenomenaSerializer(many=True, required=False)
     vibes = VibeSerializer(many=True, required=False)
     interesting_facts = InterestingFactsSerializer(many=True, required=False)
-    practical_information = PracticalInformationSerializer(many=True, required=False)
+    practical_informations = PracticalInformationSerializer(many=True, required=False)
     flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
 
     class Meta:
@@ -245,7 +260,7 @@ class PlaceSerializer(ModelSerializer):
         natural_phenomena_data = validated_data.pop('natural_phenomena')
         vibes_data = validated_data.pop('vibes')
         interesting_facts_data = validated_data.pop('interesting_facts')
-        practical_information_data = validated_data.pop('practical_information')
+        practical_information_data = validated_data.pop('practical_informations')
         flora_fauna_data = validated_data.pop('flora_fauna')
 
         place = Place.objects.create(**validated_data)

@@ -8,9 +8,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from place.models import Place, Group, ClimaticConditions, Category, UserPlaceRelation, Location, GeographicalFeature
+from place.models import Place, Group, ClimaticConditions, Category, UserPlaceRelation, Location, GeographicalFeature, \
+    TypeTransport, TypeCuisine
 from place.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
-    CategorySerializer, UserPlaceRelationSerializer, LocationSerializer, GeographicalFeatureSerializer
+    CategorySerializer, UserPlaceRelationSerializer, LocationSerializer, GeographicalFeatureSerializer, \
+    TypeTransportSerializer, TypeCuisineSerializer
 
 
 class PlaceAPIListPagination(PageNumberPagination):
@@ -59,6 +61,16 @@ class ClimateViewSet(ModelViewSet, ListView):
 class TypeOfTerrainViewSet(ModelViewSet):
     queryset = GeographicalFeature.objects.all()
     serializer_class = GeographicalFeatureSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class TypeTransportViewSet(ModelViewSet):
+    queryset = TypeTransport.objects.all()
+    serializer_class = TypeTransportSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class TypeCuisineViewSet(ModelViewSet):
+    queryset = TypeCuisine.objects.all()
+    serializer_class = TypeCuisineSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
