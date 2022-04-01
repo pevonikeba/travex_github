@@ -8,7 +8,7 @@ from place.models import Place, Group, Image, Transport, AccommodationOptions, U
     WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraAndFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation
+    PracticalInformation, TypeTransport, TypeCuisine
 
 
 class SafeInline(TabularInline):
@@ -102,4 +102,12 @@ class ClimaticConditionsAdmin(ModelAdmin):
 class GeographicalFeatureAdmin(ModelAdmin):
     pass
 
+
+@admin.register(TypeTransport)
+class TypeTransportAdmin(ModelAdmin):
+    pass
+
+@admin.register(TypeCuisine)
+class TypeCuisineAdmin(ModelAdmin):
+    pass
 
