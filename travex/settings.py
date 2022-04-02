@@ -51,11 +51,17 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
 
-
     'django_otp',
     'django_otp.plugins.otp_totp',
 
-    'social_django',
+    # 'oauth2_provider',
+    # 'social_django',
+    # 'drf_social_oauth2',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     "colorfield",
 
@@ -67,8 +73,46 @@ AUTH_USER_MODEL = 'place.CustomUser'
 AUTHENTICATION_BACKENDS = (
     # 'social_core.backends.google.GooglePlusAuth',
     # 'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    # 'django.contrib.auth.backends.ModelBackend',
+
+    # # Google OAuth2
+    # 'social_core.backends.google.GoogleOAuth2',
+    #
+    # # drf-social-oauth2
+    # 'drf_social_oauth2.backends.DjangoOAuth2',
+    #
+    # # Django
+    # 'django.contrib.auth.backends.ModelBackend',
+
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
 )
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SITE_ID = 2
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '577310907448-790k81c4127oamun4d753gbuot20itva.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+
 # APPEND_SLASH = False
 
 
@@ -184,6 +228,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'drf_social_oauth2.authentication.SocialAuthentication',
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
         # 'rest_framework_social_oauth2.authentication.SocialAuthentication',
