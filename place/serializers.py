@@ -352,14 +352,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('id', 'email', 'username', 'bookmarks', 'user')
 
-    def validate_password(self, value: str) -> str:
-        """
-        Hash value passed by user.
-
-        :param value: password of a user
-        :return: a hashed version of the password
-        """
-        return make_password(value)
+    # def validate_password(self, value: str) -> str:
+    #     """
+    #     Hash value passed by user.
+    #
+    #     :param value: password of a user
+    #     :return: a hashed version of the password
+    #     """
+    #     return make_password(value)
 
     # def create_user(self, validated_data):
     #     user = super().create(validated_data)
