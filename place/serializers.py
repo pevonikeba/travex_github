@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django_countries.serializers import CountryFieldMixin
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -6,7 +7,30 @@ from rest_framework.serializers import ModelSerializer
 from place.models import Place, Group, Image, ClimaticConditions, Location, \
     FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark
+
+
+
+class BookmarkSerializer(ModelSerializer):
+    class Meta:
+        model = Bookmark
+        fields = ('user', 'place')
+
+class BookmarkPlaceSerializer(ModelSerializer):
+    class Meta:
+        model = Bookmark
+        fields = ("user",)
+
+class BookmarkUserSerializer(ModelSerializer):
+    place = serializers.SerializerMethodField()
+    class Meta:
+        model = Bookmark
+        fields = ("place",)
+
+    def create(self, request):
+        serializer = BookmarkUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
 
 
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
@@ -219,6 +243,7 @@ class CategorySerializer(ModelSerializer):
 class PlaceSerializer(ModelSerializer):
     id = serializers.ReadOnlyField()
     writer_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    bookmarks = BookmarkPlaceSerializer(many=True, read_only=True)
 
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
 
@@ -300,24 +325,6 @@ class PlaceSerializer(ModelSerializer):
 
 
 
-
-
-
-
-class UserPlaceRelationSerializer(ModelSerializer):
-    class Meta:
-        model = UserPlaceRelation
-        fields = ('place', 'in_bookmarks', 'rating', 'description_rating')
-
-
-class GroupSerializer(ModelSerializer):
-
-    places = PlaceSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Group
-        fields = '__all__'
-
 class ClimateSerializer(ModelSerializer):
 
     class Meta:
@@ -328,6 +335,45 @@ class GeographicalFeatureSerializer(ModelSerializer):
 
     class Meta:
         model = GeographicalFeature
+        fields = '__all__'
+
+
+class UserPlaceRelationSerializer(ModelSerializer):
+    class Meta:
+        model = UserPlaceRelation
+        fields = ('place', 'in_bookmarks', 'rating', 'description_rating')
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    bookmarks = BookmarkUserSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'email', 'username', 'bookmarks', 'user')
+
+    def validate_password(self, value: str) -> str:
+        """
+        Hash value passed by user.
+
+        :param value: password of a user
+        :return: a hashed version of the password
+        """
+        return make_password(value)
+
+    # def create_user(self, validated_data):
+    #     user = super().create(validated_data)
+    #     print('validated_data: ', validated_data)
+    #     user.set_password(validated_data['password'])
+    #     user.save()
+    #     return user
+
+class GroupSerializer(ModelSerializer):
+
+    places = PlaceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Group
         fields = '__all__'
 
 

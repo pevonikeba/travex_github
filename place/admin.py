@@ -8,7 +8,7 @@ from place.models import Place, Group, Image, Transport, AccommodationOptions, U
     WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraAndFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine
+    PracticalInformation, TypeTransport, TypeCuisine, Bookmark
 
 
 class SafeInline(TabularInline):
@@ -71,10 +71,14 @@ class PracticalInformationInline(TabularInline):
     extra = 0
     model = PracticalInformation
 
+class BookmarkInline(TabularInline):
+    extra = 0
+    model = Bookmark
+
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline]
+    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):
@@ -82,7 +86,7 @@ class GroupAdmin(ModelAdmin):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(ModelAdmin):
-    pass
+    inlines = [BookmarkInline]
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):
     # specify pixel amount for this ModelAdmin only:

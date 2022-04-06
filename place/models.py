@@ -107,6 +107,11 @@ class CustomUser(AbstractUser):
 
     email_verify = models.BooleanField(default=False)
 
+    # bookmark_place = models.ManyToManyField("Place", verbose_name="bookmark_places", related_name="bookmark_places",
+    #                                         blank=True,)
+
+    is_active = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -152,6 +157,9 @@ mptt.register(Category, order_insertion_by=['name'])
 class Place(models.Model):
 
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
+
+    # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
+    #                                         blank=True,)
 
     home_page = models.BooleanField(default=False)
 
@@ -394,6 +402,15 @@ class FloraAndFauna(models.Model):
 
     def __str__(self):
         return f"{self.place.name} {self.name}"
+
+
+class Bookmark(models.Model):
+    place = models.ForeignKey(Place, related_name="place_bookmarks", on_delete=models.CASCADE, blank=False)
+    user = models.ForeignKey(CustomUser, related_name="user_bookmarks", on_delete=models.CASCADE, blank=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.place.name}"
+#
 
 
 
