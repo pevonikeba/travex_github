@@ -27,7 +27,7 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, To
 
 from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
     UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet, GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, BookmarkViewSet, UserActivationView, ActivateUserEmail
+    CustomUserDetailView, BookmarkViewSet, ActivateUserEmail
 
 router = SimpleRouter()
 

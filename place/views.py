@@ -124,7 +124,6 @@ class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
-from djoser.views import UserViewSet
 from rest_framework.response import Response
 
 
@@ -144,29 +143,29 @@ from rest_framework.response import Response
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class UserActivationView(APIView):
-    def get (self, request, uid, token):
-        protocol = 'https://' if request.is_secure() else 'http://'
-        web_url = protocol + request.get_host()
-        post_url = web_url + "/auth/users/activate/"
-        post_data = {'uid': uid, 'token': token}
-        result = requests.post(post_url, data=post_data)
-        content = result.text
-        return Response(content)
-
-
-class ActivateUser(GenericAPIView):
-
-    def get(self, request, uid, token, format = None):
-        payload = {'uid': uid, 'token': token}
-
-        url = "http://localhost:8000/api/v1/auth/users/activation/"
-        response = requests.post(url, data=payload)
-
-        if response.status_code == 204:
-            return Response({}, response.status_code)
-        else:
-            return Response(response.json())
+# class UserActivationView(APIView):
+#     def get (self, request, uid, token):
+#         protocol = 'https://' if request.is_secure() else 'http://'
+#         web_url = protocol + request.get_host()
+#         post_url = web_url + "/auth/users/activate/"
+#         post_data = {'uid': uid, 'token': token}
+#         result = requests.post(post_url, data=post_data)
+#         content = result.text
+#         return Response(content)
+#
+#
+# class ActivateUser(GenericAPIView):
+#
+#     def get(self, request, uid, token, format = None):
+#         payload = {'uid': uid, 'token': token}
+#
+#         url = "http://localhost:8000/api/v1/auth/users/activation/"
+#         response = requests.post(url, data=payload)
+#
+#         if response.status_code == 204:
+#             return Response({}, response.status_code)
+#         else:
+#             return Response(response.json())
 
 class ActivateUserEmail(APIView):
     def get (self, request, uid, token):

@@ -110,7 +110,7 @@ class CustomUser(AbstractUser):
     # bookmark_place = models.ManyToManyField("Place", verbose_name="bookmark_places", related_name="bookmark_places",
     #                                         blank=True,)
 
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
