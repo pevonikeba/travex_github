@@ -346,12 +346,13 @@ class UserPlaceRelationSerializer(ModelSerializer):
 
 class CustomUserSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
+    # password = serializers.StringRelatedField(read_only=True)
     bookmarks = BookmarkUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'username', 'bookmarks', 'user')
-
+        fields = ('id', 'email', 'username', 'bookmarks', 'password', 'user')
+    #
     # def validate_password(self, value: str) -> str:
     #     """
     #     Hash value passed by user.
@@ -361,12 +362,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
     #     """
     #     return make_password(value)
 
-    # def create_user(self, validated_data):
-    #     user = super().create(validated_data)
-    #     print('validated_data: ', validated_data)
-    #     user.set_password(validated_data['password'])
-    #     user.save()
-    #     return user
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        print('validated_data: ', validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 class GroupSerializer(ModelSerializer):
 

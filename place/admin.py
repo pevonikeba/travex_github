@@ -1,9 +1,11 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 # Register your models here.
 from django.contrib.admin import ModelAdmin, TabularInline
 from mptt.admin import MPTTModelAdmin
 
+from place import models
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
@@ -84,8 +86,11 @@ class PlaceAdmin(ModelAdmin):
 class GroupAdmin(ModelAdmin):
     pass
 
+# admin.site.register(models.CustomUser, UserAdmin)
+
+
 @admin.register(CustomUser)
-class CustomUserAdmin(ModelAdmin):
+class CustomUserAdmin(UserAdmin):
     inlines = [BookmarkInline]
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):
