@@ -77,7 +77,10 @@ urlpatterns = [
     # path('activate/<str:uid>/<str:token>/', UserActivationView.as_view()),
 
     # path(r'^auth/users/activate/<str:uid>/<str:token>/', UserActivationView.as_view()),
-    path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email')
+    path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
+
+    path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
+
 ]
 
 if settings.DEBUG:

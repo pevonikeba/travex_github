@@ -1,9 +1,12 @@
 import mptt
 from colorfield.fields import ColorField
 from django.contrib.auth.models import AbstractUser
+from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django_countries.fields import CountryField
+from location_field.forms.spatial import LocationField
+from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.translation import gettext_lazy as _
 
@@ -105,6 +108,12 @@ TYPES_OF_TRANSPORT_CHOICES =(
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
 
+    username = models.CharField(
+        _("username"),
+        max_length=150,
+        help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.")
+    )
+
     email_verify = models.BooleanField(default=False)
 
     # bookmark_place = models.ManyToManyField("Place", verbose_name="bookmark_places", related_name="bookmark_places",
@@ -113,7 +122,7 @@ class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['is_active', 'username']
 
     def __str__(self):
         return self.email
@@ -205,6 +214,8 @@ class Place(models.Model):
     pay_online_or_by_card = models.TextField(null=True, blank=True)
 
     views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", related_name="views")
+
+    location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
 
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
 

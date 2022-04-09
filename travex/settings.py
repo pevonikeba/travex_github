@@ -75,11 +75,14 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     "colorfield",
+    'location_field.apps.DefaultConfig',
 
     'place',
 
 ]
 AUTH_USER_MODEL = 'place.CustomUser'
+
+
 
 AUTHENTICATION_BACKENDS = (
     # 'social_core.backends.google.GooglePlusAuth',
@@ -240,7 +243,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'drf_social_oauth2.authentication.SocialAuthentication',
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -291,8 +294,8 @@ EMAIL_HOST_PASSWORD = 'Helloworld98!'
 EMAIL_PORT = 587
 
 
-# DOMAIN = '127.0.0.1:8000'
-DOMAIN = '159.223.216.170'
+DOMAIN = '127.0.0.1:8000'
+# DOMAIN = '159.223.216.170'
 SITE_NAME = 'Attaplace'
 
 DJOSER = {
@@ -314,9 +317,9 @@ DJOSER = {
     # ],
     "SERIALIZERS": {
         "user_create": "place.serializers.CustomUserSerializer",  # custom serializer
-        "user": "djoser.serializers.UserSerializer",
-        "current_user": "djoser.serializers.UserSerializer",
-        "user_delete": "djoser.serializers.UserSerializer",
+        "user": "place.serializers.CustomUserSerializer",
+        "current_user": "place.serializers.CustomUserSerializer",
+        "user_delete": "place.serializers.CustomUserSerializer",
     },
     'EMAIL': {
         'activation': 'djoser.email.ActivationEmail',
@@ -341,5 +344,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # SOCIAL_AUTH_GITHUB_KEY = '4b67f6944142c331f5ea'
 # SOCIAL_AUTH_GITHUB_SECRET = 'aae4618e66c98dcf25e3e51cc1f447eb0e4b3ebf'
 
+GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
+GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
+
+LOCATION_FIELD = {
+    'provider.openstreetmap.max_zoom': 18,
+}
 
 MPTT_ADMIN_LEVEL_INDENT = 20

@@ -1,3 +1,4 @@
+from dj_rest_auth.registration.serializers import SocialLoginSerializer
 from django.contrib.auth.hashers import make_password
 from django_countries.serializers import CountryFieldMixin
 from drf_extra_fields.fields import Base64ImageField
@@ -14,7 +15,7 @@ from place.models import Place, Group, Image, ClimaticConditions, Location, \
 class BookmarkSerializer(ModelSerializer):
     class Meta:
         model = Bookmark
-        fields = ('user', 'place')
+        fields = ('id', 'user', 'place')
 
 class BookmarkPlaceSerializer(ModelSerializer):
     class Meta:
@@ -251,7 +252,7 @@ class PlaceSerializer(ModelSerializer):
 
     images = ImageSerializer(many=True, required=False)
 
-    locations = LocationSerializer(many=True, required=False)
+    # locations = LocationSerializer(many=True, required=False)
     transports = TransportSerializer(many=True, required=False)
     accommodationOptions = AccommodationOptionsSerializer(many=True, required=False)
     uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
@@ -273,7 +274,7 @@ class PlaceSerializer(ModelSerializer):
     def create(self, validated_data):
         category_data = validated_data.pop('category')
         images_data = validated_data.pop('images')
-        locations_data = validated_data.pop('locations')
+        # locations_data = validated_data.pop('locations')
         transports_data = validated_data.pop('transports')
         accommodationOptions_data = validated_data.pop('accommodationOptions')
         uniqueness_place_data = validated_data.pop('uniqueness_place')
@@ -293,8 +294,8 @@ class PlaceSerializer(ModelSerializer):
 
         for image_data in images_data:
             Image.objects.create(place=place, **image_data)
-        for item in locations_data:
-            Location.objects.create(place=place, **item)
+        # for item in locations_data:
+        #     Location.objects.create(place=place, **item)
         for transport_data in transports_data:
             Transport.objects.create(place=place, **transport_data)
         for accommodationOption_data in accommodationOptions_data:
@@ -346,13 +347,13 @@ class UserPlaceRelationSerializer(ModelSerializer):
 
 class CustomUserSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
-    # password = serializers.StringRelatedField(read_only=True)
-    bookmarks = BookmarkUserSerializer(many=True, read_only=True)
+    password = serializers.CharField(max_length=255, write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'username', 'bookmarks', 'password', 'user')
-    #
+
+        fields = ('id', 'email', 'username', 'is_active', 'password', 'user')
+
     # def validate_password(self, value: str) -> str:
     #     """
     #     Hash value passed by user.
