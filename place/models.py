@@ -215,7 +215,7 @@ class Place(models.Model):
 
     views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", related_name="views")
 
-    location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
+    # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
 
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
 

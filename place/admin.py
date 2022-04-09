@@ -80,7 +80,7 @@ class BookmarkInline(TabularInline):
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
-    inlines = [ImageInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
+    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):

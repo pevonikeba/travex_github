@@ -274,7 +274,7 @@ class PlaceSerializer(ModelSerializer):
     def create(self, validated_data):
         category_data = validated_data.pop('category')
         images_data = validated_data.pop('images')
-        # locations_data = validated_data.pop('locations')
+        locations_data = validated_data.pop('locations')
         transports_data = validated_data.pop('transports')
         accommodationOptions_data = validated_data.pop('accommodationOptions')
         uniqueness_place_data = validated_data.pop('uniqueness_place')
@@ -294,8 +294,8 @@ class PlaceSerializer(ModelSerializer):
 
         for image_data in images_data:
             Image.objects.create(place=place, **image_data)
-        # for item in locations_data:
-        #     Location.objects.create(place=place, **item)
+        for item in locations_data:
+            Location.objects.create(place=place, **item)
         for transport_data in transports_data:
             Transport.objects.create(place=place, **transport_data)
         for accommodationOption_data in accommodationOptions_data:
