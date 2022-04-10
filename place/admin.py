@@ -7,10 +7,10 @@ from mptt.admin import MPTTModelAdmin
 
 from place import models
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
-    WhereToTakeAPicture, Location, ClimaticConditions, Safe, Cuisine, Entertainment, \
+    WhereToTakeAPicture, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraAndFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine, Bookmark
+    PracticalInformation, TypeTransport, TypeCuisine, Bookmark, Location
 
 
 class SafeInline(TabularInline):

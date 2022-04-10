@@ -5,11 +5,10 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from place.models import Place, Group, Image, ClimaticConditions, Location, \
+from place.models import Place, Group, Image, ClimaticConditions, \
     FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark
-
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
 
 
 class BookmarkSerializer(ModelSerializer):
@@ -252,7 +251,7 @@ class PlaceSerializer(ModelSerializer):
 
     images = ImageSerializer(many=True, required=False)
 
-    # locations = LocationSerializer(many=True, required=False)
+    locations = LocationSerializer(many=True, required=False)
     transports = TransportSerializer(many=True, required=False)
     accommodationOptions = AccommodationOptionsSerializer(many=True, required=False)
     uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)

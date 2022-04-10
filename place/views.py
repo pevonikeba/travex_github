@@ -39,43 +39,14 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 class CustomRenderer(JSONRenderer):
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
-
-        is_error_found = False
-        response = {}
-
-        # if type(data) is ReturnList - COMMENT
-        if type(data) is ReturnList:
-            data = data[0]
-
-        for value in data.values():
-
-            # if type(value) == list - COMMENT
-            if type(value) == list:
-                value = value[0]
-
-                if type(value) is ErrorDetail:
-                    is_error_found = True
-                    for key in data:
-                        response['error'] = data[key][0].code
-                        response['message'] = data[key][0]
-                    break
-
-            if type(value) is ErrorDetail:
-                is_error_found = True
-                response['error'] = data['detail'].code
-                response['message'] = data['detail']
-                break
-
-
-        if is_error_found:
-
-            response['success'] = False
+        response_content = {}
+        if type(data) is dict and data['custom_error'] == True:
+            response_content['success'] = False
+            response_content['error'] = data['code'] or 'unknown_error'
         else:
-            response['success'] = True
-            response['data'] = data
-
-
-        return super(CustomRenderer, self).render(response, accepted_media_type, renderer_context)
+            response_content['success'] = True
+            response_content['data'] = data
+        return super(CustomRenderer, self).render(response_content, accepted_media_type, renderer_context)
 
 class PlaceAPIListPagination(PageNumberPagination):
     page_size = 2

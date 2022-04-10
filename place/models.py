@@ -1,12 +1,12 @@
 import mptt
 from colorfield.fields import ColorField
 from django.contrib.auth.models import AbstractUser
-from django.contrib.gis.geos import Point
+# from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django_countries.fields import CountryField
-from location_field.forms.spatial import LocationField
-from location_field.models.plain import PlainLocationField
+# from location_field.forms.spatial import LocationField
+# from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.translation import gettext_lazy as _
 

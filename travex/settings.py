@@ -142,7 +142,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'django.middleware.locale.LocaleMiddleware'
+    'django.middleware.locale.LocaleMiddleware',
+    # 'place.middleware.format_middleware.FormatMiddleware',
 
 ]
 
@@ -232,9 +233,11 @@ REST_FRAMEWORK = {
 
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'PAGE_SIZE': 5,
+    'EXCEPTION_HANDLER': 'place.utils.utils.custom_exception_handler',
 
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ),
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
@@ -346,7 +349,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
 # GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
-#
+# #
 # LOCATION_FIELD = {
 #     'provider.openstreetmap.max_zoom': 18,
 # }
