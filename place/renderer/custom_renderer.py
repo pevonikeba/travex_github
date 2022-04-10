@@ -5,7 +5,8 @@ class CustomRenderer(JSONRenderer):
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         response_content = {}
-        if type(data) is dict and data['custom_error'] == True:
+
+        if type(data) is dict and data.get('custom_error') == True:
             response_content['success'] = False
             response_content['error'] = data['code'] or 'unknown_error'
         else:
