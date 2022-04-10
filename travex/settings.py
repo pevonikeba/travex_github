@@ -236,7 +236,8 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'place.utils.utils.custom_exception_handler',
 
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.JSONRenderer',
+        'place.renderer.custom_renderer.CustomRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
     'DEFAULT_PARSER_CLASSES': (

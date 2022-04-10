@@ -36,17 +36,17 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 
-class CustomRenderer(JSONRenderer):
-
-    def render(self, data, accepted_media_type=None, renderer_context=None):
-        response_content = {}
-        if type(data) is dict and data['custom_error'] == True:
-            response_content['success'] = False
-            response_content['error'] = data['code'] or 'unknown_error'
-        else:
-            response_content['success'] = True
-            response_content['data'] = data
-        return super(CustomRenderer, self).render(response_content, accepted_media_type, renderer_context)
+# class CustomRenderer(JSONRenderer):
+#
+#     def render(self, data, accepted_media_type=None, renderer_context=None):
+#         response_content = {}
+#         if type(data) is dict and data['custom_error'] == True:
+#             response_content['success'] = False
+#             response_content['error'] = data['code'] or 'unknown_error'
+#         else:
+#             response_content['success'] = True
+#             response_content['data'] = data
+#         return super(CustomRenderer, self).render(response_content, accepted_media_type, renderer_context)
 
 class PlaceAPIListPagination(PageNumberPagination):
     page_size = 2
@@ -56,7 +56,7 @@ class PlaceAPIListPagination(PageNumberPagination):
 class PlaceViewSet(ModelViewSet, ListView):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['category', 'home_page']
     search_fields = ['name', 'nickname']
@@ -67,7 +67,7 @@ class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
     queryset = UserPlaceRelation.objects.all()
     serializer_class = UserPlaceRelationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
     lookup_field = 'place'
 
     def get_object(self):
@@ -79,14 +79,14 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
 class BookmarkViewSet(ModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -98,40 +98,40 @@ class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
 class ClimateViewSet(ModelViewSet, ListView):
     queryset = ClimaticConditions.objects.all()
     serializer_class = ClimateSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
 class TypeOfTerrainViewSet(ModelViewSet):
     queryset = GeographicalFeature.objects.all()
     serializer_class = GeographicalFeatureSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 class TypeTransportViewSet(ModelViewSet):
     queryset = TypeTransport.objects.all()
     serializer_class = TypeTransportSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 class TypeCuisineViewSet(ModelViewSet):
     queryset = TypeCuisine.objects.all()
     serializer_class = TypeCuisineSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     client_class = OAuth2Client
     serializer_class = SocialLoginSerializer
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
     def process_login(self):
         self.user.is_active = True
@@ -151,7 +151,7 @@ class CustomUserListCreateView(ListCreateAPIView):
     serializer_class = CustomUserSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['email']
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
     # permission_classes = [IsAuthenticated]
     # permission_classes = [DjangoModelPermissions]
     # permission_classes = [CsrfExemptSessionAuthentication]
@@ -167,7 +167,7 @@ class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
-    renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
 
