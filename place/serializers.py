@@ -192,7 +192,7 @@ class FloraAndFaunaSerializer(ModelSerializer):
 
     class Meta:
         model = FloraAndFauna
-        fields = ('name', 'description', 'image',)
+        fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
