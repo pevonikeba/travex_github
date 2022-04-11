@@ -19,13 +19,13 @@ class BookmarkSerializer(ModelSerializer):
 class BookmarkPlaceSerializer(ModelSerializer):
     class Meta:
         model = Bookmark
-        fields = ("user",)
+        fields = ('id', "user",)
 
 class BookmarkUserSerializer(ModelSerializer):
     place = serializers.SerializerMethodField()
     class Meta:
         model = Bookmark
-        fields = ("place",)
+        fields = ('id', "place",)
 
     def create(self, request):
         serializer = BookmarkUserSerializer(data=request.data)
@@ -44,7 +44,7 @@ class CustomSocialLoginSerializer(SocialLoginSerializer):
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
     class Meta:
         model = Location
-        fields = ('continent', 'country', 'region', 'city', 'latitude', 'longitude', 'nearest_place',)
+        fields = ('id', 'continent', 'country', 'region', 'city', 'latitude', 'longitude', 'nearest_place',)
 
 class TypeTransportSerializer(ModelSerializer):
     class Meta:
@@ -56,7 +56,7 @@ class TransportSerializer(ModelSerializer):
 
     class Meta:
         model = Transport
-        fields = ('name', 'price', 'description', 'comfortable', 'image',)
+        fields = ('id', 'name', 'price', 'description', 'comfortable', 'image',)
 
     def create(self, validated_data):
 
@@ -69,7 +69,7 @@ class TransportSerializer(ModelSerializer):
 class SafeSerializer(ModelSerializer):
     class Meta:
         model = Safe
-        fields = ('name', 'how_dangerous', 'rating_danger', 'description',)
+        fields = ('id', 'name', 'how_dangerous', 'rating_danger', 'description',)
 
 class TypeCuisineSerializer(ModelSerializer):
     class Meta:
@@ -82,7 +82,7 @@ class CuisineSerializer(ModelSerializer):
 
     class Meta:
         model = Cuisine
-        fields = ('name', 'description', 'image', 'price',)
+        fields = ('id', 'name', 'description', 'image', 'price',)
 
     def create(self, validated_data):
         # name_data = validated_data.pop('name')
@@ -102,7 +102,7 @@ class EntertainmentSerializer(ModelSerializer):
 
     class Meta:
         model = Entertainment
-        fields = ('name', 'description', 'image',)
+        fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -116,7 +116,7 @@ class NaturalPhenomenaSerializer(ModelSerializer):
 
     class Meta:
         model = NaturalPhenomena
-        fields = ('name', 'description', 'image',)
+        fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -128,7 +128,7 @@ class NaturalPhenomenaSerializer(ModelSerializer):
 class AccommodationOptionsSerializer(ModelSerializer):
     class Meta:
         model = AccommodationOptions
-        fields = ('name', 'price', 'description',)
+        fields = ('id', 'name', 'price', 'description',)
 
 
 class UniquenessPlaceSerializer(ModelSerializer):
@@ -136,7 +136,7 @@ class UniquenessPlaceSerializer(ModelSerializer):
 
     class Meta:
         model = UniquenessPlace
-        fields = ('name', 'description', 'image',)
+        fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -150,7 +150,7 @@ class MustSeeSerializer(ModelSerializer):
 
     class Meta:
         model = MustSee
-        fields = ('name', 'description', 'image',)
+        fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -164,7 +164,7 @@ class VibeSerializer(ModelSerializer):
 
     class Meta:
         model = Vibe
-        fields = ('vibe', 'image',)
+        fields = ('id', 'vibe', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -178,7 +178,7 @@ class WhereToTakeAPictureSerializer(ModelSerializer):
 
     class Meta:
         model = WhereToTakeAPicture
-        fields = ('name', 'description', 'image',)
+        fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -207,7 +207,7 @@ class InterestingFactsSerializer(ModelSerializer):
 
     class Meta:
         model = InterestingFacts
-        fields = ('description', 'image',)
+        fields = ('id', 'description', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -218,14 +218,14 @@ class InterestingFactsSerializer(ModelSerializer):
 class PracticalInformationSerializer(ModelSerializer):
     class Meta:
         model = PracticalInformation
-        fields = ('description',)
+        fields = ('id', 'description',)
 
 
 class ImageSerializer(ModelSerializer):
     path = Base64ImageField()  # From DRF Extra Fields
     class Meta:
         model = Image
-        fields = ('path',)
+        fields = ('id', 'path',)
 
     def create(self, validated_data):
         image = validated_data.pop('path')
@@ -349,7 +349,7 @@ class GeographicalFeatureSerializer(ModelSerializer):
 class UserPlaceRelationSerializer(ModelSerializer):
     class Meta:
         model = UserPlaceRelation
-        fields = ('place', 'in_bookmarks', 'rating', 'description_rating')
+        fields = ('id', 'place', 'in_bookmarks', 'rating', 'description_rating')
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
