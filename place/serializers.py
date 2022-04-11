@@ -33,6 +33,14 @@ class BookmarkUserSerializer(ModelSerializer):
             serializer.save()
 
 
+
+class CustomSocialLoginSerializer(SocialLoginSerializer):
+    access = serializers.CharField(source='access_token')
+
+    class Meta:
+        fields = ('__all__', 'access')
+
+
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
     class Meta:
         model = Location
@@ -347,6 +355,7 @@ class UserPlaceRelationSerializer(ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     password = serializers.CharField(max_length=255, write_only=True)
+    # is_active = serializers.BooleanField()
 
     class Meta:
         model = CustomUser
@@ -363,6 +372,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     #     return make_password(value)
 
     def create(self, validated_data):
+        validated_data['is_active'] = False
         user = super().create(validated_data)
         print('validated_data: ', validated_data)
         user.set_password(validated_data['password'])

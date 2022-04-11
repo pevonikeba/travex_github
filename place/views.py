@@ -8,16 +8,17 @@ from dj_rest_auth.registration.serializers import SocialLoginSerializer
 from dj_rest_auth.registration.views import SocialLoginView
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.filters import SearchFilter
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, DestroyAPIView
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly, \
-    DjangoModelPermissions
+    DjangoModelPermissions, AllowAny
 from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -26,7 +27,8 @@ from place.models import Place, Group, ClimaticConditions, Category, UserPlaceRe
     TypeTransport, TypeCuisine, CustomUser, Bookmark
 from place.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     CategorySerializer, UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
-    TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer
+    TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
+    CustomSocialLoginSerializer
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
@@ -47,6 +49,7 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 #             response_content['success'] = True
 #             response_content['data'] = data
 #         return super(CustomRenderer, self).render(response_content, accepted_media_type, renderer_context)
+
 
 class PlaceAPIListPagination(PageNumberPagination):
     page_size = 2
@@ -130,7 +133,8 @@ class TypeCuisineViewSet(ModelViewSet):
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     client_class = OAuth2Client
-    serializer_class = SocialLoginSerializer
+    serializer_class = CustomSocialLoginSerializer
+    # serializer_class = SocialLoginSerializer
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
     def process_login(self):
@@ -161,6 +165,15 @@ class CustomUserListCreateView(ListCreateAPIView):
         # serializer.save(user=user)
 
         serializer.save()
+
+
+class CustomUserView(UserViewSet):
+
+    def create(self, request, *args, **kwargs):
+        user = CustomUser.objects.get(email=request.data['email'])
+        if not user.is_active:
+            user.delete()
+        return super().create(request, *args, **kwargs)
 
 
 class CustomUserDetailView(RetrieveUpdateDestroyAPIView):

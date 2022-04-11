@@ -27,7 +27,7 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, To
 
 from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
     UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet, GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, BookmarkViewSet, ActivateUserEmail
+    CustomUserDetailView, BookmarkViewSet, ActivateUserEmail, CustomUserView
 
 router = SimpleRouter()
 
@@ -50,6 +50,8 @@ urlpatterns = [
     path('', include('social_django.urls', namespace='social')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+
+    path('users/', CustomUserView.as_view({'post': 'create'})),
 
     # path("djoser_auth/", include("djoser.urls")),
     # path("djoser_auth/", include("djoser.urls.jwt")),
