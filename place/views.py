@@ -240,6 +240,8 @@ class ActivateUserEmail(APIView):
         post_data = json.dumps({'uid': uid, 'token': token})
         result = requests.post(post_url, data=post_data, headers={'Content-Type': 'application/json'})
         message = result.text
+        if message == '':
+            message = "Pereydite w prelozheniye Attaplace"
 
         return Response(message)
 
