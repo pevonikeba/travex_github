@@ -51,10 +51,10 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 #         return super(CustomRenderer, self).render(response_content, accepted_media_type, renderer_context)
 
 
-class PlaceAPIListPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 10000
+# class PlaceAPIListPagination(PageNumberPagination):
+#     page_size = 10
+#     page_size_query_param = 'page_size'
+#     max_page_size = 10000
 
 
 from django.contrib.gis.geos import Point
@@ -70,7 +70,7 @@ class PlaceViewSet(ModelViewSet, ListView):
     filterset_fields = ['category', 'home_page']
     search_fields = ['name', 'nickname']
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = PlaceAPIListPagination
+    # pagination_class = PlaceAPIListPagination
 
     # def perform_create(self, serializer):
     #     address = serializer.initial_data["name"]
