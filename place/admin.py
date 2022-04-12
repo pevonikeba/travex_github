@@ -10,9 +10,9 @@ from place.models import Place, Group, Image, Transport, AccommodationOptions, U
     WhereToTakeAPicture, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraAndFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine, Bookmark, Location, WorldBorder
+    PracticalInformation, TypeTransport, TypeCuisine, Bookmark, Location
 
-admin.site.register(WorldBorder, admin.ModelAdmin)
+# admin.site.register(WorldBorder, admin.ModelAdmin)
 
 class SafeInline(TabularInline):
     extra = 0
