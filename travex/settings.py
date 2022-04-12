@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "colorfield",
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
+    # "leaflet",
 
     'place',
 
@@ -185,6 +186,17 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# LEAFLET_CONFIG = {
+#     # "SPATIAL_EXTENT": (5.0, 44.0, 7.5, 46),
+#     "DEFAULT_CENTER": (13.3888599, 52.5170365), #set your corordinate
+#     "DEFAULT_ZOOM": 16,
+#     "MIN_ZOOM": 3,
+#     "MAX_ZOOM": 20,
+#     "DEFAULT_PRECISION": 6,
+#     "SCALE": "both",
+#     "ATTRIBUTION_PREFIX": "powered by me",
+# }
 
 
 # Password validation
@@ -350,8 +362,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # SOCIAL_AUTH_GITHUB_KEY = '4b67f6944142c331f5ea'
 # SOCIAL_AUTH_GITHUB_SECRET = 'aae4618e66c98dcf25e3e51cc1f447eb0e4b3ebf'
 
-# GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
-# GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
+GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
+GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
 # #
 # LOCATION_FIELD = {
 #     'provider.openstreetmap.max_zoom': 18,

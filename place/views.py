@@ -52,9 +52,15 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 
 class PlaceAPIListPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 10000
+
+
+from django.contrib.gis.geos import Point
+# from geopy.geocoders import Nominatim
+#
+# geolocator = Nominatim(user_agent="location")
 
 class PlaceViewSet(ModelViewSet, ListView):
     queryset = Place.objects.all()
@@ -65,6 +71,24 @@ class PlaceViewSet(ModelViewSet, ListView):
     search_fields = ['name', 'nickname']
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PlaceAPIListPagination
+
+    # def perform_create(self, serializer):
+    #     address = serializer.initial_data["name"]
+    #     g = geolocator.geocode(address)
+    #     lat = g.latitude
+    #     lng = g.longitude
+    #     pnt = Point(lng, lat)
+    #     print('pnt_create: ', pnt)
+    #     serializer.save(location=pnt)
+    #
+    # def perform_update(self, serializer):
+    #     address = serializer.initial_data["address"]
+    #     g = geolocator.geocode(address)
+    #     lat = g.latitude
+    #     lng = g.longitude
+    #     pnt = Point(lng, lat)
+    #     print('pnt_update: ', pnt)
+    #     serializer.save(location=pnt)
 
 class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
     queryset = UserPlaceRelation.objects.all()

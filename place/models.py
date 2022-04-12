@@ -4,10 +4,11 @@ from django.contrib.auth.models import AbstractUser
 # from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-# from django.contrib.gis.db import models as geomodels
+from django.contrib.gis.db import models as geomodels
 from django_countries.fields import CountryField
 # from location_field.forms.spatial import LocationField
 # from location_field.models.plain import PlainLocationField
+# from geopy import Point
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.translation import gettext_lazy as _
 
@@ -216,6 +217,9 @@ class Place(models.Model):
     pay_online_or_by_card = models.TextField(null=True, blank=True)
 
     views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", related_name="views")
+
+    # geolocation = geomodels.PointField("Location in Map", geography=True, blank=True, null=True,
+    #     srid=4326, help_text="Point(longitude latitude)")
 
     # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
 
