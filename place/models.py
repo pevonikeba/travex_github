@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 # from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.contrib.gis.db import models as geomodels
 from django_countries.fields import CountryField
 # from location_field.forms.spatial import LocationField
 # from location_field.models.plain import PlainLocationField
@@ -104,6 +105,7 @@ TYPES_OF_TRANSPORT_CHOICES =(
 #         return f'{self.name}'
 #
 # mptt.register(Category, order_insertion_by=['name'])
+
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
@@ -236,6 +238,46 @@ class UserPlaceRelation(models.Model):
 
     def __str__(self):
         return f"{self.user.username} {self.place.name}, {self.rating}"
+
+
+
+class WorldBorder(geomodels.Model):
+    # Regular Django fields corresponding to the attributes in the
+    # world borders shapefile.
+    name = models.CharField(max_length=50)
+    area = models.IntegerField()
+    pop2005 = models.IntegerField('Population 2005')
+    fips = models.CharField('FIPS Code', max_length=2, null=True)
+    iso2 = models.CharField('2 Digit ISO', max_length=2)
+    iso3 = models.CharField('3 Digit ISO', max_length=3)
+    un = models.IntegerField('United Nations Code')
+    region = models.IntegerField('Region Code')
+    subregion = models.IntegerField('Sub-Region Code')
+    lon = models.FloatField()
+    lat = models.FloatField()
+
+    # GeoDjango-specific: a geometry field (MultiPolygonField)
+    mpoly = geomodels.MultiPolygonField()
+
+    # Returns the string representation of the model.
+    def __str__(self):
+        return self.name
+
+# Auto-generated `LayerMapping` dictionary for WorldBorder model
+worldborder_mapping = {
+    'fips': 'FIPS',
+    'iso2': 'ISO2',
+    'iso3': 'ISO3',
+    'un': 'UN',
+    'name': 'NAME',
+    'area': 'AREA',
+    'pop2005': 'POP2005',
+    'region': 'REGION',
+    'subregion': 'SUBREGION',
+    'lon': 'LON',
+    'lat': 'LAT',
+    'geom': 'MULTIPOLYGON',
+}
 
 
 class Location(models.Model):

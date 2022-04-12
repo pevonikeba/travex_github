@@ -170,9 +170,13 @@ class CustomUserListCreateView(ListCreateAPIView):
 class CustomUserView(UserViewSet):
 
     def create(self, request, *args, **kwargs):
-        user = CustomUser.objects.get(email=request.data['email'])
-        if not user.is_active:
-            user.delete()
+
+        try:
+            user = CustomUser.objects.get(email=request.data['email'])
+            if not user.is_active:
+                user.delete()
+        except:
+            pass
         return super().create(request, *args, **kwargs)
 
 
