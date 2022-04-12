@@ -1,5 +1,3 @@
-from types import NoneType
-
 from rest_framework.renderers import JSONRenderer
 
 
@@ -13,6 +11,9 @@ class CustomRenderer(JSONRenderer):
             response_content['error'] = data['code'] or 'unknown_error'
         else:
             print('data: ', type(data))
+
+            NoneType = type(None)
+
             if not isinstance(data, str) and not isinstance(data, NoneType):
                 if "access_token" in data:
                     data['access'] = data.pop('access_token')
