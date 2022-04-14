@@ -49,11 +49,13 @@ class LocationSerializer(CountryFieldMixin, ModelSerializer):
 class TypeTransportSerializer(ModelSerializer):
     class Meta:
         model = TypeTransport
-        fields = ('id', 'type',)
+        fields = ('id', 'name',)
+
 
 class TransportSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
-
+    # name = TypeTransportSerializer(many=True, read_only=True)
+    name = serializers.CharField(source='name.name')
     class Meta:
         model = Transport
         fields = ('id', 'name', 'price', 'description', 'comfortable', 'image',)
@@ -79,6 +81,8 @@ class TypeCuisineSerializer(ModelSerializer):
 class CuisineSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
     # name = TypeCuisineSerializer(many=True, required=False, read_only=True)
+    name = serializers.CharField(source='name.type')
+
 
     class Meta:
         model = Cuisine
@@ -164,7 +168,7 @@ class VibeSerializer(ModelSerializer):
 
     class Meta:
         model = Vibe
-        fields = ('id', 'vibe', 'image',)
+        fields = ('id', 'name', 'image',)
 
     def create(self, validated_data):
         image = validated_data.pop('image')
@@ -249,34 +253,37 @@ class CategorySerializer(ModelSerializer):
 
 
 class PlaceSerializer(ModelSerializer):
-    id = serializers.ReadOnlyField()
-    writer_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    bookmarks = BookmarkPlaceSerializer(many=True, read_only=True)
-
-    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
-
-    # images = serializers.StringRelatedField(many=True, required=False)
-
-    images = ImageSerializer(many=True, required=False)
-
-    locations = LocationSerializer(many=True, required=False)
-    transports = TransportSerializer(many=True, required=False)
-    accommodationOptions = AccommodationOptionsSerializer(many=True, required=False)
-    uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
-    must_see = MustSeeSerializer(many=True, required=False)
-    where_to_take_a_picture = WhereToTakeAPictureSerializer(many=True, required=False)
-    cuisines = CuisineSerializer(many=True, required=False)
-    safes = SafeSerializer(many=True, required=False)
-    entertainments = EntertainmentSerializer(many=True, required=False)
-    natural_phenomena = NaturalPhenomenaSerializer(many=True, required=False)
-    vibes = VibeSerializer(many=True, required=False)
-    interesting_facts = InterestingFactsSerializer(many=True, required=False)
-    practical_informations = PracticalInformationSerializer(many=True, required=False)
-    flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
 
     class Meta:
         model = Place
         fields = '__all__'
+
+
+    id = serializers.ReadOnlyField()
+    writer_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    bookmark = BookmarkPlaceSerializer(many=True, read_only=True)
+
+    # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+    category = CategorySerializer(many=True, required=False)
+
+    # images = serializers.StringRelatedField(many=True, required=False)
+    image = ImageSerializer(many=True, required=False)
+
+    location = LocationSerializer(many=True, required=False)
+    transport = TransportSerializer(many=True, required=False)
+    accommodation_Option = AccommodationOptionsSerializer(many=True, required=False)
+    uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
+    must_see = MustSeeSerializer(many=True, required=False)
+    where_to_take_a_picture = WhereToTakeAPictureSerializer(many=True, required=False)
+    cuisine = CuisineSerializer(many=True, required=False)
+    safes = SafeSerializer(many=True, required=False)
+    entertainment = EntertainmentSerializer(many=True, required=False)
+    natural_phenomena = NaturalPhenomenaSerializer(many=True, required=False)
+    vibe = VibeSerializer(many=True, required=False)
+    interesting_fact = InterestingFactsSerializer(many=True, required=False)
+    practical_information = PracticalInformationSerializer(many=True, required=False)
+    flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
+
 
     def create(self, validated_data):
         category_data = validated_data.pop('category')
@@ -381,7 +388,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 class GroupSerializer(ModelSerializer):
 
-    places = PlaceSerializer(many=True, read_only=True)
+    place = PlaceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Group

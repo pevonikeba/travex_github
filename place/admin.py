@@ -12,6 +12,7 @@ from place.models import Place, Group, Image, Transport, AccommodationOptions, U
     Vibe, FloraAndFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
     PracticalInformation, TypeTransport, TypeCuisine, Bookmark, Location
 
+
 # admin.site.register(WorldBorder, admin.ModelAdmin)
 
 class SafeInline(TabularInline):
@@ -81,7 +82,15 @@ class BookmarkInline(TabularInline):
 
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
+    list_display = ('name', 'id', "home_page",)
+    list_filter = ('home_page',)
     inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
+
+
+# @admin.register(NoActivePlace)
+# class PlaceAdmin(ModelAdmin):
+#     inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
+
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):

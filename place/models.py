@@ -231,6 +231,8 @@ class Place(models.Model):
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# class NoActivePlace(Place):
+#     pass
 
 
 class UserPlaceRelation(models.Model):
@@ -285,7 +287,7 @@ class UserPlaceRelation(models.Model):
 
 
 class Location(models.Model):
-    place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="location", on_delete=models.CASCADE)
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
     country = CountryField(null=True, blank=True)
     region = models.CharField(max_length=255, null=True, blank=True)
@@ -317,13 +319,13 @@ class Location(models.Model):
 # mptt.register(Location, order_insertion_by=['name'])
 
 class TypeTransport(models.Model):
-    type = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f'{self.type}'
+        return f'{self.name}'
 
 class Transport(models.Model):
-    place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="transport", on_delete=models.CASCADE)
     name = models.ForeignKey(TypeTransport, on_delete=models.CASCADE, blank=False)
     price = models.DecimalField(max_digits=13, decimal_places=2, default=None, blank=False)
     description = models.TextField(null=True, blank=True)
@@ -337,7 +339,7 @@ class Transport(models.Model):
 
 class Safe(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
-    place = models.ForeignKey(Place, related_name="safes", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="safe", on_delete=models.CASCADE)
     how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
     rating_danger = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
     description = models.TextField(blank=True, null=True)
@@ -352,7 +354,7 @@ class TypeCuisine(models.Model):
 
 
 class Cuisine(models.Model):
-    place = models.ForeignKey(Place, related_name="cuisines", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="cuisine", on_delete=models.CASCADE)
     name = models.ForeignKey(TypeCuisine, on_delete=models.CASCADE, blank=False, related_name="name")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=False)
     # type_cuisine = models.CharField(max_length=255, blank=True)
@@ -363,7 +365,7 @@ class Cuisine(models.Model):
         return f"{self.place.name} {self.name}"
 
 class Entertainment(models.Model):
-    place = models.ForeignKey(Place, related_name="entertainments", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="entertainment", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -393,7 +395,7 @@ class Image(models.Model):
 
 class AccommodationOptions(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
-    place = models.ForeignKey(Place, related_name="accommodationOptions", on_delete=models.CASCADE, null=True)
+    place = models.ForeignKey(Place, related_name="accommodation_Option", on_delete=models.CASCADE, null=True)
     price = models.DecimalField(max_digits=13, decimal_places=2, blank=False, default=10)
     description = models.TextField(null=True, blank=True)
 
@@ -420,12 +422,12 @@ class MustSee(models.Model):
         return f"{self.name} {self.description} {self.image}"
 
 class Vibe(models.Model):
-    place = models.ForeignKey(Place, related_name="vibes", on_delete=models.CASCADE)
-    vibe = models.CharField(max_length=255, blank=False, default=None)
+    place = models.ForeignKey(Place, related_name="vibe", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=False, default=None)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.vibe} {self.image}"
+        return f"{self.name} {self.image}"
 
 class WhereToTakeAPicture(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
@@ -437,7 +439,7 @@ class WhereToTakeAPicture(models.Model):
         return f"{self.name} {self.description} {self.image}"
 
 class InterestingFacts(models.Model):
-    place = models.ForeignKey(Place, related_name="interesting_facts", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="interesting_fact", on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
@@ -445,7 +447,7 @@ class InterestingFacts(models.Model):
         return f"{self.place.name} {self.description}"
 
 class PracticalInformation(models.Model):
-    place = models.ForeignKey(Place, related_name="practical_informations", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="practical_information", on_delete=models.CASCADE)
     description = models.TextField(blank=True)
 
     def __str__(self):
@@ -462,8 +464,8 @@ class FloraAndFauna(models.Model):
 
 
 class Bookmark(models.Model):
-    place = models.ForeignKey(Place, related_name="place_bookmarks", on_delete=models.CASCADE, blank=False)
-    user = models.ForeignKey(CustomUser, related_name="user_bookmarks", on_delete=models.CASCADE, blank=False)
+    place = models.ForeignKey(Place, related_name="place_bookmark", on_delete=models.CASCADE, blank=False)
+    user = models.ForeignKey(CustomUser, related_name="user_bookmark", on_delete=models.CASCADE, blank=False)
 
     def __str__(self):
         return f"{self.user.username} - {self.place.name}"
@@ -473,7 +475,7 @@ class Bookmark(models.Model):
 
 class Group(models.Model):
     name = models.CharField(max_length=255)
-    places = models.ManyToManyField(Place, verbose_name="places", related_name="places",
+    places = models.ManyToManyField(Place, verbose_name="place", related_name="places",
                                     blank=True, )
 
     def __str__(self):
