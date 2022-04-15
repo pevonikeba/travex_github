@@ -3,10 +3,10 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 # Register your models here.
 from django.contrib.admin import ModelAdmin, TabularInline
-from django.contrib.gis.admin import GISModelAdmin
+# from django.contrib.gis.admin import GISModelAdmin
 from mptt.admin import MPTTModelAdmin
 
-from geopy.geocoders import Nominatim
+# from geopy.geocoders import Nominatim
 
 
 from place import models
@@ -85,7 +85,7 @@ class BookmarkInline(TabularInline):
 
 
 @admin.register(Place)
-class PlaceAdmin(GISModelAdmin):
+class PlaceAdmin(ModelAdmin):
     save_on_top = True
     list_display = ('name', 'id', "home_page",)
     list_filter = ('home_page',)
