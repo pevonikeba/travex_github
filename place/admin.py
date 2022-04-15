@@ -3,7 +3,11 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 # Register your models here.
 from django.contrib.admin import ModelAdmin, TabularInline
+from django.contrib.gis.admin import GISModelAdmin
 from mptt.admin import MPTTModelAdmin
+
+from geopy.geocoders import Nominatim
+
 
 from place import models
 from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
@@ -81,10 +85,76 @@ class BookmarkInline(TabularInline):
 
 
 @admin.register(Place)
-class PlaceAdmin(ModelAdmin):
+class PlaceAdmin(GISModelAdmin):
+    save_on_top = True
     list_display = ('name', 'id', "home_page",)
     list_filter = ('home_page',)
     inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
+
+    # def save_model(self, request, obj, form, change):
+    #
+    #
+    #
+    #     geolocator = Nominatim(user_agent="geoapiExercises")
+    #
+    #     Latitude = str(obj.coordinate.coords[0])
+    #     Longitude = str(obj.coordinate.coords[1])
+    #     print('Latitude: ', Latitude)
+    #     print('Longitude: ', Longitude)
+    #     # Latitude = '37.862499'
+    #     # Longitude = '58.238056'
+    #
+    #     location = geolocator.reverse(Latitude + "," + Longitude)
+    #     # try:
+    #
+    #     print('obj: ', type(obj))
+    #     print('obj: ', obj)
+    #
+    #     l = Location.objects.get_or_create(place=obj)
+    #     print()
+    #     print('LOCATION: ', l)
+    #     l = l[0]
+    #     print('LOCATION: ', l)
+    #     print()
+    #
+    #     print(location.raw['address'])
+    #     print(location.raw['lat'])
+    #     print(location.raw['lon'])
+    #     print(location.raw['address']['city'])
+    #
+    #     if 'city' in location.raw['address']:
+    #         print(1)
+    #         l.city = location.raw['address']['city']
+    #     if 'state' in location.raw['address']:
+    #         print(2)
+    #         l.region = location.raw['address']['state']
+    #     if 'country' in location.raw['address']:
+    #         print(3)
+    #         l.country = location.raw['address']['country']
+    #     print(4)
+    #     l.latitude = location.raw['lat']
+    #     print(5)
+    #     l.longitude = location.raw['lon']
+    #     print(6)
+    #
+    #     l.save()
+    #     # except:
+    #     #     pass
+    #
+    #
+    #
+    #     # address = location.raw['address']
+    #
+    #     # print('address: ', address)
+    #     # print('request: ', request)
+    #     # print('obj: ', obj)
+    #     # print('form', form)
+    #     # print('change: ', change)
+    #     # obj.user = request.user
+    #     print("request.coordinate: ", obj.coordinate.coords[0])
+    #     super().save_model(request, obj, form, change)
+
+
 
 
 # @admin.register(NoActivePlace)
@@ -101,7 +171,9 @@ class GroupAdmin(ModelAdmin):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
+    UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image',)
     inlines = [BookmarkInline]
+
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):
     # specify pixel amount for this ModelAdmin only:

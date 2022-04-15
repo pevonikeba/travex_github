@@ -74,46 +74,61 @@ class PlaceViewSet(ModelViewSet, ListView):
 
     # pagination_class = PlaceAPIListPagination
 
-    # def list(self, request, *args, **kwargs):
-    #     queryset = Place.objects.all()
-    #     print(queryset)
-    #     serializer = PlaceSerializer(queryset, many=True)
-    #     # name_data = []
-    #     # for name in serializer.data:
-    #     #     name_data.append(name['name'])
-    #     print(serializer.data)
-    #     return Response(serializer.data)
+    def list(self, request, *args, **kwargs):
+        queryset = Place.objects.all()
+        serializer = PlaceSerializer(queryset, many=True)
+        new_serializer_list = []
+        for index_data in range(len(serializer.data)):
+            new_serializer = serializer.data[index_data].copy()
+            for field in serializer.data[index_data]:
+
+
+                if field not in ['id', 'name', 'description', 'images', 'rating', 'location', 'writer_user']:
+                    del new_serializer[field]
+
+                if field == 'writer_user':
+                    del new_serializer[field]['id']
+                    del new_serializer[field]['is_active']
+
+            new_serializer_list.append(new_serializer)
+
+        return Response(new_serializer_list)
 
     def retrieve(self, request, *args, **kwargs):
         queryset = Place.objects.filter(name=self.get_object().name)
         # print(queryset)
         serializer = PlaceSerializer(queryset, many=True)
 
-        # name_data = []
-        # for name in serializer.data:
-        #     name_data.append(name['name'])
-        # print(serializer.data)
-        shablon = {
-            "title": "",
-            "description": "<h1>Overview</h1><p>Nearest Airport is in….</p>",
-            "children": None,
-            "display_type": None,
-            "icon_name": "article",
-            "key": "overview"
-        }
-
         # cto by serializer.data wytashit iz lista
         no_list_serializer = serializer.data[0]
 
         section = []
+        owerview_section = {}
 
         reapet_field = ''
 
         new_serializer = no_list_serializer.copy()
 
         for field in no_list_serializer:
+
+            if field in ['name', 'description']:
+                owerview_section[field] = new_serializer[field]
+                del new_serializer[field]
+
+        new_serializer['owerview'] = owerview_section
+
+        no_list_serializer = new_serializer.copy()
+
+
+        for field in no_list_serializer:
+            # if field in ['name', 'description']:
+            #     owerview_section[field] = new_serializer[field]
+            #     del new_serializer[field]
+
+
             if type(no_list_serializer[field]) is list and no_list_serializer[field] != [] and field not in ['category',
                                                                                                              'images']:
+                print(field)
                 for len_list in range(len(no_list_serializer[field])):
 
 
@@ -210,22 +225,27 @@ class PlaceViewSet(ModelViewSet, ListView):
                         if 'description' not in no_list_serializer[field][len_list]:
                             new_serializer[field][len_list]['children'] = [
                                 {"id": no_list_serializer[field][len_list]['id'],
-                                 "description": f"{name}{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"}]
+                                 "title": f"{name}",
+                                 "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"}]
                         else:
                             new_serializer[field][len_list]['children'] = [
                                 {"id": no_list_serializer[field][len_list]['id'],
-                                 "description": f"{name}{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"}]
+                                 "title": f"{name}",
+                                 "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"}]
                             del no_list_serializer[field][len_list]['description']
                         del no_list_serializer[field][len_list]['id']
 
                         no_list_serializer[field][len_list]['title'] = field.capitalize().replace("_", " ")
                         no_list_serializer[field][len_list]['key'] = field.lower().replace(" ", "")
+                        no_list_serializer[field][len_list]['icon_name'] = "article".lower().replace(" ", "")
 
                         # print('type: ', len(no_list_serializer[field]))
                         if field in ['flora_fauna']:
                             new_serializer[field][len_list]['display_type'] = 'grid'
                         else:
                             new_serializer[field][len_list]['display_type'] = 'drop_down'
+
+
 
                         reapet_field = field
                         section.append(no_list_serializer[field][len_list])
@@ -244,10 +264,12 @@ class PlaceViewSet(ModelViewSet, ListView):
 
 
                 del new_serializer[field]
+        # new_serializer['owerview'] = owerview_section
+
         new_serializer['sections'] = section
 
 
-        return Response([new_serializer])
+        return Response(new_serializer)
 
     # def perform_create(self, serializer):
     #     address = serializer.initial_data["name"]

@@ -11,6 +11,34 @@ from place.models import Place, Group, Image, ClimaticConditions, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
 
 
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    password = serializers.CharField(max_length=255, write_only=True)
+    # is_active = serializers.BooleanField()
+
+    class Meta:
+        model = CustomUser
+
+        fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user')
+
+    # def validate_password(self, value: str) -> str:
+    #     """
+    #     Hash value passed by user.
+    #
+    #     :param value: password of a user
+    #     :return: a hashed version of the password
+    #     """
+    #     return make_password(value)
+
+    def create(self, validated_data):
+        validated_data['is_active'] = False
+        user = super().create(validated_data)
+
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 class BookmarkSerializer(ModelSerializer):
     class Meta:
         model = Bookmark
@@ -260,14 +288,17 @@ class PlaceSerializer(ModelSerializer):
 
 
     id = serializers.ReadOnlyField()
-    writer_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
+    # print('writer_user: ', writer_user)
+    # writer_user = CustomUserSerializer(many=True, read_only=True)
+
     bookmark = BookmarkPlaceSerializer(many=True, read_only=True)
 
     # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
     category = CategorySerializer(many=True, required=False)
 
     # images = serializers.StringRelatedField(many=True, required=False)
-    image = ImageSerializer(many=True, required=False)
+    images = ImageSerializer(many=True, required=False)
 
     location = LocationSerializer(many=True, required=False)
     transport = TransportSerializer(many=True, required=False)
@@ -359,32 +390,6 @@ class UserPlaceRelationSerializer(ModelSerializer):
         fields = ('id', 'place', 'in_bookmarks', 'rating', 'description_rating')
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
-    password = serializers.CharField(max_length=255, write_only=True)
-    # is_active = serializers.BooleanField()
-
-    class Meta:
-        model = CustomUser
-
-        fields = ('id', 'email', 'username', 'is_active', 'password', 'user')
-
-    # def validate_password(self, value: str) -> str:
-    #     """
-    #     Hash value passed by user.
-    #
-    #     :param value: password of a user
-    #     :return: a hashed version of the password
-    #     """
-    #     return make_password(value)
-
-    def create(self, validated_data):
-        validated_data['is_active'] = False
-        user = super().create(validated_data)
-        print('validated_data: ', validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
 
 class GroupSerializer(ModelSerializer):
 

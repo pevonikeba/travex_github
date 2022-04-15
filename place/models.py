@@ -1,10 +1,10 @@
 import mptt
 from colorfield.fields import ColorField
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 # from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.contrib.gis.db import models as geomodels
+# from django.contrib.gis.db import models as geomodels
 from django_countries.fields import CountryField
 # from location_field.forms.spatial import LocationField
 # from location_field.models.plain import PlainLocationField
@@ -124,6 +124,8 @@ class CustomUser(AbstractUser):
 
     is_active = models.BooleanField(default=False)
 
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['is_active', 'username']
 
@@ -223,6 +225,8 @@ class Place(models.Model):
 
     # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
 
+    # coordinate = geomodels.PointField(geography=True, spatial_index=True,default=Point(58.238056, 37.862499, srid=4326), blank=True, null=True)
+
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
 
     # category = TreeForeignKey(Category, verbose_name="categorys", related_name="categorys", on_delete=models.CASCADE, null=True, blank=True)
@@ -289,7 +293,7 @@ class UserPlaceRelation(models.Model):
 class Location(models.Model):
     place = models.ForeignKey(Place, related_name="location", on_delete=models.CASCADE)
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
-    country = CountryField(null=True, blank=True)
+    country = models.CharField(max_length=255, null=True, blank=True)
     region = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
