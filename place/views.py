@@ -63,6 +63,210 @@ from django.contrib.gis.geos import Point
 #
 # geolocator = Nominatim(user_agent="location")
 
+
+plus_place = [
+
+    {
+        "header": "<h1>General Info</h1>",
+        "key": None,
+        "children": [
+            {
+                "placeholder": "Name",
+                'title': 'Name',
+                "key": 'name',
+                'field_type': 'charfield'
+            },
+
+            {
+                "placeholder": "Overview",
+                'title': "Overview",
+                "key": 'description',
+                'field_type': "textfield"
+            },
+
+            {
+                'title': "Images",
+                "key": 'images',
+                'field_type': "imagefield",
+            }
+
+        ]
+    },
+
+    {
+        "header": "<h1>Category</h1>",
+        "key": 'category',
+
+        "children": [
+            {
+                'title': 'Category',
+                "key": 'category',
+                'field_type': 'multiselect'
+            },
+
+        ]
+    },
+
+    {
+        "header": "<h1>Civilization</h1>",
+        "key": None,
+
+        "children": [
+            {
+                "placeholder": "Culture",
+                'title': 'Culture',
+                'key': 'culture',
+                'field_type': 'textfield'
+            },
+
+            {
+                "placeholder": "Population",
+                'title': "Population",
+                'key': "population",
+                'field_type': "charfield"
+            },
+
+            {
+                "placeholder": "Nation",
+                'title': "Nation",
+                'key': "nation",
+                'field_type': "charfield"
+            },
+
+            {
+                "placeholder": "Language",
+                'title': "Language",
+                'key': "language",
+                'field_type': "charfield"
+            },
+
+            {
+                "placeholder": "Currency",
+                'title': "Currency",
+                'key': "currency",
+                'field_type': "charfield"
+            },
+
+            {
+                "placeholder": "Sim Cards",
+                'title': "Simcards",
+                'key': "simcards",
+                'field_type': "charfield"
+            },
+
+            {
+                "placeholder": "Internet",
+                'title': "Internet",
+                'key': "internet",
+                'field_type': "charfield"
+            },
+
+            {
+                "placeholder": "Payment Method",
+                'title': 'Pay Online Or By Card',
+                'key': 'pay_online_or_by_card',
+                'field_type': 'textfield'
+            },
+
+            {
+                "placeholder": "Currency Buying Advice",
+                'title': 'Currency Buying Advice',
+                'key': 'currency_buying_advice',
+                'field_type': 'textfield'
+            },
+
+        ]
+    },
+    {
+        "header": "<h1>Climate</h1>",
+        "key": None,
+        "children": [
+            {
+                "placeholder": "Climate",
+                'title': 'Climate',
+                'key': 'climate',
+                'field_type': 'picker'
+            },
+
+            {
+                "placeholder": "Climate Description",
+                'title': 'Climate Description',
+                'key': 'climate_description',
+                'field_type': 'charfield'
+            },
+
+        ]
+    },
+
+    {
+        "header": "<h1>Geographical Feature</h1>",
+
+        "children": [
+            {
+                "placeholder": "Geographical Feature",
+                'title': 'Geographical Feature',
+                'key': 'geographical_feature',
+                'field_type': 'charfield'
+            },
+
+            {
+                "placeholder": "Geographical Feature Description",
+                'title': 'Geographical Feature Description',
+                'key': 'geographical_feature_description',
+                'field_type': 'charfield'
+            },
+
+        ]
+    },
+
+    {
+        "header": "<h1>Transport</h1>",
+        "key": "transport",
+        "children": [
+            {
+                "placeholder": "Kind Of Transport",
+                'title': 'Kind Of Transport',
+                "key": "name",
+                'field_type': 'picker',
+                "plus": True,
+
+            },
+
+            {
+                "placeholder": "Transport Price",
+                'title': "Transport Price",
+                'key': "price",
+                'field_type': "charfield",
+                "plus": True,
+            },
+
+            {
+                "placeholder": "Transport Description",
+                'title': "Transport Description",
+                'key': "description",
+                'field_type': "textfield",
+                "plus": True,
+            },
+
+            {
+                "placeholder": "Transport Comfortable",
+                'title': "Transport Comfortable",
+                'key': "comfortable",
+                'field_type': "choicefield",
+                "plus": True,
+            },
+
+            {
+                'title': "Transport Image",
+                'field_type': "Transport Image",
+                'key': 'image',
+                "plus": True,
+            }
+
+        ]
+    },
+]
+
 class PlaceViewSet(ModelViewSet, ListView):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
@@ -306,6 +510,13 @@ class PlaceViewSet(ModelViewSet, ListView):
 
 
         return Response(new_serializer)
+
+    @action(detail=False, methods=["get"])
+    def plus_place(self, request):
+        # queryset = Place.objects.all()
+        # serializer = PlaceSerializer(queryset, many=True)
+        # return Response(serializer.data)
+        return Response(plus_place)
 
     # def perform_create(self, serializer):
     #     address = serializer.initial_data["name"]

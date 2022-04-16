@@ -12,8 +12,9 @@ class CustomRenderer(JSONRenderer):
         else:
 
             NoneType = type(None)
-
-            if not isinstance(data, str) and not isinstance(data, NoneType):
+            # print('data: ', data)
+            # print('type(data): ', type(data))
+            if not isinstance(data, str) and not isinstance(data, NoneType) and not isinstance(data, int):
                 if "access_token" in data:
                     data['access'] = data.pop('access_token')
                 if "refresh_token" in data:
