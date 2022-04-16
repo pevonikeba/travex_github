@@ -294,7 +294,7 @@ class Location(models.Model):
     place = models.ForeignKey(Place, related_name="location", on_delete=models.CASCADE)
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
     country = models.CharField(max_length=255, null=True, blank=True)
-    region = models.CharField(max_length=255, null=True, blank=True)
+    state = models.CharField(max_length=255, null=True, blank=True)
     county = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
@@ -302,7 +302,7 @@ class Location(models.Model):
     nearest_place = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.continent} {self.country} {self.region} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"
+        return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"
 
 
 

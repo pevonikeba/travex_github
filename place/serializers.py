@@ -72,7 +72,7 @@ class CustomSocialLoginSerializer(SocialLoginSerializer):
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
     class Meta:
         model = Location
-        fields = ('id', 'continent', 'country', 'region', 'city', 'latitude', 'longitude', 'nearest_place',)
+        fields = ('id', 'continent', 'country', 'state', 'city', 'latitude', 'longitude', 'nearest_place',)
 
 class TypeTransportSerializer(ModelSerializer):
     class Meta:
