@@ -120,22 +120,18 @@ class PlaceAdmin(ModelAdmin):
     #     print(location.raw['address'])
     #     print(location.raw['lat'])
     #     print(location.raw['lon'])
-    #     print(location.raw['address']['city'])
     #
     #     if 'city' in location.raw['address']:
-    #         print(1)
     #         l.city = location.raw['address']['city']
+    #     if 'county' in location.raw['address']:
+    #         l.city = location.raw['address']['county']
     #     if 'state' in location.raw['address']:
-    #         print(2)
     #         l.region = location.raw['address']['state']
     #     if 'country' in location.raw['address']:
-    #         print(3)
     #         l.country = location.raw['address']['country']
-    #     print(4)
+    #
     #     l.latitude = location.raw['lat']
-    #     print(5)
     #     l.longitude = location.raw['lon']
-    #     print(6)
     #
     #     l.save()
     #     # except:

@@ -1,10 +1,10 @@
 import mptt
 from colorfield.fields import ColorField
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
-# from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-# from django.contrib.gis.db import models as geomodels
+from django.contrib.gis.db import models as geomodels
 from django_countries.fields import CountryField
 # from location_field.forms.spatial import LocationField
 # from location_field.models.plain import PlainLocationField
@@ -295,6 +295,7 @@ class Location(models.Model):
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
     country = models.CharField(max_length=255, null=True, blank=True)
     region = models.CharField(max_length=255, null=True, blank=True)
+    county = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
     longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)

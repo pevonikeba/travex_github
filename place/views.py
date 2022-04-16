@@ -220,48 +220,84 @@ class PlaceViewSet(ModelViewSet, ListView):
                         nearest_place = ''
 
 
-                    if reapet_field != field:
+                    if field in ['flora_fauna']:
+                        new_serializer[field][len_list]['display_type'] = 'grid'
+                        if reapet_field != field:
+                            # print('type: ', len(no_list_serializer[field]))
+                            if 'description' not in no_list_serializer[field][len_list]:
+                                new_serializer[field][len_list]['children'] = [
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "image": f"{image}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"}]
+                            else:
+                                new_serializer[field][len_list]['children'] = [
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "image": f"{image}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"}]
+                                del no_list_serializer[field][len_list]['description']
+                            del no_list_serializer[field][len_list]['id']
 
-                        if 'description' not in no_list_serializer[field][len_list]:
-                            new_serializer[field][len_list]['children'] = [
-                                {"id": no_list_serializer[field][len_list]['id'],
-                                 "title": f"{name}",
-                                 "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"}]
+                            no_list_serializer[field][len_list]['title'] = field.capitalize().replace("_", " ")
+                            no_list_serializer[field][len_list]['key'] = field.lower().replace(" ", "")
+                            no_list_serializer[field][len_list]['icon_name'] = "article".lower().replace(" ", "")
+
+                            reapet_field = field
+                            section.append(no_list_serializer[field][len_list])
+
                         else:
-                            new_serializer[field][len_list]['children'] = [
-                                {"id": no_list_serializer[field][len_list]['id'],
-                                 "title": f"{name}",
-                                 "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"}]
-                            del no_list_serializer[field][len_list]['description']
-                        del no_list_serializer[field][len_list]['id']
 
-                        no_list_serializer[field][len_list]['title'] = field.capitalize().replace("_", " ")
-                        no_list_serializer[field][len_list]['key'] = field.lower().replace(" ", "")
-                        no_list_serializer[field][len_list]['icon_name'] = "article".lower().replace(" ", "")
-
-                        # print('type: ', len(no_list_serializer[field]))
-                        if field in ['flora_fauna']:
-                            new_serializer[field][len_list]['display_type'] = 'grid'
-                        else:
-                            new_serializer[field][len_list]['display_type'] = 'drop_down'
-
-
-
-                        reapet_field = field
-                        section.append(no_list_serializer[field][len_list])
-
+                            if 'description' not in no_list_serializer[field][len_list]:
+                                new_serializer[field][0]['children'].append(
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "image": f"{image}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"})
+                            else:
+                                new_serializer[field][0]['children'].append(
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "image": f"{image}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"})
 
                     else:
-                        if 'description' not in no_list_serializer[field][len_list]:
-                            new_serializer[field][0]['children'].append(
-                                {"id": no_list_serializer[field][len_list]['id'],
-                                 "description": f"{name}{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"})
+                        if reapet_field != field:
+                            # print('type: ', len(no_list_serializer[field]))
+
+                            new_serializer[field][len_list]['display_type'] = 'drop_down'
+                            if 'description' not in no_list_serializer[field][len_list]:
+                                new_serializer[field][len_list]['children'] = [
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"}]
+                            else:
+                                new_serializer[field][len_list]['children'] = [
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"}]
+                                del no_list_serializer[field][len_list]['description']
+                            del no_list_serializer[field][len_list]['id']
+
+                            no_list_serializer[field][len_list]['title'] = field.capitalize().replace("_", " ")
+                            no_list_serializer[field][len_list]['key'] = field.lower().replace(" ", "")
+                            no_list_serializer[field][len_list]['icon_name'] = "article".lower().replace(" ", "")
+
+                            reapet_field = field
+                            section.append(no_list_serializer[field][len_list])
+
                         else:
-                            new_serializer[field][0]['children'].append(
-                                {"id": no_list_serializer[field][len_list]['id'],
-                                 "description": f"{name}{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"})
 
-
+                            if 'description' not in no_list_serializer[field][len_list]:
+                                new_serializer[field][0]['children'].append(
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}"})
+                            else:
+                                new_serializer[field][0]['children'].append(
+                                    {"id": no_list_serializer[field][len_list]['id'],
+                                     "title": f"{name}",
+                                     "description": f"{image}{price}{comfortable}{how_dangerous}{rating_danger}{continent}{country}{region}{city}{latitude}{longitude}{nearest_place}<p>{no_list_serializer[field][len_list]['description']}</p>"})
 
                 del new_serializer[field]
         # new_serializer['owerview'] = owerview_section
