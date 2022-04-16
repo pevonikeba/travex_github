@@ -364,8 +364,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # SOCIAL_AUTH_GITHUB_KEY = '4b67f6944142c331f5ea'
 # SOCIAL_AUTH_GITHUB_SECRET = 'aae4618e66c98dcf25e3e51cc1f447eb0e4b3ebf'
 
-GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
-GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
+# GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
+# GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
 # #
 # LOCATION_FIELD = {
 #     'provider.openstreetmap.max_zoom': 18,
