@@ -200,7 +200,7 @@ plus_place = [
 
     {
         "header": "<h1>Geographical Feature</h1>",
-
+        'key': None,
         "children": [
             {
                 "placeholder": "Geographical Feature",
