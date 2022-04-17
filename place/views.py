@@ -222,13 +222,12 @@ plus_place = [
     {
         "header": "<h1>Transport</h1>",
         "key": "transport",
-        "children": [
+        "nested": [
             {
                 "placeholder": "Kind Of Transport",
                 'title': 'Kind Of Transport',
                 "key": "name",
                 'field_type': 'picker',
-                "plus": True,
 
             },
 
@@ -237,7 +236,6 @@ plus_place = [
                 'title': "Transport Price",
                 'key': "price",
                 'field_type': "charfield",
-                "plus": True,
             },
 
             {
@@ -245,7 +243,6 @@ plus_place = [
                 'title': "Transport Description",
                 'key': "description",
                 'field_type': "textfield",
-                "plus": True,
             },
 
             {
@@ -253,14 +250,12 @@ plus_place = [
                 'title': "Transport Comfortable",
                 'key': "comfortable",
                 'field_type': "choicefield",
-                "plus": True,
             },
 
             {
                 'title': "Transport Image",
                 'field_type': "Transport Image",
                 'key': 'image',
-                "plus": True,
             }
 
         ]
