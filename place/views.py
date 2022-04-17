@@ -337,7 +337,7 @@ class PlaceViewSet(ModelViewSet, ListView):
 
 
                     if 'name' in no_list_serializer[field][len_list] and no_list_serializer[field][len_list]['name'] != '':
-                        name = f'<h1>{no_list_serializer[field][len_list]["name"]}</h1>'
+                        name = f'{no_list_serializer[field][len_list]["name"]}'
                         del no_list_serializer[field][len_list]["name"]
                     else:
                         name = ''
