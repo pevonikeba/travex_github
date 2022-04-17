@@ -249,13 +249,13 @@ plus_place = [
                 "placeholder": "Transport Comfortable",
                 'title': "Transport Comfortable",
                 'key': "comfortable",
-                'field_type': "choicefield",
+                'field_type': "picker",
             },
 
             {
                 'title': "Transport Image",
-                'field_type': "Transport Image",
                 'key': 'image',
+                'field_type': "imagefield",
             }
 
         ]
