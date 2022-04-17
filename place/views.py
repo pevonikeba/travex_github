@@ -67,12 +67,13 @@ from django.contrib.gis.geos import Point
 plus_place = [
 
     {
-        "header": "<h1>General Info</h1>",
+        "header": "General Info",
         "key": None,
         "children": [
             {
                 "placeholder": "Name",
                 'title': 'Name',
+                'required': True,
                 "key": 'name',
                 'field_type': 'charfield'
             },
@@ -94,7 +95,7 @@ plus_place = [
     },
 
     {
-        "header": "<h1>Category</h1>",
+        "header": "Category",
         "key": 'category',
 
         "children": [
@@ -108,7 +109,7 @@ plus_place = [
     },
 
     {
-        "header": "<h1>Civilization</h1>",
+        "header": "Civilization",
         "key": None,
 
         "children": [
@@ -178,7 +179,7 @@ plus_place = [
         ]
     },
     {
-        "header": "<h1>Climate</h1>",
+        "header": "Climate",
         "key": None,
         "children": [
             {
@@ -199,7 +200,7 @@ plus_place = [
     },
 
     {
-        "header": "<h1>Geographical Feature</h1>",
+        "header": "Geographical Feature",
         'key': None,
         "children": [
             {
@@ -220,7 +221,7 @@ plus_place = [
     },
 
     {
-        "header": "<h1>Transport</h1>",
+        "header": "Transport",
         "key": "transport",
         "nested": [
             {
