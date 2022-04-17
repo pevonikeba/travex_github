@@ -371,6 +371,7 @@ class PlaceSerializer(ModelSerializer):
 
 
 
+
 class ClimateSerializer(ModelSerializer):
 
     class Meta:

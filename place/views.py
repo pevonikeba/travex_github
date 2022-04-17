@@ -280,7 +280,7 @@ class PlaceViewSet(ModelViewSet, ListView):
 
     def list(self, request, *args, **kwargs):
         queryset = Place.objects.all()
-        serializer = PlaceSerializer(queryset, many=True)
+        serializer = PlaceSerializer(queryset, many=True, context={"request": request})
         new_serializer_list = []
         for index_data in range(len(serializer.data)):
             new_serializer = serializer.data[index_data].copy()
@@ -301,7 +301,7 @@ class PlaceViewSet(ModelViewSet, ListView):
     def retrieve(self, request, *args, **kwargs):
         queryset = Place.objects.filter(name=self.get_object().name)
         # print(queryset)
-        serializer = PlaceSerializer(queryset, many=True)
+        serializer = PlaceSerializer(queryset, many=True, context={"request": request})
 
         # cto by serializer.data wytashit iz lista
         no_list_serializer = serializer.data[0]
