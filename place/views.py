@@ -465,7 +465,7 @@ class PlaceViewSet(ModelViewSet, ListView):
 
                             new_serializer[field][len_list]['display_type'] = 'drop_down'
 
-                            if field in ['location', 'practical_information']:
+                            if field in ['location', 'practical_information', 'interesting_fact']:
                                 new_serializer[field][len_list]['display_type'] = 'simple'
 
                             if 'description' not in no_list_serializer[field][len_list]:
