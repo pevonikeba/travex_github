@@ -247,7 +247,7 @@ REST_FRAMEWORK = {
 
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'PAGE_SIZE': 5,
-    'EXCEPTION_HANDLER': 'place.utils.utils.custom_exception_handler',
+    # 'EXCEPTION_HANDLER': 'place.utils.utils.custom_exception_handler',
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 

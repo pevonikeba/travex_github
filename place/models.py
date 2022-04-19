@@ -1,17 +1,16 @@
 import mptt
 from colorfield.fields import ColorField
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
-from django.contrib.gis.geos import Point
+# from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.contrib.gis.db import models as geomodels
-from django_countries.fields import CountryField
+# from django.contrib.gis.db import models as geomodels
+# from django_countries.fields import CountryField
 # from location_field.forms.spatial import LocationField
 # from location_field.models.plain import PlainLocationField
 # from geopy import Point
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.translation import gettext_lazy as _
-
 
 
 # Create your models here.
@@ -146,12 +145,14 @@ class ClimaticConditions(models.Model):
     def __str__(self):
         return f'{self.conditions} - {self.climate}'
 
+
 class GeographicalFeature(models.Model):
     types_of_ecosystem = models.CharField(max_length=255, blank=True)
     types_of_ecosystem_description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.types_of_ecosystem} - {self.types_of_ecosystem_description}'
+
 
 class Category(MPTTModel):
     name = models.CharField(max_length=255, blank=False, unique=True)
@@ -168,6 +169,7 @@ class Category(MPTTModel):
 
 mptt.register(Category, order_insertion_by=['name'])
 
+
 class Place(models.Model):
 
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
@@ -181,8 +183,7 @@ class Place(models.Model):
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)
 
-    category = models.ManyToManyField(Category,
-                                      blank=True)
+    category = models.ManyToManyField(Category, blank=True)
 
     climate = models.ForeignKey(ClimaticConditions, on_delete=models.CASCADE, null=True, blank=True)
     climate_description = models.TextField(null=True, blank=True)
@@ -197,12 +198,13 @@ class Place(models.Model):
     population = models.BigIntegerField(null=True, blank=True)
     # type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True,
     #                                           related_name="civilizations")
-    type_of_people_around = models.TextField()
+    type_of_people_around = models.TextField(blank=True, null=True)
     nation = models.TextField(blank=True, null=True)
     language = models.CharField(blank=True, null=True, max_length=255)
     culture = models.TextField(blank=True, null=True)
 
-    turist_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
+    turist_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
+                                        blank=False, null=True, default=None)
 
 
     # turist_description = models.TextField(blank=True, null=True)
@@ -227,7 +229,8 @@ class Place(models.Model):
 
     # coordinate = geomodels.PointField(geography=True, spatial_index=True,default=Point(58.238056, 37.862499, srid=4326), blank=True, null=True)
 
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=None)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
+                                 null=True, blank=False, default=None)
 
     # category = TreeForeignKey(Category, verbose_name="categorys", related_name="categorys", on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):

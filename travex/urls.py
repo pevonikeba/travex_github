@@ -38,6 +38,8 @@ router.register(r'api/type_transport', TypeTransportViewSet)
 router.register(r'api/type_cuisine', TypeCuisineViewSet)
 
 router.register(r'api/places', PlaceViewSet)
+
+# router.register(r'api/places_arslion', PlaceViewSetArslion)
 router.register(r'api/groups', GroupViewSet)
 router.register(r'api/bookmarks', BookmarkViewSet)
 
