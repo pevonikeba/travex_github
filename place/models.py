@@ -171,31 +171,20 @@ mptt.register(Category, order_insertion_by=['name'])
 
 
 class Place(models.Model):
-
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
-
     # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
     #                                         blank=True,)
-
     home_page = models.BooleanField(default=False)
-
-
     name = models.CharField(max_length=255, blank=False, default=None)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)
-
     category = models.ManyToManyField(Category, blank=True)
-
     climate = models.ForeignKey(ClimaticConditions, on_delete=models.CASCADE, null=True, blank=True)
     climate_description = models.TextField(null=True, blank=True)
-
     geographical_feature = models.ForeignKey(GeographicalFeature, on_delete=models.CASCADE, null=True, blank=True)
     geographical_feature_description = models.TextField(null=True, blank=True)
-
     nearest_airport = models.TextField(null=True, blank=True)
-
     how_to_get_there = models.TextField(null=True, blank=True)
-
     population = models.BigIntegerField(null=True, blank=True)
     # type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True,
     #                                           related_name="civilizations")
@@ -203,33 +192,23 @@ class Place(models.Model):
     nation = models.TextField(blank=True, null=True)
     language = models.CharField(blank=True, null=True, max_length=255)
     culture = models.TextField(blank=True, null=True)
-
     turist_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
                                         blank=False, null=True, default=None)
-
-
     # turist_description = models.TextField(blank=True, null=True)
     # tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
     # tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
     # tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
     # tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
-
-
     currency = models.TextField(null=True, blank=True)
     currency_buying_advice = models.TextField(null=True, blank=True)
     simcards = models.TextField(blank=True, null=True)
     internet = models.TextField(null=True, blank=True)
     pay_online_or_by_card = models.TextField(null=True, blank=True)
-
     views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", related_name="views")
-
     # geolocation = geomodels.PointField("Location in Map", geography=True, blank=True, null=True,
     #     srid=4326, help_text="Point(longitude latitude)")
-
     # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
-
     # coordinate = geomodels.PointField(geography=True, spatial_index=True,default=Point(58.238056, 37.862499, srid=4326), blank=True, null=True)
-
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
                                  null=True, blank=False, default=None)
 

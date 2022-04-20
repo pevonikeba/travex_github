@@ -336,10 +336,10 @@ DJOSER = {
     #     # "your redirect url",
     # ],
     "SERIALIZERS": {
-        "user_create": "place.serializers.CustomUserSerializer",  # custom serializer
-        "user": "place.serializers.CustomUserSerializer",
-        "current_user": "place.serializers.CustomUserSerializer",
-        "user_delete": "place.serializers.CustomUserSerializer",
+        "user_create": "place.serializers.serializers.CustomUserSerializer",  # custom serializer
+        "user": "place.serializers.serializers.CustomUserSerializer",
+        "current_user": "place.serializers.serializers.CustomUserSerializer",
+        "user_delete": "place.serializers.serializers.CustomUserSerializer",
     },
     'EMAIL': {
         'activation': 'djoser.email.ActivationEmail',

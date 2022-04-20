@@ -288,7 +288,6 @@ class TransportSerializer(ModelSerializer):
 
 
 class PlaceSerializer(ModelSerializer):
-
     class Meta:
         model = Place
         fields = '__all__'
@@ -297,7 +296,6 @@ class PlaceSerializer(ModelSerializer):
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
     bookmark = BookmarkPlaceSerializer(many=True, read_only=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
-
     # images = serializers.StringRelatedField(many=True, required=False)
     images = ImageSerializer(many=True, required=False)
     locations = LocationSerializer(many=True, required=False)
@@ -317,7 +315,6 @@ class PlaceSerializer(ModelSerializer):
 
     def create(self, validated_data):
         transports_data = None
-        print('create aaaa: ', validated_data)
         category_data = validated_data.get('category')
         images_data = validated_data.get('images')
         locations_data = validated_data.get('locations')
@@ -336,7 +333,7 @@ class PlaceSerializer(ModelSerializer):
         practical_information_data = validated_data.get('practical_informations')
         flora_fauna_data = validated_data.get('flora_fauna')
 
-
+        #
         place = Place.objects.create(**validated_data)
 
         if transports_data is not None:

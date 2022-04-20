@@ -25,7 +25,9 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticConditions, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Bookmark
-from place.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
+from place.serializers.place.list import PlaceGetListSerializer
+from place.serializers.place.retrieve import PlaceGetRetrieveSerializer
+from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     CategorySerializer, UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
     CustomSocialLoginSerializer
@@ -712,11 +714,14 @@ plus_place = [
 
 class PlaceViewSet(ModelViewSet):
     queryset = Place.objects.all()
-    serializer_classes = {
-        'create': PlaceSerializer,
-        # 'retrieve': Plac
-    }
     default_serializer_class = PlaceSerializer
+    serializer_classes = {
+        'list': PlaceGetListSerializer,
+        'retrieve': PlaceGetRetrieveSerializer,
+        # 'create': default_serializer_class,
+        # 'put': default_serializer_class,
+        # 'patch': default_serializer_class,
+    }
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
