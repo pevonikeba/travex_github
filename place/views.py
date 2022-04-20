@@ -768,7 +768,7 @@ class PlaceViewSet(ModelViewSet):
                         name = ''
 
                     if 'image' in no_list_serializer[field][len_list] and no_list_serializer[field][len_list]['image'] != '':
-                        image = f'<img src={no_list_serializer[field][len_list]["image"]}/>'
+                        image = no_list_serializer[field][len_list]["image"]
                         del no_list_serializer[field][len_list]["image"]
                     else:
                         image = ''
