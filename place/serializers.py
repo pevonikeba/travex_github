@@ -74,28 +74,6 @@ class LocationSerializer(CountryFieldMixin, ModelSerializer):
         model = Location
         fields = ('id', 'continent', 'country', 'state', 'city', 'latitude', 'longitude', 'nearest_place',)
 
-class TypeTransportSerializer(ModelSerializer):
-    class Meta:
-        model = TypeTransport
-        fields = ('id', 'name',)
-
-
-class TransportSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-    # name = TypeTransportSerializer(many=True, read_only=True)
-    name = serializers.CharField(source='name.name')
-    class Meta:
-        model = Transport
-        fields = ('id', 'name', 'price', 'description', 'comfortable', 'image',)
-
-    def create(self, validated_data):
-
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return Transport.objects.create(data=data, image=image)
-
-
 class SafeSerializer(ModelSerializer):
     class Meta:
         model = Safe
@@ -286,28 +264,44 @@ class CategorySerializerArslion(ModelSerializer):
         fields = ('id', )
 
 
+class TypeTransportSerializer(ModelSerializer):
+    class Meta:
+        model = TypeTransport
+        fields = ('id', 'name',)
+
+
+class TransportSerializer(ModelSerializer):
+    image = Base64ImageField()  # From DRF Extra Fields
+    # name = TypeTransportSerializer(many=True, read_only=True)
+    # name = serializers.CharField(source='name.name')
+
+    class Meta:
+        model = Transport
+        fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
+
+    def create(self, validated_data):
+
+        image = validated_data.pop('image')
+        data = validated_data.pop('data')
+
+        return Transport.objects.create(data=data, image=image)
+
+
 class PlaceSerializer(ModelSerializer):
 
     class Meta:
         model = Place
         fields = '__all__'
 
-
     id = serializers.ReadOnlyField()
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
-    # print('writer_user: ', writer_user)
-    # writer_user = CustomUserSerializer(many=True, read_only=True)
-
     bookmark = BookmarkPlaceSerializer(many=True, read_only=True)
-
-    # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
 
     # images = serializers.StringRelatedField(many=True, required=False)
     images = ImageSerializer(many=True, required=False)
-
     locations = LocationSerializer(many=True, required=False)
-    transports = TransportSerializer(many=True, required=False)
+    transport = TransportSerializer(many=True, required=False)
     accommodationOptions = AccommodationOptionsSerializer(many=True, required=False)
     uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
     must_see = MustSeeSerializer(many=True, required=False)
@@ -322,11 +316,13 @@ class PlaceSerializer(ModelSerializer):
     flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
 
     def create(self, validated_data):
+        transports_data = None
         print('create aaaa: ', validated_data)
         category_data = validated_data.get('category')
         images_data = validated_data.get('images')
         locations_data = validated_data.get('locations')
-        transports_data = validated_data.get('transports')
+        if 'transport' in validated_data:
+            transports_data = validated_data.pop('transport')
         accommodationOptions_data = validated_data.get('accommodationOptions')
         uniqueness_place_data = validated_data.get('uniqueness_place')
         must_see_data = validated_data.get('must_see')
@@ -340,7 +336,13 @@ class PlaceSerializer(ModelSerializer):
         practical_information_data = validated_data.get('practical_informations')
         flora_fauna_data = validated_data.get('flora_fauna')
 
+
         place = Place.objects.create(**validated_data)
+
+        if transports_data is not None:
+            for item in transports_data:
+                Transport.objects.create(place=place, **item)
+
         if category_data is not None:
             place.category.set(category_data)
         if images_data is not None:
@@ -349,9 +351,9 @@ class PlaceSerializer(ModelSerializer):
         if locations_data is not None:
             for item in locations_data:
                 Location.objects.create(place=place, **item)
-        if transports_data is not None:
-            for transport_data in transports_data:
-                Transport.objects.create(place=place, **transport_data)
+        # if transports_data is not None:
+        #     for transport_data in transports_data:
+        #         Transport.objects.create(place=place, **transport_data)
         if accommodationOptions_data is not None:
             for accommodationOption_data in accommodationOptions_data:
                 AccommodationOptions.objects.create(place=place, **accommodationOption_data)

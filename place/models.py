@@ -179,6 +179,7 @@ class Place(models.Model):
 
     home_page = models.BooleanField(default=False)
 
+
     name = models.CharField(max_length=255, blank=False, default=None)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True)
@@ -332,17 +333,17 @@ class TypeTransport(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
 class Transport(models.Model):
     place = models.ForeignKey(Place, related_name="transport", on_delete=models.CASCADE)
-    name = models.ForeignKey(TypeTransport, on_delete=models.CASCADE, blank=False)
+    type_transport = models.ForeignKey(TypeTransport, related_name="transport", on_delete=models.CASCADE, blank=False)
     price = models.DecimalField(max_digits=13, decimal_places=2, default=None, blank=False)
     description = models.TextField(null=True, blank=True)
     comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, max_length=255)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
 
-
     def __str__(self):
-        return f"{self.name} {self.price} {self.description} {self.comfortable} {self.image}"
+        return f"{self.type_transport} {self.price} {self.description} {self.comfortable} {self.image}"
 
 
 class Safe(models.Model):
@@ -351,6 +352,7 @@ class Safe(models.Model):
     how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
     rating_danger = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
     description = models.TextField(blank=True, null=True)
+
     def __str__(self):
         return f"{self.how_dangerous} {self.rating_danger} {self.description}"
 
