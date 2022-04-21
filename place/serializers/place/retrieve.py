@@ -1,7 +1,7 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from place.models import Place, Image, Transport, AccommodationOptions, MustSee, FloraAndFauna
+from place.models import Place, Image, Transport, AccommodationOption, MustSee, FloraFauna
 from loguru import logger
 
 
@@ -173,21 +173,20 @@ from loguru import logger
 
 class ImageSerializer(serializers.ModelSerializer):
     # path = serializers.SerializerMethodField()
+    # full_url = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Image
-        fields = ('id', 'path',)
+        fields = ('id', 'path', )
+
+    # def get_full_url(self, car):
+    #     request = self.context.get('request')
+    #     photo_url = car.url
+    #     return request.build_absolute_uri(photo_url)
 
     # def get_path(self, obj):
     #     return obj.path
-
-
-def create_p_tag(key, value):
-    return f"<p>{key}: {value}</p>"
-
-
-def create_img_tag(url):
-    return f"<img src={url}/>"
 
 
 def create_section(obj: Place, key: str, icon_name: str, display_type: str, create_children):
@@ -209,12 +208,19 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         fields = ('id', 'images', 'rating', 'location', 'writer_user', 'sections',)
         # depth = 1
 
+    def create_p_tag(self, key, value):
+        return f"<p>{key}: {value}</p>"
+
+    def create_img_tag(self, url):
+        img_src = self.context.get('request').build_absolute_uri(url)
+        return f"<img src={img_src}/>"
+
     def transport_children(self, obj: Place, key: str):
         def create_children(trans: Transport):
-            price = create_p_tag("Price", trans.price)
+            price = self.create_p_tag("Price", trans.price)
             # TODO: add to img "media/" prefix
-            img = create_img_tag(trans.image)
-            comfortable = create_p_tag("Comfortable", trans.comfortable)
+            img = self.create_img_tag(self.context.get('request').build_absolute_uri(trans.image.url))
+            comfortable = self.create_p_tag("Comfortable", trans.comfortable)
             description = trans.description
             return {
                         "id": trans.pk,
@@ -226,8 +232,8 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         return map(create_children, getattr(obj, key).all())
 
     def accommodation_option_children(self, obj: Place, key: str):
-        def create_children(ao: AccommodationOptions):
-            price = create_p_tag("Price", ao.price)
+        def create_children(ao: AccommodationOption):
+            price = self.create_p_tag("Price", ao.price)
             description = ao.description
             return {
                         "id": ao.pk,
@@ -240,7 +246,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def must_see_children(self, obj: Place, key: str):
         def create_children(ms: MustSee):
-            img = create_img_tag(ms.image.url)
+            img = self.create_img_tag(ms.image.url)
             description = ms.description
             return {
                 "id": ms.pk,
@@ -252,8 +258,8 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         return map(create_children, getattr(obj, key).all())
 
     def flora_fauna_children(self, obj: Place, key: str):
-        def create_children(ff: FloraAndFauna):
-            img = create_img_tag(ff.image.url)
+        def create_children(ff: FloraFauna):
+            img = self.create_img_tag(ff.image.url)
             description = ff.description
             return {
                 "id": ff.pk,

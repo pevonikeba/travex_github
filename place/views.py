@@ -523,8 +523,8 @@ plus_place = [
     },
 
     {
-        "header": "Accommodation Options",
-        "key": "accommodation_Option",
+        "header": "Accommodation Option",
+        "key": "accommodation_option",
         "nested": [
             {
                 "placeholder": "Accommodation Options Name",

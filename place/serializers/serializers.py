@@ -8,7 +8,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from place.models import Place, Group, Image, ClimaticConditions, \
-    FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
+    FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
 
@@ -137,9 +137,9 @@ class NaturalPhenomenaSerializer(ModelSerializer):
         return NaturalPhenomena.objects.create(data=data, image=image)
 
 
-class AccommodationOptionsSerializer(ModelSerializer):
+class AccommodationOptionSerializer(ModelSerializer):
     class Meta:
-        model = AccommodationOptions
+        model = AccommodationOption
         fields = ('id', 'name', 'price', 'description',)
 
 
@@ -199,11 +199,11 @@ class WhereToTakeAPictureSerializer(ModelSerializer):
         return WhereToTakeAPicture.objects.create(data=data, image=image)
 
 
-class FloraAndFaunaSerializer(ModelSerializer):
+class FloraFaunaSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
 
     class Meta:
-        model = FloraAndFauna
+        model = FloraFauna
         fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
@@ -307,7 +307,7 @@ class PlaceSerializer(ModelSerializer):
     locations = LocationSerializer(many=True, required=False)
     transport = TransportSerializer(many=True, required=False)
 
-    accommodationOptions = AccommodationOptionsSerializer(many=True, required=False)
+    accommodationOption = AccommodationOptionSerializer(many=True, required=False)
     uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
     must_see = MustSeeSerializer(many=True, required=False)
     where_to_take_a_picture = WhereToTakeAPictureSerializer(many=True, required=False)
@@ -318,7 +318,7 @@ class PlaceSerializer(ModelSerializer):
     vibes = VibeSerializer(many=True, required=False)
     interesting_facts = InterestingFactsSerializer(many=True, required=False)
     practical_informations = PracticalInformationSerializer(many=True, required=False)
-    flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
+    flora_fauna = FloraFaunaSerializer(many=True, required=False)
 
     def create(self, validated_data):
         logger.info("create")
@@ -329,7 +329,7 @@ class PlaceSerializer(ModelSerializer):
         if 'transport' in validated_data:
             transports_data = validated_data.pop('transport')
             logger.info("aaaa")
-        accommodationOptions_data = validated_data.get('accommodationOptions')
+        accommodationOption_data = validated_data.get('accommodationOption')
         uniqueness_place_data = validated_data.get('uniqueness_place')
         must_see_data = validated_data.get('must_see')
         where_to_take_a_picture_data = validated_data.get('where_to_take_a_picture')
