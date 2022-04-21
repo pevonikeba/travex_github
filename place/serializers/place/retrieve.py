@@ -229,7 +229,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                         "id": trans.pk,
                         "title": trans.type_transport.name,
                         "description": f"{img}{price}{comfortable}{description}",
-                        "img": None,
+                        "image": None,
                     }
 
         return map(create_children, getattr(obj, key).all())
@@ -242,7 +242,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                         "id": ao.pk,
                         "title": ao.name,
                         "description": f"{price}{description}",
-                        "img": None,
+                        "image": None,
                     }
 
         return map(create_children, getattr(obj, key).all())
@@ -255,7 +255,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 "id": ms.pk,
                 "title": ms.name,
                 "description": f"{img}{description}",
-                "img": None,
+                "image": None,
             }
 
         return map(create_children, getattr(obj, key).all())
@@ -268,7 +268,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 "id": ff.pk,
                 "title": ff.name,
                 "description": f"{img}{description}",
-                "img": self.create_full_img_url(ff.image.url),
+                "image": self.create_full_img_url(ff.image.url),
             }
 
         return map(create_children, getattr(obj, key).all())
