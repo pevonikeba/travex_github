@@ -172,14 +172,32 @@ from loguru import logger
 #         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
 class ImageSerializer(serializers.ModelSerializer):
-    path = serializers.SerializerMethodField()
+    # path = serializers.SerializerMethodField()
 
     class Meta:
         model = Image
         fields = ('id', 'path',)
 
-    def get_path(self, obj):
-        return obj.path.url
+    # def get_path(self, obj):
+    #     return obj.path
+
+
+def create_p_tag(key, value):
+    return f"<p>{key}: {value}</p>"
+
+
+def create_img_tag(url):
+    return f"<img src={url}/>"
+
+
+def create_section(obj: Place, key: str, icon_name: str, display_type: str, create_children):
+    return {
+            "title": key.capitalize(),
+            "key": key,
+            "icon_name": icon_name,
+            "display_type": display_type,
+            "children": create_children(obj, key),
+        }
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
@@ -191,20 +209,12 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         fields = ('id', 'images', 'rating', 'location', 'writer_user', 'sections',)
         # depth = 1
 
-    @staticmethod
-    def create_p_tag(key, value):
-        return f"<p>{key}: {value}</p>"
-
-    @staticmethod
-    def create_img_tag(url):
-        return f"<img src={url}/>"
-
     def transport_children(self, obj: Place, key: str):
         def create_children(trans: Transport):
-            price = self.create_p_tag("Price", trans.price)
+            price = create_p_tag("Price", trans.price)
             # TODO: add to img "media/" prefix
-            img = self.create_img_tag(trans.image.url)
-            comfortable = self.create_p_tag("Comfortable", trans.comfortable)
+            img = create_img_tag(trans.image)
+            comfortable = create_p_tag("Comfortable", trans.comfortable)
             description = trans.description
             return {
                         "id": trans.pk,
@@ -217,7 +227,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def accommodation_option_children(self, obj: Place, key: str):
         def create_children(ao: AccommodationOptions):
-            price = self.create_p_tag("Price", ao.price)
+            price = create_p_tag("Price", ao.price)
             description = ao.description
             return {
                         "id": ao.pk,
@@ -230,7 +240,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def must_see_children(self, obj: Place, key: str):
         def create_children(ms: MustSee):
-            img = self.create_img_tag(ms.image.url)
+            img = create_img_tag(ms.image.url)
             description = ms.description
             return {
                 "id": ms.pk,
@@ -243,7 +253,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def flora_fauna_children(self, obj: Place, key: str):
         def create_children(ff: FloraAndFauna):
-            img = self.create_img_tag(ff.image.url)
+            img = create_img_tag(ff.image.url)
             description = ff.description
             return {
                 "id": ff.pk,
@@ -254,39 +264,30 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
         return map(create_children, getattr(obj, key).all())
 
-    def create_section(self, obj: Place, key: str, icon_name: str, display_type: str, create_children):
-        return {
-                "title": key.capitalize(),
-                "key": key,
-                "icon_name": icon_name,
-                "display_type": display_type,
-                "children": create_children(obj, key),
-            }
-
     def get_sections(self, obj: Place):
         return [
-            self.create_section(
+            create_section(
                 key="transport",
                 obj=obj,
                 icon_name="article",
                 display_type="drop_down",
                 create_children=self.transport_children,
             ),
-            self.create_section(
+            create_section(
                 key="accommodation_option",
                 obj=obj,
                 icon_name="article",
                 display_type="drop_down",
                 create_children=self.accommodation_option_children,
             ),
-            self.create_section(
+            create_section(
                 key="must_see",
                 obj=obj,
                 icon_name="article",
                 display_type="drop_down",
                 create_children=self.must_see_children,
             ),
-            self.create_section(
+            create_section(
                 key="flora_fauna",
                 obj=obj,
                 icon_name="article",
