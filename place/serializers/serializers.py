@@ -1,3 +1,5 @@
+from loguru import logger
+
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
 from django.contrib.auth.hashers import make_password
 from django_countries.serializers import CountryFieldMixin
@@ -271,7 +273,7 @@ class TypeTransportSerializer(ModelSerializer):
 
 
 class TransportSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
+    image = Base64ImageField(required=False)  # From DRF Extra Fields
     # name = TypeTransportSerializer(many=True, read_only=True)
     # name = serializers.CharField(source='name.name')
 
@@ -279,8 +281,12 @@ class TransportSerializer(ModelSerializer):
         model = Transport
         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
-    def create(self, validated_data):
+    def get_validators(self):
+        logger.info("get_validators")
+        return super(TransportSerializer, self).get_validators()
 
+    def create(self, validated_data):
+        logger.info(" Transort create")
         image = validated_data.pop('image')
         data = validated_data.pop('data')
 
@@ -300,6 +306,7 @@ class PlaceSerializer(ModelSerializer):
     images = ImageSerializer(many=True, required=False)
     locations = LocationSerializer(many=True, required=False)
     transport = TransportSerializer(many=True, required=False)
+
     accommodationOptions = AccommodationOptionsSerializer(many=True, required=False)
     uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
     must_see = MustSeeSerializer(many=True, required=False)
@@ -314,12 +321,14 @@ class PlaceSerializer(ModelSerializer):
     flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
 
     def create(self, validated_data):
+        logger.info("create")
         transports_data = None
         category_data = validated_data.get('category')
         images_data = validated_data.get('images')
         locations_data = validated_data.get('locations')
         if 'transport' in validated_data:
             transports_data = validated_data.pop('transport')
+            logger.info("aaaa")
         accommodationOptions_data = validated_data.get('accommodationOptions')
         uniqueness_place_data = validated_data.get('uniqueness_place')
         must_see_data = validated_data.get('must_see')

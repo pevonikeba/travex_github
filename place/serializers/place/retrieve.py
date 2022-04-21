@@ -1,7 +1,8 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from place.models import Place, Image
+from place.models import Place, Image, Transport, AccommodationOptions, MustSee, FloraAndFauna
+from loguru import logger
 
 
 {
@@ -165,10 +166,20 @@ from place.models import Place, Image
 }
 
 
+# class TransportSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Transport
+#         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
+
 class ImageSerializer(serializers.ModelSerializer):
+    path = serializers.SerializerMethodField()
+
     class Meta:
         model = Image
         fields = ('id', 'path',)
+
+    def get_path(self, obj):
+        return obj.path.url
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
@@ -180,40 +191,111 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         fields = ('id', 'images', 'rating', 'location', 'writer_user', 'sections',)
         # depth = 1
 
-    def create_section(self):
-        return {
-                "children": [
-                    {
-                        "id": 1,
-                        "title": "",
-                        "description": "<p>Continent: asia</p><p>Country: Nigeria</p><p>region: Kebbi</p><p>City: Waje</p><p>Latitude: 11.5516225000</p><p>Longitude: 5.4981583000</p><p>nearest_place: nearest place</p>"
+    @staticmethod
+    def create_p_tag(key, value):
+        return f"<p>{key}: {value}</p>"
+
+    @staticmethod
+    def create_img_tag(url):
+        return f"<img src={url}/>"
+
+    def transport_children(self, obj: Place, key: str):
+        def create_children(trans: Transport):
+            price = self.create_p_tag("Price", trans.price)
+            # TODO: add to img "media/" prefix
+            img = self.create_img_tag(trans.image.url)
+            comfortable = self.create_p_tag("Comfortable", trans.comfortable)
+            description = trans.description
+            return {
+                        "id": trans.pk,
+                        "title": trans.type_transport.name,
+                        "description": f"{img}{price}{comfortable}{description}",
+                        "img": None,
                     }
-                ],
-                "title": "Location",
-                "key": "location",
-                "icon_name": "article",
-                "display_type": "drop_down"
+
+        return map(create_children, getattr(obj, key).all())
+
+    def accommodation_option_children(self, obj: Place, key: str):
+        def create_children(ao: AccommodationOptions):
+            price = self.create_p_tag("Price", ao.price)
+            description = ao.description
+            return {
+                        "id": ao.pk,
+                        "title": ao.name,
+                        "description": f"{price}{description}",
+                        "img": None,
+                    }
+
+        return map(create_children, getattr(obj, key).all())
+
+    def must_see_children(self, obj: Place, key: str):
+        def create_children(ms: MustSee):
+            img = self.create_img_tag(ms.image.url)
+            description = ms.description
+            return {
+                "id": ms.pk,
+                "title": ms.name,
+                "description": f"{img}{description}",
+                "img": None,
             }
 
-    def get_sections(self, obj):
+        return map(create_children, getattr(obj, key).all())
+
+    def flora_fauna_children(self, obj: Place, key: str):
+        def create_children(ff: FloraAndFauna):
+            img = self.create_img_tag(ff.image.url)
+            description = ff.description
+            return {
+                "id": ff.pk,
+                "title": ff.name,
+                "description": f"{img}{description}",
+                "img": ff.image.url,
+            }
+
+        return map(create_children, getattr(obj, key).all())
+
+    def create_section(self, obj: Place, key: str, icon_name: str, display_type: str, create_children):
+        return {
+                "title": key.capitalize(),
+                "key": key,
+                "icon_name": icon_name,
+                "display_type": display_type,
+                "children": create_children(obj, key),
+            }
+
+    def get_sections(self, obj: Place):
         return [
-            {
-                "key": "overview",
-                "title": "Overview",
-                "display_type": "drop_down",
-                "children": {
-                    "id": 1,
-                    "title": "overview.name",
-                    "description": "<p>dfgdsfg</p>"
-                },
-            },
+            self.create_section(
+                key="transport",
+                obj=obj,
+                icon_name="article",
+                display_type="drop_down",
+                create_children=self.transport_children,
+            ),
+            self.create_section(
+                key="accommodation_option",
+                obj=obj,
+                icon_name="article",
+                display_type="drop_down",
+                create_children=self.accommodation_option_children,
+            ),
+            self.create_section(
+                key="must_see",
+                obj=obj,
+                icon_name="article",
+                display_type="drop_down",
+                create_children=self.must_see_children,
+            ),
+            self.create_section(
+                key="flora_fauna",
+                obj=obj,
+                icon_name="article",
+                display_type="grid",
+                create_children=self.flora_fauna_children,
+            ),
+
         ]
 
-    def get_overview(self, obj):
-        return {
-            "name": obj.name,
-            "description": obj.description,
-        }
 
 
 
