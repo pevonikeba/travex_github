@@ -208,12 +208,15 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         fields = ('id', 'images', 'rating', 'location', 'writer_user', 'sections',)
         # depth = 1
 
+    def create_full_img_url(self, url):
+        return self.context.get('request').build_absolute_uri(url)
+
     def create_p_tag(self, key, value):
         return f"<p>{key}: {value}</p>"
 
     def create_img_tag(self, url):
-        img_src = self.context.get('request').build_absolute_uri(url)
-        return f"<img src={img_src}/>"
+        full_img_url = self.create_full_img_url(url)
+        return f"<img src={full_img_url}/>"
 
     def transport_children(self, obj: Place, key: str):
         def create_children(trans: Transport):
@@ -265,7 +268,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 "id": ff.pk,
                 "title": ff.name,
                 "description": f"{img}{description}",
-                "img": ff.image.url,
+                "img": self.create_full_img_url(ff.image.url),
             }
 
         return map(create_children, getattr(obj, key).all())
@@ -275,14 +278,14 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section(
                 key="transport",
                 obj=obj,
-                icon_name="article",
+                icon_name="directions",
                 display_type="drop_down",
                 create_children=self.transport_children,
             ),
             create_section(
                 key="accommodation_option",
                 obj=obj,
-                icon_name="article",
+                icon_name="bed",
                 display_type="drop_down",
                 create_children=self.accommodation_option_children,
             ),
