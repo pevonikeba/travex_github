@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from place.models import Place, Image, Transport, AccommodationOption, MustSee, FloraFauna
 from loguru import logger
+from place.utils.utils import create_section
 
 
 {
@@ -189,16 +190,6 @@ class ImageSerializer(serializers.ModelSerializer):
     #     return obj.path
 
 
-def create_section(obj: Place, key: str, icon_name: str, display_type: str, create_children):
-    return {
-            "title": key.capitalize(),
-            "key": key,
-            "icon_name": icon_name,
-            "display_type": display_type,
-            "children": create_children(obj, key),
-        }
-
-
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     images = ImageSerializer(many=True, required=False)
@@ -218,60 +209,47 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         full_img_url = self.create_full_img_url(url)
         return f"<img src={full_img_url}/>"
 
-    def transport_children(self, obj: Place, key: str):
-        def create_children(trans: Transport):
-            price = self.create_p_tag("Price", trans.price)
-            # TODO: add to img "media/" prefix
-            img = self.create_img_tag(self.context.get('request').build_absolute_uri(trans.image.url))
-            comfortable = self.create_p_tag("Comfortable", trans.comfortable)
-            description = trans.description
-            return {
-                        "id": trans.pk,
-                        "title": trans.type_transport.name,
-                        "description": f"{img}{price}{comfortable}{description}",
-                        "image": None,
-                    }
+    def transport_children(self, trans: Transport):
+        price = self.create_p_tag("Price", trans.price)
+        img = self.create_img_tag(self.context.get('request').build_absolute_uri(trans.image.url))
+        comfortable = self.create_p_tag("Comfortable", trans.comfortable)
+        description = trans.description
+        return {
+                    "id": trans.pk,
+                    "title": trans.type_transport.name,
+                    "description": f"{img}{price}{comfortable}{description}",
+                    "image": None,
+                }
 
-        return map(create_children, getattr(obj, key).all())
+    def accommodation_option_children(self, ao: AccommodationOption):
+        price = self.create_p_tag("Price", ao.price)
+        description = ao.description
+        return {
+                    "id": ao.pk,
+                    "title": ao.name,
+                    "description": f"{price}{description}",
+                    "image": None,
+                }
 
-    def accommodation_option_children(self, obj: Place, key: str):
-        def create_children(ao: AccommodationOption):
-            price = self.create_p_tag("Price", ao.price)
-            description = ao.description
-            return {
-                        "id": ao.pk,
-                        "title": ao.name,
-                        "description": f"{price}{description}",
-                        "image": None,
-                    }
+    def must_see_children(self, ms: MustSee):
+        img = self.create_img_tag(ms.image.url)
+        description = ms.description
+        return {
+            "id": ms.pk,
+            "title": ms.name,
+            "description": f"{img}{description}",
+            "image": None,
+        }
 
-        return map(create_children, getattr(obj, key).all())
-
-    def must_see_children(self, obj: Place, key: str):
-        def create_children(ms: MustSee):
-            img = self.create_img_tag(ms.image.url)
-            description = ms.description
-            return {
-                "id": ms.pk,
-                "title": ms.name,
-                "description": f"{img}{description}",
-                "image": None,
-            }
-
-        return map(create_children, getattr(obj, key).all())
-
-    def flora_fauna_children(self, obj: Place, key: str):
-        def create_children(ff: FloraFauna):
-            img = self.create_img_tag(ff.image.url)
-            description = ff.description
-            return {
-                "id": ff.pk,
-                "title": ff.name,
-                "description": f"{img}{description}",
-                "image": self.create_full_img_url(ff.image.url),
-            }
-
-        return map(create_children, getattr(obj, key).all())
+    def flora_fauna_children(self, ff: FloraFauna):
+        img = self.create_img_tag(ff.image.url)
+        description = ff.description
+        return {
+            "id": ff.pk,
+            "title": ff.name,
+            "description": f"{img}{description}",
+            "image": self.create_full_img_url(ff.image.url),
+        }
 
     def get_sections(self, obj: Place):
         return [
@@ -303,7 +281,6 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 display_type="grid",
                 create_children=self.flora_fauna_children,
             ),
-
         ]
 
 

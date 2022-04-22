@@ -146,6 +146,8 @@ MIDDLEWARE = [
 
     'django.middleware.locale.LocaleMiddleware',
     # 'place.middleware.format_middleware.FormatMiddleware',
+    'place.middleware.log.APILogMiddleware',
+
 
 ]
 

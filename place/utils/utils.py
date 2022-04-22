@@ -1,6 +1,8 @@
 from rest_framework.exceptions import APIException
 from rest_framework.views import exception_handler
 
+from place.models import Place
+
 
 def custom_exception_handler(exc, context):
     # Call REST framework's default exception handler first,
@@ -17,3 +19,13 @@ def custom_exception_handler(exc, context):
     # Now add the HTTP status code to the response.
 
     return response
+
+
+def create_section(obj: Place, key: str, icon_name: str, display_type: str, create_children):
+    return {
+        "title": key.capitalize(),
+        "key": key,
+        "icon_name": icon_name,
+        "display_type": display_type,
+        "children": map(create_children, getattr(obj, key).all()),
+    }
