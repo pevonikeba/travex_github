@@ -1,3 +1,5 @@
+from loguru import logger
+
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
 from django.contrib.auth.hashers import make_password
 from django_countries.serializers import CountryFieldMixin
@@ -6,7 +8,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from place.models import Place, Group, Image, ClimaticConditions, \
-    FloraAndFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOptions, \
+    FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
 
@@ -135,9 +137,9 @@ class NaturalPhenomenaSerializer(ModelSerializer):
         return NaturalPhenomena.objects.create(data=data, image=image)
 
 
-class AccommodationOptionsSerializer(ModelSerializer):
+class AccommodationOptionSerializer(ModelSerializer):
     class Meta:
-        model = AccommodationOptions
+        model = AccommodationOption
         fields = ('id', 'name', 'price', 'description',)
 
 
@@ -197,11 +199,11 @@ class WhereToTakeAPictureSerializer(ModelSerializer):
         return WhereToTakeAPicture.objects.create(data=data, image=image)
 
 
-class FloraAndFaunaSerializer(ModelSerializer):
+class FloraFaunaSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
 
     class Meta:
-        model = FloraAndFauna
+        model = FloraFauna
         fields = ('id', 'name', 'description', 'image',)
 
     def create(self, validated_data):
@@ -271,7 +273,7 @@ class TypeTransportSerializer(ModelSerializer):
 
 
 class TransportSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
+    image = Base64ImageField(required=False)  # From DRF Extra Fields
     # name = TypeTransportSerializer(many=True, read_only=True)
     # name = serializers.CharField(source='name.name')
 
@@ -279,8 +281,12 @@ class TransportSerializer(ModelSerializer):
         model = Transport
         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
-    def create(self, validated_data):
+    def get_validators(self):
+        logger.info("get_validators")
+        return super(TransportSerializer, self).get_validators()
 
+    def create(self, validated_data):
+        logger.info(" Transort create")
         image = validated_data.pop('image')
         data = validated_data.pop('data')
 
@@ -300,7 +306,8 @@ class PlaceSerializer(ModelSerializer):
     images = ImageSerializer(many=True, required=False)
     locations = LocationSerializer(many=True, required=False)
     transport = TransportSerializer(many=True, required=False)
-    accommodationOptions = AccommodationOptionsSerializer(many=True, required=False)
+
+    accommodationOption = AccommodationOptionSerializer(many=True, required=False)
     uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
     must_see = MustSeeSerializer(many=True, required=False)
     where_to_take_a_picture = WhereToTakeAPictureSerializer(many=True, required=False)
@@ -311,16 +318,18 @@ class PlaceSerializer(ModelSerializer):
     vibes = VibeSerializer(many=True, required=False)
     interesting_facts = InterestingFactsSerializer(many=True, required=False)
     practical_informations = PracticalInformationSerializer(many=True, required=False)
-    flora_fauna = FloraAndFaunaSerializer(many=True, required=False)
+    flora_fauna = FloraFaunaSerializer(many=True, required=False)
 
     def create(self, validated_data):
+        logger.info("create")
         transports_data = None
         category_data = validated_data.get('category')
         images_data = validated_data.get('images')
         locations_data = validated_data.get('locations')
         if 'transport' in validated_data:
             transports_data = validated_data.pop('transport')
-        accommodationOptions_data = validated_data.get('accommodationOptions')
+            logger.info("aaaa")
+        accommodationOption_data = validated_data.get('accommodationOption')
         uniqueness_place_data = validated_data.get('uniqueness_place')
         must_see_data = validated_data.get('must_see')
         where_to_take_a_picture_data = validated_data.get('where_to_take_a_picture')

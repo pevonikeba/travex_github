@@ -306,6 +306,7 @@ class Location(models.Model):
 #
 # mptt.register(Location, order_insertion_by=['name'])
 
+
 class TypeTransport(models.Model):
     name = models.CharField(max_length=255)
 
@@ -335,6 +336,7 @@ class Safe(models.Model):
     def __str__(self):
         return f"{self.how_dangerous} {self.rating_danger} {self.description}"
 
+
 class TypeCuisine(models.Model):
     type = models.CharField(max_length=255)
 
@@ -352,6 +354,7 @@ class Cuisine(models.Model):
 
     def __str__(self):
         return f"{self.place.name} {self.name}"
+
 
 class Entertainment(models.Model):
     place = models.ForeignKey(Place, related_name="entertainment", on_delete=models.CASCADE)
@@ -373,18 +376,17 @@ class NaturalPhenomena(models.Model):
         return f"{self.name}  {self.description} {self.image}"
 
 
-
 class Image(models.Model):
     path = models.ImageField(upload_to='images/', blank=False, default=None)
-    place = models.ForeignKey(Place, related_name="images", on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, related_name="images", blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.path}"
 
 
-class AccommodationOptions(models.Model):
+class AccommodationOption(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
-    place = models.ForeignKey(Place, related_name="accommodation_Option", on_delete=models.CASCADE, null=True)
+    place = models.ForeignKey(Place, related_name="accommodation_option", on_delete=models.CASCADE, null=True)
     price = models.DecimalField(max_digits=13, decimal_places=2, blank=False, default=10)
     description = models.TextField(null=True, blank=True)
 
@@ -401,6 +403,7 @@ class UniquenessPlace(models.Model):
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
 
+
 class MustSee(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="must_see", on_delete=models.CASCADE)
@@ -409,6 +412,7 @@ class MustSee(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
+
 
 class Vibe(models.Model):
     place = models.ForeignKey(Place, related_name="vibe", on_delete=models.CASCADE)
@@ -442,7 +446,7 @@ class PracticalInformation(models.Model):
     def __str__(self):
         return f"{self.place.name} {self.description}"
 
-class FloraAndFauna(models.Model):
+class FloraFauna(models.Model):
     place = models.ForeignKey(Place, related_name="flora_fauna", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True)

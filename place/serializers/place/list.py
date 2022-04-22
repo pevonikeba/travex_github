@@ -14,7 +14,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ('email', 'username', 'image',)
 
 
-class PlaceGetListSerializer(serializers.ModelSerializer):
+class PlaceListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
         fields = ('id', 'name', 'description', 'images', 'rating', 'location', 'writer_user',)

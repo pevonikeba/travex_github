@@ -10,10 +10,10 @@ from mptt.admin import MPTTModelAdmin
 
 
 from place import models
-from place.models import Place, Group, Image, Transport, AccommodationOptions, UniquenessPlace, MustSee, \
+from place.models import Place, Group, Image, Transport, AccommodationOption, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, ClimaticConditions, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
-    Vibe, FloraAndFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
+    Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
     PracticalInformation, TypeTransport, TypeCuisine, Bookmark, Location
 
 
@@ -49,7 +49,7 @@ class ImageInline(TabularInline):
 
 class AccommodationOptionsInline(TabularInline):
     extra = 0
-    model = AccommodationOptions
+    model = AccommodationOption
 
 class UniquenessPlaceInline(TabularInline):
     extra = 0
@@ -67,9 +67,9 @@ class WhereToTakeAPictureInline(TabularInline):
     extra = 0
     model = WhereToTakeAPicture
 
-class FloraAndFaunaInline(TabularInline):
+class FloraFaunaInline(TabularInline):
     extra = 0
-    model = FloraAndFauna
+    model = FloraFauna
 
 class InterestingFactsInline(TabularInline):
     extra = 0
@@ -89,7 +89,7 @@ class PlaceAdmin(ModelAdmin):
     save_on_top = True
     list_display = ('name', 'id', "home_page",)
     list_filter = ('home_page',)
-    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
+    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraFaunaInline, BookmarkInline]
 
     # def save_model(self, request, obj, form, change):
     #
