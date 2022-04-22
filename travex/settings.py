@@ -146,9 +146,7 @@ MIDDLEWARE = [
 
     'django.middleware.locale.LocaleMiddleware',
     # 'place.middleware.format_middleware.FormatMiddleware',
-    'place.middleware.log.APILogMiddleware',
-
-
+    # 'place.middleware.log.APILogMiddleware',
 ]
 
 ROOT_URLCONF = 'travex.urls'
@@ -315,7 +313,7 @@ EMAIL_HOST_USER = 'travel.guid2022@gmail.com'
 EMAIL_HOST_PASSWORD = 'Helloworld98!'
 EMAIL_PORT = 587
 # MAILER_LIST = ['arslion@@yandex.ru']
-ADMINS = [('Arslion', 'arslion@yandex.ru')]
+# ADMINS = [('Arslion', 'arslion@yandex.ru')]
 # DEFAULT_FROM_EMAIL = 'travel.guid2022@gmail.com'
 
 # DOMAIN = '127.0.0.1:8000'
