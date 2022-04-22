@@ -314,7 +314,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'travel.guid2022@gmail.com'
 EMAIL_HOST_PASSWORD = 'Helloworld98!'
 EMAIL_PORT = 587
-
+# MAILER_LIST = ['arslion@@yandex.ru']
+ADMINS = [('Arslion', 'arslion@yandex.ru')]
+# DEFAULT_FROM_EMAIL = 'travel.guid2022@gmail.com'
 
 # DOMAIN = '127.0.0.1:8000'
 DOMAIN = '159.223.216.170'
@@ -374,3 +376,38 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # }
 
 MPTT_ADMIN_LEVEL_INDENT = 20
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+    'verbose': {
+    'format': '%(levelname)s [%(asctime)s] %(module)s %(message)s'
+    },
+    },
+    'handlers': {
+        # 'console': {
+        # 'level': 'DEBUG',
+        # 'class': 'logging.StreamHandler',
+        # 'formatter': 'simple'
+        # },
+        # 'file': {
+        # 'class': 'logging.handlers.RotatingFileHandler',
+        # 'formatter': 'verbose',
+        # 'filename': '/var/www/logs/ibiddjango.log',
+        # 'maxBytes': 1024000,
+        # 'backupCount': 3,
+        # },
+        'mail_admins': {
+        'level': 'ERROR',
+        'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django': {
+        'handlers': ['mail_admins'],
+        'propagate': True,
+        'level': 'DEBUG',
+        },
+    }
+}
