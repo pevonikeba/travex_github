@@ -6,7 +6,7 @@ from loguru import logger
 from place.utils.utils import create_section
 
 
-{
+a = {
 "sections": [
                 {
                     "children": [
@@ -211,7 +211,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def transport_children(self, trans: Transport):
         price = self.create_p_tag("Price", trans.price)
-        img = self.create_img_tag(self.context.get('request').build_absolute_uri(trans.image.url))
+        img = self.create_img_tag(trans.image.url) if trans.image else ""
         comfortable = self.create_p_tag("Comfortable", trans.comfortable)
         description = trans.description
         return {
@@ -232,7 +232,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 }
 
     def must_see_children(self, ms: MustSee):
-        img = self.create_img_tag(ms.image.url)
+        img = self.create_img_tag(ms.image.url) if ms.image else ""
         description = ms.description
         return {
             "id": ms.pk,
@@ -242,7 +242,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         }
 
     def flora_fauna_children(self, ff: FloraFauna):
-        img = self.create_img_tag(ff.image.url)
+        img = self.create_img_tag(ff.image.url) if ff.image else ""
         description = ff.description
         return {
             "id": ff.pk,

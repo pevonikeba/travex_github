@@ -1,10 +1,15 @@
 
+temp = [
+
+]
+
 plus_place = [
     # TODO: required field for every object
     {
         "header": "General Info",
         "key": None,
-        "children": [
+        "is_nested": False,
+        "inputs": [
             {
                 "placeholder": "Name",
                 'title': 'Name',
@@ -42,7 +47,8 @@ plus_place = [
     {
         "header": "Images",
         "key": 'images',
-        "children": [
+        "is_nested": False,
+        "inputs": [
 
             {
                 'title': "Images",
@@ -57,8 +63,8 @@ plus_place = [
     {
         "header": "Category",
         "key": None,
-
-        "children": [
+        "is_nested": False,
+        "inputs": [
             {
                 'title': 'Category',
                 "key": 'category',
@@ -100,8 +106,8 @@ plus_place = [
     {
         "header": "Civilization",
         "key": None,
-
-        "children": [
+        "is_nested": False,
+        "inputs": [
             {
                 "placeholder": "Population",
                 'title': "Population",
@@ -184,7 +190,8 @@ plus_place = [
     {
         "header": "Climate",
         "key": None,
-        "children": [
+        "is_nested": False,
+        "inputs": [
             {
                 "placeholder": "Climate",
                 'title': 'Climate',
@@ -213,7 +220,8 @@ plus_place = [
     {
         "header": "Geographical Feature",
         'key': None,
-        "children": [
+        "is_nested": False,
+        "inputs": [
             {
                 "placeholder": "Geographical Feature",
                 'title': 'Geographical Feature',
@@ -234,7 +242,8 @@ plus_place = [
     {
         "header": "Transport",
         "key": "transport",
-        "nested": [
+        "is_nested": True,
+        "inputs": [
             {
                 "placeholder": "Kind Of Transport",
                 'title': 'Kind Of Transport',
@@ -295,7 +304,9 @@ plus_place = [
         # TODO: header nuzhno pridumat cto by oharektezowala children
         "header": "---------------------------------------------------------------------------------------------------------------------------------------------------------------------",
         "key": None,
-        "nested": [
+        "is_nested": True,
+
+        "inputs": [
             {
                 "placeholder": "Nearest Airport",
                 'title': 'Nearest Airport',
@@ -318,7 +329,8 @@ plus_place = [
     {
         "header": "Cuisine",
         "key": "cuisine",
-        "nested": [
+        "is_nested": True,
+        "inputs": [
             {
                 "placeholder": "Kind Of Cuisine",
                 'title': 'Kind Of Cuisine',
@@ -362,7 +374,8 @@ plus_place = [
     {
         "header": "Safe",
         "key": "safe",
-        "nested": [
+        "is_nested": True,
+        "inputs": [
             {
                 "placeholder": "Safe Name",
                 'title': 'Safe Name',
@@ -404,7 +417,9 @@ plus_place = [
     {
         "header": "Entertainment",
         "key": "entertainment",
-        "nested": [
+        "is_nested": True,
+
+        "inputs": [
             {
                 "placeholder": "Entertainment Name",
                 'title': 'Entertainment Name',
@@ -431,7 +446,9 @@ plus_place = [
     {
         "header": "Natural Phenomena",
         "key": "natural_phenomena",
-        "nested": [
+        "is_nested": True,
+
+        "inputs": [
             {
                 "placeholder": "Natural Phenomena Name",
                 'title': 'Natural Phenomena Name',
@@ -458,7 +475,8 @@ plus_place = [
     {
         "header": "Accommodation Option",
         "key": "accommodation_option",
-        "nested": [
+        "is_nested": True,
+        "inputs": [
             {
                 "placeholder": "Accommodation Options Name",
                 'title': 'Accommodation Options Name',
@@ -486,7 +504,8 @@ plus_place = [
     {
         "header": "Uniqueness Place",
         "key": "uniqueness_place",
-        "nested": [
+        "is_nested": True,
+        "inputs": [
             {
                 "placeholder": "Uniqueness Place Name",
                 'title': 'Uniqueness Place Name',
@@ -515,7 +534,9 @@ plus_place = [
     {
         "header": "Must See",
         "key": "must_see",
-        "nested": [
+        "is_nested": True,
+
+        "inputs": [
             {
                 "placeholder": "Must See Name",
                 'title': 'Must See Name',
@@ -544,7 +565,8 @@ plus_place = [
     {
         "header": "Vibe",
         "key": "vibe",
-        "nested": [
+        "is_nested": True,
+        "inputs": [
             {
                 "placeholder": "Vibe Name",
                 'title': 'Vibe Name',
@@ -563,7 +585,9 @@ plus_place = [
     {
         "header": "Where To Take A Picture",
         "key": "where_to_take_a_picture",
-        "nested": [
+        "is_nested": True,
+
+        "inputs": [
             {
                 "placeholder": "Where To Take A Picture Name",
                 'title': 'Where To Take A Picture Name',
@@ -590,7 +614,9 @@ plus_place = [
     {
         "header": "Interesting Facts",
         "key": "interesting_fact",
-        "nested": [
+        "is_nested": True,
+
+        "inputs": [
             {
                 "placeholder": "Description",
                 'title': "Description",
@@ -610,7 +636,8 @@ plus_place = [
     {
         "header": "Practical Information",
         "key": "practical_information",
-        "nested": [
+       "is_nested": True,
+        "inputs": [
             {
                 "placeholder": "Description",
                 'title': "Description",
@@ -622,7 +649,9 @@ plus_place = [
     {
         "header": "FloraAndFauna",
         "key": "flora_fauna",
-        "nested": [
+        "is_nested": True,
+
+        "inputs": [
             {
                 "placeholder": "FloraAndFauna Name",
                 'title': 'FloraAndFauna Name',
