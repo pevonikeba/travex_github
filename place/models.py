@@ -507,7 +507,7 @@ class Bookmark(models.Model):
 
 class Group(models.Model):
     name = models.CharField(max_length=255)
-    places = models.ManyToManyField(Place, verbose_name="place", related_name="groups",
+    place = models.ManyToManyField(Place, verbose_name="place", related_name="groups",
                                     blank=True)
 
     def __str__(self):
