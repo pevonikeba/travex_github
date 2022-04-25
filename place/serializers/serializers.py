@@ -504,9 +504,7 @@ class UserPlaceRelationSerializer(ModelSerializer):
         fields = ('id', 'place', 'in_bookmarks', 'rating', 'description_rating')
 
 
-
 class GroupSerializer(ModelSerializer):
-
     place = PlaceSerializer(many=True, read_only=True)
 
     class Meta:

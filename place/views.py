@@ -28,7 +28,7 @@ from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRel
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
-from place.serializers.plus_place import plus_place
+from place.serializers.plus_place import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     CategorySerializer, UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
@@ -90,7 +90,7 @@ class PlaceViewSet(ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def plus_place(self, request):
-        return Response(plus_place)
+        return Response(get_plus_place())
 
     @action(detail=False, methods=["get"])
     def test(self, request):

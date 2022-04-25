@@ -1,27 +1,8 @@
-from place.models import CLIMATE_CHOICES
+from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport
+from django.db import models
+from .serializers import TypeTransportSerializer
+
 from loguru import logger
-
-
-
-def getClimateOptions():
-    # def from_tuple_to_dict(choice: tuple):
-    #     return {
-    #         "text": choice[1],
-    #         "value": choice[0]
-    #     }
-    # return map(from_tuple_to_dict, CLIMATE_CHOICES)
-
-    climateOptions = []
-
-    return {
-        "options": [
-            {"text": 'Tropical', "value": 1, },
-            {"text": 'Dry', "value": 1, },
-            {"text": 'Mild', "value": 1, },
-            {"text": 'Continental', "value": 1, },
-            {"text": 'Polar', "value": 1, },
-        ]
-    }
 
 
 class FieldTypes:
@@ -45,7 +26,13 @@ nested = [
                  'title': 'Climate',
                  'key': 'climatic_condition',
                  'field_type': FieldTypes.picker,
-                 "options": getClimateOptions(),
+                 "options":  [
+                    {"text": 'Tropical', "value": 1, },
+                    {"text": 'Dry', "value": 1, },
+                    {"text": 'Mild', "value": 1, },
+                    {"text": 'Continental', "value": 1, },
+                    {"text": 'Polar', "value": 1, },
+                    ],
                  'required': True,
              },
          ]
@@ -429,7 +416,29 @@ nested = [
     },
 ]
 
-plus_place = [
+
+def get_choices_options(choices: tuple):
+    def from_tuple_to_dict(choice: tuple):
+        return {
+            "text": choice[1],
+            "value": choice[0]
+        }
+    return map(from_tuple_to_dict, choices)
+
+
+def get_model_options(Obj, serializer):
+    def _transform_dict(obj):
+        return {
+            "text": obj["name"],
+            "value": obj["id"],
+        }
+    options = serializer(data=Obj.objects.all(), many=True)
+    options.is_valid()
+    return map(_transform_dict, options.data)
+
+
+def get_plus_place():
+    return [
     {
         "header": "General Info",
         "key": None,
@@ -614,18 +623,7 @@ plus_place = [
                 'title': 'Kind Of Transport',
                 "key": "type_transport",
                 'field_type': FieldTypes.picker,
-                "options": [
-                    {"text": 'Walking', "value": 1, },
-                    {"text": 'Biking', "value": 2, },
-                    {"text": 'Cars', "value": 3, },
-                    {"text": 'Trains', "value": 4, },
-                    {"text": 'Buses', "value": 5, },
-                    {"text": 'Boats', "value": 6, },
-                    {"text": 'Subways', "value": 7, },
-                    {"text": 'BusesAerial Tramways', "value": 8, },
-                    {"text": 'Flying', "value": 9, },
-                    {"text": 'Funiculars', "value": 10, },
-                ],
+                "options": get_model_options(TypeTransport, TypeTransportSerializer),
                 'required': False,
             },
             {
@@ -647,13 +645,7 @@ plus_place = [
                 'title': "Transport Comfortable",
                 'key': "comfortable",
                 'field_type': FieldTypes.picker,
-                "options": [
-                    {"text": 'Very Comfortable', "value": 'Very Comfortable', },
-                    {"text": 'Comfortable', "value": 'Comfortable', },
-                    {"text": 'Average', "value": 'Average', },
-                    {"text": 'Durable', "value": 'Durable', },
-                    {"text": 'Totally Uncomfortable', "value": 'Totally Uncomfortable', },
-                ],
+                "options": get_choices_options(HOW_COMFORTABLE_CHOICES),
                 'required': False,
             },
             {
