@@ -1,7 +1,41 @@
+from place.models import CLIMATE_CHOICES
+from loguru import logger
 
-temp = [
 
-]
+def getClimateOptions():
+    # def from_tuple_to_dict(choice: tuple):
+    #     return {
+    #         "text": choice[1],
+    #         "value": choice[0]
+    #     }
+    # return map(from_tuple_to_dict, CLIMATE_CHOICES)
+
+    climateOptions = []
+
+    return {
+        "options": [
+            {"text": 'Tropical', "value": 1, },
+            {"text": 'Dry', "value": 1, },
+            {"text": 'Mild', "value": 1, },
+            {"text": 'Continental', "value": 1, },
+            {"text": 'Polar', "value": 1, },
+        ]
+    }
+
+
+
+
+
+
+class FieldTypes:
+    char_field = "char_field"
+    text_field = "text_field"
+    int_field = "int_field"
+    float_field = "float_field"
+    picker = "picker"
+    image_field = "image_field"
+    multi_select = "multi_select"
+
 
 plus_place = [
     # TODO: required field for every object
@@ -13,32 +47,33 @@ plus_place = [
             {
                 "placeholder": "Name",
                 'title': 'Name',
-                'required': True,
                 "key": 'name',
-                'field_type': 'charfield'
+                'field_type': FieldTypes.char_field,
+                'required': True,
             },
 
             {
                 "placeholder": "Nickname",
                 'title': 'Nickname',
                 "key": 'nickname',
-                'field_type': 'charfield'
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Overview",
                 'title': "Overview",
-                'required': True,
                 "key": 'description',
-                'field_type': "textfield"
+                'field_type': FieldTypes.text_field,
+                'required': True,
             },
 
             {
                 "placeholder": "Rating",
                 'title': "Rating",
-                'required': True,
                 "key": 'rating',
-                'field_type': "intfield",
+                'field_type': FieldTypes.int_field,
+                'required': True,
             }
 
         ]
@@ -52,9 +87,9 @@ plus_place = [
 
             {
                 'title': "Images",
-                'required': True,
                 "key": 'path',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': True,
             },
 
         ]
@@ -68,8 +103,7 @@ plus_place = [
             {
                 'title': 'Category',
                 "key": 'category',
-                'required': True,
-                'field_type': 'multiselect',
+                'field_type': FieldTypes.multi_select,
                 "options": [
                     {"text": 'Active', "value": 1, },
                     {"text": 'Adventures', "value": 1, },
@@ -97,7 +131,8 @@ plus_place = [
                     {"text": 'Honeymoon', "value": 1, },
                     {"text": 'Urban', "value": 1, },
                     {"text": 'Welness', "value": 1, },
-                ]
+                ],
+                'required': True,
             },
 
         ]
@@ -112,77 +147,88 @@ plus_place = [
                 "placeholder": "Population",
                 'title': "Population",
                 'key': "population",
-                'field_type': "intfield"
+                'field_type': FieldTypes.int_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Type Of People Around",
                 'title': "Type Of People Around",
                 'key': "type_of_people_around",
-                'field_type': "textfield"
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Turist Rating",
                 'title': "Turist Rating",
                 'key': "turist_rating",
-                'field_type': "intfield"
+                'field_type': FieldTypes.int_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Nation",
                 'title': "Nation",
                 'key': "nation",
-                'field_type': "charfield"
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Language",
                 'title': "Language",
                 'key': "language",
-                'field_type': "charfield"
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Culture",
                 'title': 'Culture',
                 'key': 'culture',
-                'field_type': 'textfield'
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Currency",
                 'title': "Currency",
                 'key': "currency",
-                'field_type': "charfield"
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Currency Buying Advice",
                 'title': 'Currency Buying Advice',
                 'key': 'currency_buying_advice',
-                'field_type': 'textfield'
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Sim Cards",
                 'title': "Sim Cards",
                 'key': "simcards",
-                'field_type': "charfield"
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Internet",
                 'title': "Internet",
                 'key': "internet",
-                'field_type': "charfield"
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Payment Method",
                 'title': 'Pay Online Or By Card',
                 'key': 'pay_online_or_by_card',
-                'field_type': 'textfield'
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
         ]
@@ -196,22 +242,17 @@ plus_place = [
                 "placeholder": "Climate",
                 'title': 'Climate',
                 'key': 'climate',
+                'field_type': FieldTypes.picker,
+                "options": getClimateOptions(),
                 'required': True,
-                'field_type': 'picker',
-                "options": [
-                    {"text": 'Tropical', "value": 1, },
-                    {"text": 'Dry', "value": 1, },
-                    {"text": 'Mild', "value": 1, },
-                    {"text": 'Continental', "value": 1, },
-                    {"text": 'Polar', "value": 1, },
-                ],
             },
 
             {
                 "placeholder": "Climate Description",
                 'title': 'Climate Description',
                 'key': 'climate_description',
-                'field_type': 'charfield'
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
         ]
@@ -226,14 +267,16 @@ plus_place = [
                 "placeholder": "Geographical Feature",
                 'title': 'Geographical Feature',
                 'key': 'geographical_feature',
-                'field_type': 'charfield'
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Geographical Feature Description",
                 'title': 'Geographical Feature Description',
                 'key': 'geographical_feature_description',
-                'field_type': 'charfield'
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
         ]
@@ -248,7 +291,7 @@ plus_place = [
                 "placeholder": "Kind Of Transport",
                 'title': 'Kind Of Transport',
                 "key": "type_transport",
-                'field_type': 'picker',
+                'field_type': FieldTypes.picker,
                 "options": [
                     {"text": 'Walking', "value": 1, },
                     {"text": 'Biking', "value": 2, },
@@ -261,27 +304,30 @@ plus_place = [
                     {"text": 'Flying', "value": 9, },
                     {"text": 'Funiculars', "value": 10, },
                 ],
+                'required': False,
             },
 
             {
                 "placeholder": "Transport Price",
                 'title': "Transport Price",
                 'key': "price",
-                'field_type': 'floatfield',
+                'field_type': FieldTypes.float_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Transport Description",
                 'title': "Transport Description",
                 'key': "description",
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Transport Comfortable",
                 'title': "Transport Comfortable",
                 'key': "comfortable",
-                'field_type': "picker",
+                'field_type': FieldTypes.picker,
                 "options": [
                     {"text": 'Very Comfortable', "value": 1, },
                     {"text": 'Comfortable', "value": 1, },
@@ -289,12 +335,14 @@ plus_place = [
                     {"text": 'Durable', "value": 1, },
                     {"text": 'Totally Uncomfortable', "value": 1, },
                 ],
+                'required': False,
             },
 
             {
                 'title': "Transport Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -304,14 +352,15 @@ plus_place = [
         # TODO: header nuzhno pridumat cto by oharektezowala children
         "header": "---------------------------------------------------------------------------------------------------------------------------------------------------------------------",
         "key": None,
-        "is_nested": True,
+        "is_nested": False,
 
         "inputs": [
             {
                 "placeholder": "Nearest Airport",
                 'title': 'Nearest Airport',
                 "key": "nearest_airport",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
 
             },
 
@@ -319,8 +368,8 @@ plus_place = [
                 "placeholder": "How To Get There",
                 'title': "How To Get There",
                 'key': "how_to_get_there",
+                'field_type': FieldTypes.text_field,
                 'required': True,
-                'field_type': "textfield",
             },
 
         ]
@@ -335,7 +384,7 @@ plus_place = [
                 "placeholder": "Kind Of Cuisine",
                 'title': 'Kind Of Cuisine',
                 "key": "name",
-                'field_type': 'picker',
+                'field_type': FieldTypes.picker,
                 "options": [
                     {"text": 'French Cuisine', "value": 1, },
                     {"text": 'Chinese Cuisine', "value": 1, },
@@ -346,26 +395,30 @@ plus_place = [
                     {"text": 'Spanish Cuisine', "value": 1, },
                     {"text": 'Mediterranean Cuisine', "value": 1, },
                 ],
+                'required': False,
             },
 
             {
                 "placeholder": "Cuisine Price",
                 'title': "Cuisine Price",
                 'key': "price",
-                'field_type': "floatfield",
+                'field_type': FieldTypes.float_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Transport Description",
                 'title': "Transport Description",
                 'key': "description",
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 'title': "Cuisine Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -380,14 +433,15 @@ plus_place = [
                 "placeholder": "Safe Name",
                 'title': 'Safe Name',
                 "key": "name",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "How Dangerous",
                 'title': "How Dangerous",
                 'key': "how_dangerous",
-                'field_type': "picker",
+                'field_type': FieldTypes.picker,
                 "options": [
                     {"text": 'Very Safe', "value": 1, },
                     {"text": 'Safe', "value": 1, },
@@ -395,20 +449,23 @@ plus_place = [
                     {"text": 'Somewhat Dangerous', "value": 1, },
                     {"text": 'Dangerous', "value": 1, },
                 ],
+                'required': False,
             },
 
             {
                 "placeholder": "Rating Danger",
                 'title': "Rating Danger",
                 'key': "rating_danger",
-                'field_type': "intfield",
+                'field_type': FieldTypes.int_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             }
 
         ]
@@ -424,20 +481,23 @@ plus_place = [
                 "placeholder": "Entertainment Name",
                 'title': 'Entertainment Name',
                 "key": "name",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 'title': "Cuisine Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -453,20 +513,23 @@ plus_place = [
                 "placeholder": "Natural Phenomena Name",
                 'title': 'Natural Phenomena Name',
                 "key": "name",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 'title': "Cuisine Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -481,21 +544,24 @@ plus_place = [
                 "placeholder": "Accommodation Options Name",
                 'title': 'Accommodation Options Name',
                 "key": "name",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Price",
                 'title': "Price",
                 'key': "price",
-                'field_type': "floatfield",
+                'field_type': FieldTypes.float_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
         ]
@@ -510,22 +576,23 @@ plus_place = [
                 "placeholder": "Uniqueness Place Name",
                 'title': 'Uniqueness Place Name',
                 "key": "name",
+                'field_type': FieldTypes.char_field,
                 'required': True,
-                'field_type': 'charfield',
             },
 
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
+                'field_type': FieldTypes.text_field,
                 'required': True,
-                'field_type': "textfield",
             },
 
             {
                 'title': "Uniqueness Place Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -541,22 +608,23 @@ plus_place = [
                 "placeholder": "Must See Name",
                 'title': 'Must See Name',
                 "key": "name",
+                'field_type': FieldTypes.char_field,
                 'required': True,
-                'field_type': 'charfield',
             },
 
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
+                'field_type': FieldTypes.text_field,
                 'required': True,
-                'field_type': "textfield",
             },
 
             {
                 'title': "Must See Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -571,12 +639,14 @@ plus_place = [
                 "placeholder": "Vibe Name",
                 'title': 'Vibe Name',
                 "key": "name",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
             {
                 'title': "Vibe Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -592,20 +662,23 @@ plus_place = [
                 "placeholder": "Where To Take A Picture Name",
                 'title': 'Where To Take A Picture Name',
                 "key": "name",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
 
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 'title': "Where To Take A Picture Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -621,13 +694,15 @@ plus_place = [
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
 
             {
                 'title': "Interesting Facts Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
 
         ]
@@ -642,7 +717,8 @@ plus_place = [
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
         ]
     },
@@ -656,18 +732,21 @@ plus_place = [
                 "placeholder": "FloraAndFauna Name",
                 'title': 'FloraAndFauna Name',
                 "key": "name",
-                'field_type': 'charfield',
+                'field_type': FieldTypes.char_field,
+                'required': False,
             },
             {
                 "placeholder": "Description",
                 'title': "Description",
                 'key': 'description',
-                'field_type': "textfield",
+                'field_type': FieldTypes.text_field,
+                'required': False,
             },
             {
                 'title': "FloraAndFauna Image",
                 'key': 'image',
-                'field_type': "imagefield",
+                'field_type': FieldTypes.image_field,
+                'required': False,
             }
         ]
     },

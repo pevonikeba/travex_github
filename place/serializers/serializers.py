@@ -7,7 +7,7 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from place.models import Place, Group, Image, ClimaticConditions, \
+from place.models import Place, Group, Image, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
@@ -494,7 +494,7 @@ class PlaceSerializer(ModelSerializer):
 class ClimateSerializer(ModelSerializer):
 
     class Meta:
-        model = ClimaticConditions
+        model = ClimaticCondition
         fields = '__all__'
 
 class GeographicalFeatureSerializer(ModelSerializer):

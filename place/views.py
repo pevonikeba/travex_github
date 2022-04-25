@@ -23,7 +23,7 @@ from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from place.models import Place, Group, ClimaticConditions, Category, UserPlaceRelation, GeographicalFeature, \
+from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Bookmark
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
@@ -132,7 +132,7 @@ class GroupViewSet(ModelViewSet):
 
 
 class ClimateViewSet(ModelViewSet, ListView):
-    queryset = ClimaticConditions.objects.all()
+    queryset = ClimaticCondition.objects.all()
     serializer_class = ClimateSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]

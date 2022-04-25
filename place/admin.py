@@ -11,7 +11,7 @@ from mptt.admin import MPTTModelAdmin
 
 from place import models
 from place.models import Place, Group, Image, Transport, AccommodationOption, UniquenessPlace, MustSee, \
-    WhereToTakeAPicture, ClimaticConditions, Safe, Cuisine, Entertainment, \
+    WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
     PracticalInformation, TypeTransport, TypeCuisine, Bookmark, Location
@@ -181,8 +181,8 @@ admin.site.register(Category, CategoryMPTTModelAdmin)
 class UserPlaceRelationAdmin(ModelAdmin):
     pass
 
-@admin.register(ClimaticConditions)
-class ClimaticConditionsAdmin(ModelAdmin):
+@admin.register(ClimaticCondition)
+class ClimaticConditionAdmin(ModelAdmin):
     pass
 
 @admin.register(GeographicalFeature)

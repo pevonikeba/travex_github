@@ -176,7 +176,6 @@ class ImageSerializer(serializers.ModelSerializer):
     # path = serializers.SerializerMethodField()
     # full_url = serializers.SerializerMethodField()
 
-
     class Meta:
         model = Image
         fields = ('id', 'path', )
@@ -199,20 +198,25 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         fields = ('id', 'images', 'rating', 'location', 'writer_user', 'sections',)
         # depth = 1
 
-    def create_full_img_url(self, url):
+    def create_full_img_url(self, url: str):
         return self.context.get('request').build_absolute_uri(url)
 
-    def create_p_tag(self, key, value):
+    def create_p_tag(self, key: str, value: str):
+        if not key or value:
+            return ""
         return f"<p>{key}: {value}</p>"
 
-    def create_img_tag(self, url):
+    def create_img_tag(self, url: str):
+        if not url:
+            return ""
         full_img_url = self.create_full_img_url(url)
         return f"<img src={full_img_url}/>"
 
     def transport_children(self, trans: Transport):
-        price = self.create_p_tag("Price", trans.price)
+        # type_transport_type_field = trans._meta.get_field('type_transport').get_internal_type()
+        price = self.create_p_tag("Price", trans.price) if trans.price else ""
         img = self.create_img_tag(trans.image.url) if trans.image else ""
-        comfortable = self.create_p_tag("Comfortable", trans.comfortable)
+        comfortable = self.create_p_tag("Comfortable", trans.comfortable) if trans.comfortable else ""
         description = trans.description
         return {
                     "id": trans.pk,
@@ -222,8 +226,8 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 }
 
     def accommodation_option_children(self, ao: AccommodationOption):
-        price = self.create_p_tag("Price", ao.price)
-        description = ao.description
+        price = self.create_p_tag("Price", ao.price) if ao.price else ""
+        description = ao.description if ao.description else ""
         return {
                     "id": ao.pk,
                     "title": ao.name,
@@ -233,7 +237,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def must_see_children(self, ms: MustSee):
         img = self.create_img_tag(ms.image.url) if ms.image else ""
-        description = ms.description
+        description = ms.description if ms.description else ""
         return {
             "id": ms.pk,
             "title": ms.name,
@@ -243,7 +247,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def flora_fauna_children(self, ff: FloraFauna):
         img = self.create_img_tag(ff.image.url) if ff.image else ""
-        description = ff.description
+        description = ff.description if ff.description else ""
         return {
             "id": ff.pk,
             "title": ff.name,
