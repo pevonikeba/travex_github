@@ -17,7 +17,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class PlaceListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ('id', 'name', 'description', 'images', 'rating', 'location', 'writer_user',)
+        fields = ('id', 'name', 'description', 'images', 'rating', 'locations', 'writer_user',)
         depth = 1
 
     writer_user = CustomUserSerializer()

@@ -192,7 +192,7 @@ class GeographicalFeatureAdmin(ModelAdmin):
 
 @admin.register(TypeTransport)
 class TypeTransportAdmin(ModelAdmin):
-    pass
+    readonly_fields = ('id',)
 
 @admin.register(TypeCuisine)
 class TypeCuisineAdmin(ModelAdmin):

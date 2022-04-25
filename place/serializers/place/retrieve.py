@@ -195,7 +195,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ('id', 'images', 'rating', 'location', 'writer_user', 'sections',)
+        fields = ('id', 'images', 'rating', 'locations', 'writer_user', 'sections',)
         # depth = 1
 
     def create_full_img_url(self, url: str):
@@ -265,21 +265,21 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 create_children=self.transport_children,
             ),
             create_section(
-                key="accommodation_option",
+                key="accommodation_options",
                 obj=obj,
                 icon_name="bed",
                 display_type="drop_down",
                 create_children=self.accommodation_option_children,
             ),
             create_section(
-                key="must_see",
+                key="must_sees",
                 obj=obj,
                 icon_name="article",
                 display_type="drop_down",
                 create_children=self.must_see_children,
             ),
             create_section(
-                key="flora_fauna",
+                key="flora_faunas",
                 obj=obj,
                 icon_name="article",
                 display_type="grid",

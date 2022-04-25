@@ -22,32 +22,15 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
-from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
-from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
-    UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet, GoogleLogin, CustomUserListCreateView, \
+from place.views import GoogleLogin, CustomUserListCreateView, \
     CustomUserDetailView, BookmarkViewSet, ActivateUserEmail, CustomUserView
 
-router = SimpleRouter()
-
-router.register(r'api/place_relation', UserPlaceRelationView)
-router.register(r'api/categories', CategoryViewSet)
-
-router.register(r'api/type_transport', TypeTransportViewSet)
-router.register(r'api/type_cuisine', TypeCuisineViewSet)
-
-router.register(r'api/places', PlaceViewSet)
-
-# router.register(r'api/places_arslion', PlaceViewSetArslion)
-router.register(r'api/groups', GroupViewSet)
-router.register(r'api/bookmarks', BookmarkViewSet)
-
-router.register(r'api/climates', ClimateViewSet)
-router.register(r'api/terrains', TypeOfTerrainViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/places/', include("place.urls", namespace="place")),
     path('api/drf-auth/', include('rest_framework.urls')),
     path('', include('social_django.urls', namespace='social')),
     path('auth/', include('djoser.urls')),
@@ -90,5 +73,3 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-urlpatterns += router.urls

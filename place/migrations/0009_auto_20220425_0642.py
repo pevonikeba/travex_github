@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='group',
-            name='places',
+            name='place',
             field=models.ManyToManyField(blank=True, related_name='groups', to='place.Place', verbose_name='place'),
         ),
         migrations.AlterField(
@@ -140,12 +140,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='transport',
             name='place',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transports', to='place.place'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transport', to='place.place'),
         ),
         migrations.AlterField(
             model_name='transport',
             name='type_transport',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transports', to='place.typetransport'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transport', to='place.typetransport'),
         ),
         migrations.AlterField(
             model_name='uniquenessplace',

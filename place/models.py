@@ -55,11 +55,11 @@ CLIMATE_CHOICES = (
 )
 
 HOW_COMFORTABLE_CHOICES = (
-    ("very comfortable", "Very Comfortable"),
-    ("comfortable", "Comfortable"),
-    ("average", "Average"),
-    ("durable", "Durable"),
-    ("totally uncomfortable", "Totally Uncomfortable"),
+    ("Very Comfortable", "Very Comfortable"),
+    ("Comfortable", "Comfortable"),
+    ("Average", "Average"),
+    ("Durable", "Durable"),
+    ("Totally Uncomfortable", "Totally Uncomfortable"),
 
 )
 
@@ -220,9 +220,9 @@ class Place(models.Model):
     # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
     #                                         blank=True,)
     home_page = models.BooleanField(default=False)
-    name = models.CharField(max_length=255, blank=False, default=None)
+    name = models.CharField(max_length=255, blank=False, default=f"Place name")
     nickname = models.CharField(max_length=255, null=True, blank=True)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category, blank=True)
     climatic_condition = models.ForeignKey(ClimaticCondition, on_delete=models.CASCADE, null=True, blank=True)
     geographical_feature = models.ForeignKey(GeographicalFeature, on_delete=models.CASCADE, null=True, blank=True)
@@ -231,10 +231,10 @@ class Place(models.Model):
     population = models.BigIntegerField(null=True, blank=True)
     # type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True,
     #                                           related_name="civilizations")
-    type_of_people_around = models.TextField(blank=True, null=True)
-    nation = models.TextField(blank=True, null=True)
-    language = models.CharField(blank=True, null=True, max_length=255)
-    culture = models.TextField(blank=True, null=True)
+    type_of_people_around = models.TextField(null=True, blank=True)
+    nation = models.TextField(null=True, blank=True)
+    language = models.CharField(max_length=255, null=True, blank=True)
+    culture = models.TextField(null=True, blank=True)
     turist_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
                                         blank=False, null=True, default=None)
     # turist_description = models.TextField(blank=True, null=True)
@@ -244,10 +244,10 @@ class Place(models.Model):
     # tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
     currency = models.CharField(max_length=255, null=True, blank=True)
     currency_buying_advice = models.TextField(null=True, blank=True)
-    simcards = models.TextField(blank=True, null=True)
+    simcards = models.TextField(null=True, blank=True)
     internet = models.TextField(null=True, blank=True)
     pay_online_or_by_card = models.CharField(max_length=255, null=True, blank=True)
-    views = models.ManyToManyField(CustomUser, through="UserPlaceRelation")
+    views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", blank=True)
     # geolocation = geomodels.PointField("Location in Map", geography=True, blank=True, null=True,
     #     srid=4326, help_text="Point(longitude latitude)")
     # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
@@ -351,8 +351,8 @@ class TypeTransport(models.Model):
 
 
 class Transport(models.Model):
-    place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
-    type_transport = models.ForeignKey(TypeTransport, related_name="transports", on_delete=models.CASCADE, blank=False)
+    place = models.ForeignKey(Place, related_name="transport", on_delete=models.CASCADE)
+    type_transport = models.ForeignKey(TypeTransport, related_name="transport", on_delete=models.CASCADE, blank=False)
     price = models.DecimalField(max_digits=13, decimal_places=2, default=None, blank=False)
     description = models.TextField(null=True, blank=True)
     comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, max_length=255)
@@ -413,8 +413,8 @@ class NaturalPhenomena(models.Model):
 
 
 class Image(models.Model):
-    path = models.ImageField(upload_to='images/', blank=False, default=None)
     place = models.ForeignKey(Place, related_name="images", blank=True, null=True, on_delete=models.CASCADE)
+    path = models.ImageField(upload_to='images/', blank=False, default=None)
 
     def __str__(self):
         return f"{self.path}"
@@ -508,7 +508,7 @@ class Bookmark(models.Model):
 class Group(models.Model):
     name = models.CharField(max_length=255)
     places = models.ManyToManyField(Place, verbose_name="place", related_name="groups",
-                                    blank=True, )
+                                    blank=True)
 
     def __str__(self):
         return f'{self.name}'
