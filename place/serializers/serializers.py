@@ -11,7 +11,7 @@ from place.models import Place, Group, Image, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
-
+from place.serializers.place.list import PlaceListSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -505,7 +505,7 @@ class UserPlaceRelationSerializer(ModelSerializer):
 
 
 class GroupSerializer(ModelSerializer):
-    place = PlaceSerializer(many=True, read_only=True)
+    places = PlaceListSerializer(many=True, read_only=True)
 
     class Meta:
         model = Group
