@@ -502,7 +502,6 @@ class Bookmark(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.place.name}"
-#
 
 
 class Group(models.Model):
