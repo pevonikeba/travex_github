@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.apple',
 
     "colorfield",
     # 'location_field.apps.DefaultConfig',
@@ -103,6 +104,11 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIALACCOUNT_PROVIDERS = {
+    "apple": {
+        "APP": {
+
+        }
+    },
     'google': {
         'SCOPE': [
             'profile',

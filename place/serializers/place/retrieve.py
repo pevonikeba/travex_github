@@ -173,20 +173,9 @@ a = {
 #         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
 class ImageSerializer(serializers.ModelSerializer):
-    # path = serializers.SerializerMethodField()
-    # full_url = serializers.SerializerMethodField()
-
     class Meta:
         model = Image
-        fields = ('id', 'path', )
-
-    # def get_full_url(self, car):
-    #     request = self.context.get('request')
-    #     photo_url = car.url
-    #     return request.build_absolute_uri(photo_url)
-
-    # def get_path(self, obj):
-    #     return obj.path
+        fields = ('id', 'image', )
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
@@ -258,7 +247,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
     def get_sections(self, obj: Place):
         return [
             create_section(
-                key="transport",
+                key="transports",
                 obj=obj,
                 icon_name="directions",
                 display_type="drop_down",

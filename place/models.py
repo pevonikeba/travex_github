@@ -123,7 +123,7 @@ class CustomUser(AbstractUser):
 
     is_active = models.BooleanField(default=False)
 
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/custom_user/', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['is_active', 'username']
@@ -161,7 +161,7 @@ class Category(MPTTModel):
     description = models.TextField(blank=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     color = ColorField(default='#FF0000')
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/categories/', null=True, blank=True)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -216,6 +216,7 @@ FIELD_TYPE_CHOICES = (
 
 class Place(models.Model):
     # families = models.ManyToManyField(AttributesFamily)
+    is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
     # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
     #                                         blank=True,)
@@ -351,12 +352,12 @@ class TypeTransport(models.Model):
 
 
 class Transport(models.Model):
-    place = models.ForeignKey(Place, related_name="transport", on_delete=models.CASCADE)
-    type_transport = models.ForeignKey(TypeTransport, related_name="transport", on_delete=models.CASCADE, blank=False)
+    place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
+    type_transport = models.ForeignKey(TypeTransport, related_name="transports", on_delete=models.CASCADE, blank=False)
     price = models.DecimalField(max_digits=13, decimal_places=2, default=None, blank=False)
     description = models.TextField(null=True, blank=True)
     comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, max_length=255)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/transports/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.type_transport} {self.price} {self.description} {self.comfortable} {self.image}"
@@ -386,7 +387,7 @@ class Cuisine(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=False)
     # type_cuisine = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/cuisines/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.place.name} {self.name}"
@@ -396,7 +397,7 @@ class Entertainment(models.Model):
     place = models.ForeignKey(Place, related_name="entertainments", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/entertainments/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
@@ -406,7 +407,7 @@ class NaturalPhenomena(models.Model):
     place = models.ForeignKey(Place, related_name="natural_phenomenas", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/natural_phenomenas/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}  {self.description} {self.image}"
@@ -414,7 +415,7 @@ class NaturalPhenomena(models.Model):
 
 class Image(models.Model):
     place = models.ForeignKey(Place, related_name="images", blank=True, null=True, on_delete=models.CASCADE)
-    path = models.ImageField(upload_to='images/', blank=False, default=None)
+    image = models.ImageField(upload_to='images/places/', blank=False, null=True)
 
     def __str__(self):
         return f"{self.path}"
@@ -434,7 +435,7 @@ class UniquenessPlace(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="uniqueness_places", on_delete=models.CASCADE, null=True)
     description = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/uniqueness_places/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
@@ -444,7 +445,7 @@ class MustSee(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="must_sees", on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/must_sees/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
@@ -453,7 +454,7 @@ class MustSee(models.Model):
 class Vibe(models.Model):
     place = models.ForeignKey(Place, related_name="vibes", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/vibes/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.image}"
@@ -463,7 +464,7 @@ class WhereToTakeAPicture(models.Model):
     name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="where_to_take_a_pictures", on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/where_to_take_a_pictures/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.description} {self.image}"
@@ -472,7 +473,7 @@ class WhereToTakeAPicture(models.Model):
 class InterestingFacts(models.Model):
     place = models.ForeignKey(Place, related_name="interesting_facts", on_delete=models.CASCADE)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/interesting_facts/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.place.name} {self.description}"
@@ -490,7 +491,7 @@ class FloraFauna(models.Model):
     place = models.ForeignKey(Place, related_name="flora_faunas", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='images/', blank=False, default=None)
+    image = models.ImageField(upload_to='images/flora_faunas/', blank=False, default=None)
 
     def __str__(self):
         return f"{self.place.name} {self.name}"

@@ -234,13 +234,13 @@ class PracticalInformationSerializer(ModelSerializer):
 
 
 class ImageSerializer(ModelSerializer):
-    path = Base64ImageField()  # From DRF Extra Fields
+    image = Base64ImageField()  # From DRF Extra Fields
     class Meta:
         model = Image
-        fields = ('id', 'path',)
+        fields = ('id', 'image',)
 
     def create(self, validated_data):
-        image = validated_data.pop('path')
+        image = validated_data.pop('image')
         return Image.objects.create(image=image)
 
 
@@ -320,9 +320,8 @@ class PlaceSerializer(ModelSerializer):
         category_data = validated_data.get('category')
         images_data = validated_data.get('images')
         locations_data = validated_data.get('locations')
-        if 'transport' in validated_data:
-            transports_data = validated_data.pop('transport')
-            logger.info("aaaa")
+        if 'transports' in validated_data:
+            transports_data = validated_data.pop('transports')
         accommodationOptions_data = validated_data.get('accommodationOption')
         uniqueness_place_data = validated_data.get('uniqueness_place')
         must_see_data = validated_data.get('must_see')

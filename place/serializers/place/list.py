@@ -5,7 +5,7 @@ from place.models import Place, CustomUser, Image
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ('id', 'path',)
+        fields = ('id', 'image',)
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
