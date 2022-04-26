@@ -25,8 +25,7 @@ from django.views.static import serve
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
 from place.views import GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, BookmarkViewSet, ActivateUserEmail, CustomUserView
-
+    CustomUserDetailView, BookmarkViewSet, ActivateUserEmail, CustomUserView, AppleLogin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,39 +34,27 @@ urlpatterns = [
     path('', include('social_django.urls', namespace='social')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-
-    path('users/', CustomUserView.as_view({'post': 'create'})),
-
-    # path("djoser_auth/", include("djoser.urls")),
-    # path("djoser_auth/", include("djoser.urls.jwt")),
-
     re_path(r'^auth/', include('djoser.urls.authtoken')),
-
-
-    # path('', TemplateView.as_view(template_name="index.html")),
+    path('users/', CustomUserView.as_view({'post': 'create'})),
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),
-
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-
     path('auth/google/', GoogleLogin.as_view(), name='google_login'),
-
+    path('auth/apple/', AppleLogin.as_view(), name="apple_login"),
     # gets all user profiles and create a new profile
     path("all-profiles/", CustomUserListCreateView.as_view(), name="all-profiles"),
     # retrieves profile details of the currently logged in user
     path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
-
+    path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
+    path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
     # path('activate/<uid>/<token>', ActivateUser.as_view({'get': 'activation'}), name='activation'),
     # path(r'activate/<uid>/<token>', UserActivationView.as_view()),
     # path('activate/<str:uid>/<str:token>/', UserActivationView.as_view()),
-
     # path(r'^auth/users/activate/<str:uid>/<str:token>/', UserActivationView.as_view()),
-    path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
-
-    path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
-
+    # path("djoser_auth/", include("djoser.urls")),
+    # path("djoser_auth/", include("djoser.urls.jwt")),
 ]
 
 if settings.DEBUG:

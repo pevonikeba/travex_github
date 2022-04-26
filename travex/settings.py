@@ -95,18 +95,24 @@ AUTHENTICATION_BACKENDS = (
     #
     # # drf-social-oauth2
     # 'drf_social_oauth2.backends.DjangoOAuth2',
-    #
     # # Django
     # 'django.contrib.auth.backends.ModelBackend',
-
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
+
 SOCIALACCOUNT_PROVIDERS = {
     "apple": {
         "APP": {
+            # Your service identifier.
+            "client_id????": "com.<your domain>.social-login-1234",
 
+            # The KEY ID (visible in the "View Key Details" page).
+            "secret": "sociallogintest1234",
+            "key": "ABCDEF",
+            "certificate_key": """PRIVATE KEY
+            """,
         }
     },
     'google': {

@@ -418,7 +418,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to='images/places/', blank=False, null=True)
 
     def __str__(self):
-        return f"{self.path}"
+        return f"{self.image}"
 
 
 class AccommodationOption(models.Model):

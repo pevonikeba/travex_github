@@ -84,6 +84,11 @@ class BookmarkInline(TabularInline):
     model = Bookmark
 
 
+@admin.register(Image)
+class ImageAdmin(ModelAdmin):
+    pass
+
+
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
     save_on_top = True

@@ -235,19 +235,14 @@ class PracticalInformationSerializer(ModelSerializer):
 
 class ImageSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
+
     class Meta:
         model = Image
-        fields = ('id', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        return Image.objects.create(image=image)
-
+        fields = ('id', 'image', 'place',)
 
 
 class CategorySerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
-
 
     class Meta:
         model = Category

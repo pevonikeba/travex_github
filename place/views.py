@@ -24,7 +24,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
-    TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport
+    TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, Image
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
@@ -32,11 +32,12 @@ from place.serializers.plus_place import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     CategorySerializer, UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
-    CustomSocialLoginSerializer
+    CustomSocialLoginSerializer, ImageSerializer
 from place.serializers.transport.main import TransportSerializer
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client, AppleProvider
 # from rest_auth.registration.views import SocialLoginView
 
 
@@ -64,6 +65,10 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 # from geopy.geocoders import Nominatim
 # geolocator = Nominatim(user_agent="location")
+
+class ImageViewSet(ModelViewSet):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
 
 
 class TransportViewSet(ModelViewSet):
@@ -161,6 +166,12 @@ class TypeCuisineViewSet(ModelViewSet):
     serializer_class = TypeCuisineSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+
+
+class AppleLogin(SocialLoginView):
+    adapter_class = AppleOAuth2Adapter
+    callback_url = 'https://anycallbackurlhere'
+    client_class = AppleOAuth2Client
 
 
 class GoogleLogin(SocialLoginView):
