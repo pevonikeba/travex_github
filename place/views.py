@@ -43,7 +43,6 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 # class CustomRenderer(JSONRenderer):
-#
 #     def render(self, data, accepted_media_type=None, renderer_context=None):
 #         response_content = {}
 #         if type(data) is dict and data['custom_error'] == True:
@@ -63,9 +62,7 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 # from django.contrib.gis.geos import Point
 
-
 # from geopy.geocoders import Nominatim
-#
 # geolocator = Nominatim(user_agent="location")
 
 
@@ -81,8 +78,8 @@ class PlaceViewSet(ModelViewSet):
         'list': PlaceListSerializer,
         'retrieve': PlaceRetrieveSerializer,
         'create': PlaceCreateSerializer,
-        # 'put': default_serializer_class,
-        # 'patch': default_serializer_class,
+        # 'put': PlaceCreateSerializer,
+        # 'patch': PlaceCreateSerializer,
     }
 
     def get_serializer_class(self):

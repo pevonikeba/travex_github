@@ -481,18 +481,15 @@ class PlaceSerializer(ModelSerializer):
 #         for flora_faun_data in flora_fauna_data:
 #             FloraFauna.objects.create(place=place, **flora_faun_data)
 #         return place
-#
-
 
 
 class ClimateSerializer(ModelSerializer):
-
     class Meta:
         model = ClimaticCondition
         fields = '__all__'
 
-class GeographicalFeatureSerializer(ModelSerializer):
 
+class GeographicalFeatureSerializer(ModelSerializer):
     class Meta:
         model = GeographicalFeature
         fields = '__all__'
