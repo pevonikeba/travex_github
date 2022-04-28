@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-oz9%=u1yzyqxsg92!12104&)zl1$%-xrpeez)9xiv*%s8fzr^!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.67.98.251', '127.0.0.1', '159.223.216.170']
+ALLOWED_HOSTS = ['go.attaplace.info', '3.67.98.251', '127.0.0.1', '159.223.216.170']
 
 
 # Application definition
@@ -109,8 +109,8 @@ SOCIALACCOUNT_PROVIDERS = {
             "client_id????": "com.<your domain>.social-login-1234",
 
             # The KEY ID (visible in the "View Key Details" page).
-            "secret": "sociallogintest1234",
-            "key": "ABCDEF",
+            "secret": "1111",
+            "key": "11111",
             "certificate_key": """PRIVATE KEY
             """,
         }
