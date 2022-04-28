@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oz9%=u1yzyqxsg92!12104&)zl1$%-xrpeez)9xiv*%s8fzr^!'
-
+SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = str(os.environ.get('DEBUG')) == "1"
 
 ALLOWED_HOSTS = ['go.attaplace.info', '3.67.98.251', '127.0.0.1', '159.223.216.170']
 
@@ -106,13 +105,11 @@ SOCIALACCOUNT_PROVIDERS = {
     "apple": {
         "APP": {
             # Your service identifier.
-            "client_id????": "com.<your domain>.social-login-1234",
-
+            "client_id": os.environ.get("APPLE_CLIENT_ID"),
             # The KEY ID (visible in the "View Key Details" page).
-            "secret": "1111",
-            "key": "11111",
-            "certificate_key": """PRIVATE KEY
-            """,
+            "secret": os.environ.get("APPLE_SECRET"),
+            "key": os.environ.get("attaplacekey"),
+            "certificate_key": os.environ.get("APPLE_CERTIFICATE_KEY"),
         }
     },
     'google': {
