@@ -8,13 +8,16 @@ https://docs.djangoproject.com/en/4.0/howto/deployment/wsgi/
 """
 
 import os
+from pathlib import Path
 
-from django.core.wsgi import get_wsgi_application
 import dotenv
+from django.core.wsgi import get_wsgi_application
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+dotenv.read_dotenv(BASE_DIR, '.env')
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'travex.settings')
-dotenv.read_dotenv(
-        os.path.join(os.path.dirname(__file__), '.env')
-    )
+os.environ.get("SECRET_KEY")
 
 application = get_wsgi_application()
