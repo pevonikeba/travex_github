@@ -8,10 +8,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ('email', 'username', 'image',)
 
 
-class PlaceCreateSerializer(serializers.ModelSerializer):
+class PlacePatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ('id', 'writer_user',)
+        fields = ('id', 'writer_user', )
         depth = 1
 
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())

@@ -27,6 +27,7 @@ from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRel
     TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
+from place.serializers.place.patch import PlacePatchSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
 from place.serializers.plus_place import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
@@ -66,7 +67,7 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 # from geopy.geocoders import Nominatim
 # geolocator = Nominatim(user_agent="location")
 
-class ImageViewSet(ModelViewSet):
+class PlaceImageViewSet(ModelViewSet):
     queryset = PlaceImage.objects.all()
     serializer_class = PlaceImageSerializer
 
@@ -84,7 +85,7 @@ class PlaceViewSet(ModelViewSet):
         'retrieve': PlaceRetrieveSerializer,
         'create': PlaceCreateSerializer,
         # 'put': PlaceCreateSerializer,
-        # 'patch': PlaceCreateSerializer,
+        # 'patch': PlacePatchSerializer,
     }
 
     def get_serializer_class(self):
