@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from place.models import Place, CustomUser, Image
+from place.models import Place, CustomUser, PlaceImage
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class PlaceImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Image
+        model = PlaceImage
         fields = ('id', 'image',)
 
 
@@ -17,8 +17,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class PlaceListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ('id', 'name', 'description', 'images', 'rating', 'locations', 'writer_user',)
+        fields = ('id', 'name', 'description', 'place_images', 'rating', 'locations', 'writer_user',)
         depth = 1
 
     writer_user = CustomUserSerializer()
-    images = ImageSerializer(many=True)
+    place_images = PlaceImageSerializer(many=True)

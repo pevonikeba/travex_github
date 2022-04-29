@@ -3,6 +3,7 @@ from django.db import models
 from .serializers import TypeTransportSerializer
 
 from loguru import logger
+from rest_framework import serializers
 
 
 class FieldTypes:
@@ -13,6 +14,7 @@ class FieldTypes:
     picker = "picker"
     image_field = "image_field"
     multi_select = "multi_select"
+    multi_image_field = "multi_image_field"
 
 
 nested = [
@@ -426,7 +428,7 @@ def get_choices_options(choices: tuple):
     return map(from_tuple_to_dict, choices)
 
 
-def get_model_options(Obj, serializer):
+def get_model_options(Obj: models.Model, serializer):
     def _transform_dict(obj):
         return {
             "text": obj["name"],
@@ -476,13 +478,13 @@ def get_plus_place():
     },
     {
         "header": "Images",
-        "key": 'images',
+        "key": None,
         "is_nested": False,
         "inputs": [
             {
                 'title': "Images",
-                "key": 'path',
-                'field_type': FieldTypes.image_field,
+                "key": 'place_images',
+                'field_type': FieldTypes.multi_image_field,
                 'required': True,
             },
 

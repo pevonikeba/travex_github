@@ -1,7 +1,7 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from place.models import Place, Image, Transport, AccommodationOption, MustSee, FloraFauna
+from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna
 from loguru import logger
 from place.utils.utils import create_section
 
@@ -172,19 +172,19 @@ a = {
 #         model = Transport
 #         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
-class ImageSerializer(serializers.ModelSerializer):
+class PlaceImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Image
+        model = PlaceImage
         fields = ('id', 'image', )
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
-    images = ImageSerializer(many=True, required=False)
+    place_images = PlaceImageSerializer(many=True, required=False)
 
     class Meta:
         model = Place
-        fields = ('id', 'images', 'rating', 'locations', 'writer_user', 'sections',)
+        fields = ('id', 'place_images', 'rating', 'locations', 'writer_user', 'sections',)
         # depth = 1
 
     def create_full_img_url(self, url: str):
@@ -200,6 +200,8 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             return ""
         full_img_url = self.create_full_img_url(url)
         return f"<img src={full_img_url}/>"
+
+    # def place_images_children(self, place_image: PlaceImage):
 
     def transport_children(self, trans: Transport):
         # type_transport_type_field = trans._meta.get_field('type_transport').get_internal_type()

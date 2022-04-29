@@ -7,7 +7,7 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from place.models import Place, Group, Image, ClimaticCondition, \
+from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
@@ -233,11 +233,11 @@ class PracticalInformationSerializer(ModelSerializer):
         fields = ('id', 'description',)
 
 
-class ImageSerializer(ModelSerializer):
+class PlaceImageSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
 
     class Meta:
-        model = Image
+        model = PlaceImage
         fields = ('id', 'image', 'place',)
 
 
@@ -293,7 +293,7 @@ class PlaceSerializer(ModelSerializer):
     bookmarks = BookmarkPlaceSerializer(many=True, read_only=True)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
     # images = serializers.StringRelatedField(many=True, required=False)
-    images = ImageSerializer(many=True, required=False)
+    place_images = PlaceImageSerializer(many=True, required=False)
     locations = LocationSerializer(many=True, required=False)
     transports = TransportSerializer(many=True, required=False)
     accommodation_options = AccommodationOptionSerializer(many=True, required=False)
@@ -313,7 +313,7 @@ class PlaceSerializer(ModelSerializer):
         logger.info("create")
         transports_data = None
         category_data = validated_data.get('category')
-        images_data = validated_data.get('images')
+        place_images_data = validated_data.get('place_images')
         locations_data = validated_data.get('locations')
         if 'transports' in validated_data:
             transports_data = validated_data.pop('transports')
@@ -339,9 +339,9 @@ class PlaceSerializer(ModelSerializer):
 
         if category_data is not None:
             place.category.set(category_data)
-        if images_data is not None:
-            for image_data in images_data:
-                Image.objects.create(place=place, **image_data)
+        if place_images_data is not None:
+            for image_data in place_images_data:
+                PlaceImage.objects.create(place=place, **image_data)
         if locations_data is not None:
             for item in locations_data:
                 Location.objects.create(place=place, **item)

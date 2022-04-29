@@ -10,7 +10,7 @@ from mptt.admin import MPTTModelAdmin
 
 
 from place import models
-from place.models import Place, Group, Image, Transport, AccommodationOption, UniquenessPlace, MustSee, \
+from place.models import Place, Group, PlaceImage, Transport, AccommodationOption, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
@@ -45,7 +45,7 @@ class TransportInline(TabularInline):
 
 class ImageInline(TabularInline):
     extra = 1
-    model = Image
+    model = PlaceImage
 
 class AccommodationOptionsInline(TabularInline):
     extra = 0
@@ -84,7 +84,7 @@ class BookmarkInline(TabularInline):
     model = Bookmark
 
 
-@admin.register(Image)
+@admin.register(PlaceImage)
 class ImageAdmin(ModelAdmin):
     pass
 

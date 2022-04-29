@@ -413,8 +413,8 @@ class NaturalPhenomena(models.Model):
         return f"{self.name}  {self.description} {self.image}"
 
 
-class Image(models.Model):
-    place = models.ForeignKey(Place, related_name="images", blank=True, null=True, on_delete=models.CASCADE)
+class PlaceImage(models.Model):
+    place = models.ForeignKey(Place, related_name="place_images", blank=True, null=True, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images/places/', blank=False, null=True)
 
     def __str__(self):
@@ -422,8 +422,8 @@ class Image(models.Model):
 
 
 class AccommodationOption(models.Model):
-    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="accommodation_options", on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=255, blank=False, default=None)
     price = models.DecimalField(max_digits=13, decimal_places=2, blank=False, default=10)
     description = models.TextField(null=True, blank=True)
 
