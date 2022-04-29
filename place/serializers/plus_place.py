@@ -478,14 +478,14 @@ def get_plus_place():
     },
     {
         "header": "Images",
-        "key": None,
-        "is_nested": False,
+        "key": "place_images",
+        "is_nested": True,
         "inputs": [
             {
                 'title': "Images",
-                "key": 'place_images',
+                "key": 'image',
                 'field_type': FieldTypes.multi_image_field,
-                'required': True,
+                'required': False,
             },
 
         ]
