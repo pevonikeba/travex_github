@@ -10,7 +10,6 @@ router = SimpleRouter()
 # root routing "api/places/"
 router.register(r'transports', TransportViewSet)
 router.register(r"place_images", PlaceImageViewSet)
-
 router.register(r'place_relation', UserPlaceRelationView)
 router.register(r'categories', CategoryViewSet)
 router.register(r'type_transport', TypeTransportViewSet)

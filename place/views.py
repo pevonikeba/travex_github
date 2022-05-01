@@ -9,19 +9,21 @@ from dj_rest_auth.registration.views import SocialLoginView
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from loguru import logger
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.filters import SearchFilter
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, DestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, DestroyAPIView, \
+    get_object_or_404
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly, \
     DjangoModelPermissions, AllowAny
 from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet, ViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage
@@ -75,18 +77,26 @@ class PlaceImageViewSet(ModelViewSet):
 class TransportViewSet(ModelViewSet):
     queryset = Transport.objects.all()
     serializer_class = TransportSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['place', ]
 
 
 class PlaceViewSet(ModelViewSet):
     queryset = Place.objects.all()
     default_serializer_class = PlaceSerializer
     serializer_classes = {
-        'list': PlaceListSerializer,
+        # 'list': PlaceListSerializer,
         'retrieve': PlaceRetrieveSerializer,
         'create': PlaceCreateSerializer,
         # 'put': PlaceCreateSerializer,
         # 'patch': PlacePatchSerializer,
     }
+
+    def list(self, request, **kwargs):
+        logger.info(kwargs)
+        queryset = Place.objects.filter(is_active=True)
+        serializer = PlaceListSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
@@ -94,12 +104,6 @@ class PlaceViewSet(ModelViewSet):
     @action(detail=False, methods=["get"])
     def plus_place(self, request):
         return Response(get_plus_place())
-
-    @action(detail=False, methods=["get"])
-    def test(self, request):
-        queryset = Place.objects.all()
-        serializer = PlaceSerializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
