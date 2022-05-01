@@ -72,6 +72,7 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 class PlaceImageViewSet(ModelViewSet):
     queryset = PlaceImage.objects.all()
     serializer_class = PlaceImageSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class TransportViewSet(ModelViewSet):
@@ -79,10 +80,13 @@ class TransportViewSet(ModelViewSet):
     serializer_class = TransportSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['place', ]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class PlaceViewSet(ModelViewSet):
     queryset = Place.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['home_page', ]
     default_serializer_class = PlaceSerializer
     serializer_classes = {
         'list': PlaceListSerializer,
@@ -91,15 +95,24 @@ class PlaceViewSet(ModelViewSet):
         # 'put': PlaceCreateSerializer,
         # 'patch': PlacePatchSerializer,
     }
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def list(self, request, **kwargs):
-        queryset = Place.objects.filter(is_active=True)
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = PlaceListSerializer(queryset, many=True)
-        return Response(serializer.data)
+
+    def get_queryset(self):
+        if self.action == 'list':
+            return Place.objects.filter(is_active=True)
+        return Place.objects.all()
+
+
+    # def list(self, request, **kwargs):
+    #     logger.info(self.request.home_page)
+    #     queryset = Place.objects.filter(is_active=True)
+    #     page = self.paginate_queryset(queryset)
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+    #     serializer = PlaceListSerializer(queryset, many=True)
+    #     return Response(serializer.data)
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
@@ -145,6 +158,8 @@ class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = None
+
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
