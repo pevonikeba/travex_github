@@ -204,7 +204,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
     # def place_images_children(self, place_image: PlaceImage):
 
     def transport_children(self, trans: Transport):
-        img = self.create_img_tag(trans.image.url) if trans.image
+        img = self.create_img_tag(trans.image.url) if trans.image else ""
         price = self.create_p_tag("Price", trans.price)
         comfortable = self.create_p_tag("Comfortable", trans.comfortable)
         description = self.create_p_tag("Description", trans.description)
