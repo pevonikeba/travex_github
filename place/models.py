@@ -356,7 +356,7 @@ class Transport(models.Model):
     type_transport = models.ForeignKey(TypeTransport, related_name="transports", on_delete=models.CASCADE, blank=False)
     price = models.DecimalField(max_digits=13, decimal_places=2, default=None, blank=False)
     description = models.TextField(null=True, blank=True)
-    comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, max_length=255)
+    comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, null=True, blank=True, max_length=255)
     image = models.ImageField(upload_to='images/transports/', null=True, blank=True)
 
     def __str__(self):
