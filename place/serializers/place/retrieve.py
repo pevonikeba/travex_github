@@ -204,7 +204,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
     # def place_images_children(self, place_image: PlaceImage):
 
     def transport_children(self, trans: Transport):
-        img = self.create_img_tag(trans.image.url)
+        img = self.create_img_tag(trans.image.url) if trans.image
         price = self.create_p_tag("Price", trans.price)
         comfortable = self.create_p_tag("Comfortable", trans.comfortable)
         description = self.create_p_tag("Description", trans.description)
@@ -226,7 +226,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 }
 
     def must_see_children(self, ms: MustSee):
-        img = self.create_img_tag(ms.image.url)
+        img = self.create_img_tag(ms.image.url) if ms.image else ""
         description = self.create_p_tag("Description", ms.description)
         return {
             "id": ms.pk,
@@ -236,7 +236,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         }
 
     def flora_fauna_children(self, ff: FloraFauna):
-        img = self.create_img_tag(ff.image.url)
+        img = self.create_img_tag(ff.image.url) if ff.image else ""
         description = self.create_p_tag("Description", ff.description)
         return {
             "id": ff.pk,
