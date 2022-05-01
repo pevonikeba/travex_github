@@ -1,5 +1,6 @@
 from rest_framework.exceptions import APIException
 from rest_framework.views import exception_handler
+from rest_framework.pagination import PageNumberPagination
 
 from place.models import Place
 
@@ -29,3 +30,9 @@ def create_section(obj: Place, key: str, icon_name: str, display_type: str, crea
         "display_type": display_type,
         "children": map(create_children, getattr(obj, key).all()),
     }
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000

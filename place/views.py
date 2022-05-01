@@ -18,12 +18,12 @@ from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, DestroyAPIView, \
     get_object_or_404
 from rest_framework.mixins import UpdateModelMixin
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly, \
     DjangoModelPermissions, AllowAny
 from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ViewSet
+from rest_framework.pagination import LimitOffsetPagination
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage
@@ -68,6 +68,8 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 # from geopy.geocoders import Nominatim
 # geolocator = Nominatim(user_agent="location")
+from place.utils.utils import StandardResultsSetPagination
+
 
 class PlaceImageViewSet(ModelViewSet):
     queryset = PlaceImage.objects.all()
@@ -95,8 +97,8 @@ class PlaceViewSet(ModelViewSet):
         # 'put': PlaceCreateSerializer,
         # 'patch': PlacePatchSerializer,
     }
+    pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
-
 
     def get_queryset(self):
         if self.action == 'list':
@@ -158,8 +160,6 @@ class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = None
-
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
