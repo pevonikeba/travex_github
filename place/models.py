@@ -237,7 +237,7 @@ class Place(models.Model):
     language = models.CharField(max_length=255, null=True, blank=True)
     culture = models.TextField(null=True, blank=True)
     turist_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
-                                        blank=False, null=True, default=None)
+                                        null=True, blank=True, default=None)
     # turist_description = models.TextField(blank=True, null=True)
     # tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
     # tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
@@ -254,7 +254,7 @@ class Place(models.Model):
     # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
     # coordinate = geomodels.PointField(geography=True, spatial_index=True,default=Point(58.238056, 37.862499, srid=4326), blank=True, null=True)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
-                                 null=True, blank=False, default=None)
+                                 null=True, blank=True, default=None)
 
     # category = TreeForeignKey(Category, verbose_name="categorys", related_name="categorys", on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):

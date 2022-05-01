@@ -85,7 +85,7 @@ class PlaceViewSet(ModelViewSet):
     queryset = Place.objects.all()
     default_serializer_class = PlaceSerializer
     serializer_classes = {
-        # 'list': PlaceListSerializer,
+        'list': PlaceListSerializer,
         'retrieve': PlaceRetrieveSerializer,
         'create': PlaceCreateSerializer,
         # 'put': PlaceCreateSerializer,
@@ -93,8 +93,11 @@ class PlaceViewSet(ModelViewSet):
     }
 
     def list(self, request, **kwargs):
-        logger.info(kwargs)
         queryset = Place.objects.filter(is_active=True)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = PlaceListSerializer(queryset, many=True)
         return Response(serializer.data)
 
