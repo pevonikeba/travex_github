@@ -26,7 +26,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet, ViewSet
 from rest_framework.pagination import LimitOffsetPagination
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
-    TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage
+    TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.patch import PlacePatchSerializer
@@ -35,7 +35,8 @@ from place.serializers.plus_place import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     CategorySerializer, UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
-    CustomSocialLoginSerializer, PlaceImageSerializer
+    CustomSocialLoginSerializer, PlaceImageSerializer, AccommodationOptionSerializer, MustSeeSerializer, \
+    FloraFaunaSerializer
 from place.serializers.transport.main import TransportSerializer
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
@@ -77,12 +78,30 @@ class PlaceImageViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class TransportViewSet(ModelViewSet):
-    queryset = Transport.objects.all()
-    serializer_class = TransportSerializer
+class PlaceNestedViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['place', ]
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class TransportViewSet(PlaceNestedViewSet):
+    queryset = Transport.objects.all()
+    serializer_class = TransportSerializer
+
+
+class AccommodationOptionViewSet(PlaceNestedViewSet):
+    queryset = AccommodationOption.objects.all()
+    serializer_class = AccommodationOptionSerializer
+
+
+class MustSeeViewSet(PlaceNestedViewSet):
+    queryset = MustSee.objects.all()
+    serializer_class = MustSeeSerializer
+
+
+class FloraFaunaViewSet(PlaceNestedViewSet):
+    queryset = FloraFauna.objects.all()
+    serializer_class = FloraFaunaSerializer
 
 
 class PlaceViewSet(ModelViewSet):
