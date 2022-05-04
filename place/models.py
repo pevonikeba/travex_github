@@ -163,6 +163,9 @@ class Category(MPTTModel):
     color = ColorField(default='#FF0000')
     image = models.ImageField(upload_to='images/categories/', null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'Categories'
+
     class MPTTMeta:
         order_insertion_by = ['name']
 
@@ -224,7 +227,7 @@ class Place(models.Model):
     name = models.CharField(max_length=255, blank=False, default=f"Place name")
     nickname = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    categories = models.ManyToManyField(Category, blank=True)
+    categories = models.ManyToManyField(Category, blank=True, related_name='places')
     climatic_condition = models.ForeignKey(ClimaticCondition, on_delete=models.CASCADE, null=True, blank=True)
     geographical_feature = models.ForeignKey(GeographicalFeature, on_delete=models.CASCADE, null=True, blank=True)
     nearest_airport = models.TextField(null=True, blank=True)
@@ -423,8 +426,8 @@ class PlaceImage(models.Model):
 
 class AccommodationOption(models.Model):
     place = models.ForeignKey(Place, related_name="accommodation_options", on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=255, blank=False, default=None)
-    price = models.DecimalField(max_digits=13, decimal_places=2, blank=False, default=10)
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=13, decimal_places=2)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
@@ -442,7 +445,7 @@ class UniquenessPlace(models.Model):
 
 
 class MustSee(models.Model):
-    name = models.CharField(max_length=255, blank=False, default=None)
+    name = models.CharField(max_length=255)
     place = models.ForeignKey(Place, related_name="must_sees", on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='images/must_sees/', null=True, blank=True)
@@ -491,7 +494,7 @@ class FloraFauna(models.Model):
     place = models.ForeignKey(Place, related_name="flora_faunas", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='images/flora_faunas/', blank=False, default=None)
+    image = models.ImageField(upload_to='images/flora_faunas/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.place.name} {self.name}"

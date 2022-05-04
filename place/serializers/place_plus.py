@@ -1,6 +1,8 @@
-from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, PlaceImage
+from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
+    PlaceImage, MustSee, AccommodationOption, FloraFauna
 from django.db import models
-from .serializers import TypeTransportSerializer, CategorySerializer
+from .serializers import TypeTransportSerializer
+from .place_nested import CategorySerializer
 
 from loguru import logger
 from rest_framework import serializers
@@ -223,34 +225,7 @@ nested = [
             }
         ]
     },
-    {
-        "header": "Accommodation Option",
-        "key": "accommodation_option",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Accommodation Options Name",
-                'title': 'Accommodation Options Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Price",
-                'title': "Price",
-                'key': "price",
-                'field_type': FieldTypes.float_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-        ]
-    },
+
     {
         "header": "Uniqueness Place",
         "key": "uniqueness_place",
@@ -278,33 +253,7 @@ nested = [
             }
         ]
     },
-    {
-        "header": "Must See",
-        "key": "must_see",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Must See Name",
-                'title': 'Must See Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': True,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': True,
-            },
-            {
-                'title': "Must See Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
-        ]
-    },
+
     {
         "header": "Vibe",
         "key": "vibe",
@@ -389,33 +338,7 @@ nested = [
             },
         ]
     },
-    {
-        "header": "FloraAndFauna",
-        "key": "flora_fauna",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "FloraAndFauna Name",
-                'title': 'FloraAndFauna Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-            {
-                'title': "FloraAndFauna Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
-        ]
-    },
+
 ]
 
 
@@ -486,7 +409,7 @@ def get_plus_place():
     },
     {
         "key": get_field_name(Place, "place_images"),
-        "header": "Images",
+        "header": "Images of place",
         "is_nested": True,
         "inputs": [
             {
@@ -499,7 +422,7 @@ def get_plus_place():
     },
     {
         "key": None,
-        "header": "Category",
+        "header": "Categories",
         "is_nested": False,
         "inputs": [
             {
@@ -597,7 +520,7 @@ def get_plus_place():
     },
     {
         "key": get_field_name(Place, "transports"),
-        "header": "Transport",
+        "header": "Transports",
         "is_nested": True,
         "inputs": [
             {
@@ -638,6 +561,88 @@ def get_plus_place():
             }
         ]
     },
+        {
+            "key": get_field_name(Place, "must_sees"),
+            "header": "Must Sees",
+            "is_nested": True,
+            "inputs": [
+                {
+                    "key": get_field_name(MustSee, 'name'),
+                    "placeholder": "Must See Name",
+                    'title': 'Must See Name',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(MustSee, 'name'),
+                },
+                {
+                    'key': get_field_name(MustSee, 'description'),
+                    "placeholder": "Description",
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(MustSee, 'description'),
+                },
+                {
+                    'key': get_field_name(MustSee, 'image'),
+                    'title': "Must See Image",
+                    'field_type': FieldTypes.image_field,
+                    'required': get_is_field_required(MustSee, 'image'),
+                }
+            ]
+        },
+        {
+            "key": get_field_name(Place, 'accommodation_options'),
+            "header": "Accommodation Options",
+            "is_nested": True,
+            "inputs": [
+                {
+                    "key": get_field_name(AccommodationOption, 'name'),
+                    "placeholder": "Accommodation Options Name",
+                    'title': 'Accommodation Options Name',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(AccommodationOption, 'name'),
+                },
+                {
+                    'key': get_field_name(AccommodationOption, 'price'),
+                    "placeholder": "Price",
+                    'title': "Price",
+                    'field_type': FieldTypes.float_field,
+                    'required': get_is_field_required(AccommodationOption, 'price'),
+                },
+                {
+                    'key': get_field_name(AccommodationOption, 'description'),
+                    "placeholder": "Description",
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(AccommodationOption, 'description'),
+                },
+            ]
+        },
+        {
+            "key": get_field_name(Place, 'flora_faunas'),
+            "header": "Flora and Fauna",
+            "is_nested": True,
+            "inputs": [
+                {
+                    "key": get_field_name(FloraFauna, 'name'),
+                    "placeholder": "Flora and/or Fauna name",
+                    'title': 'Flora and/or Fauna name',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(FloraFauna, 'name'),
+                },
+                {
+                    'key': get_field_name(FloraFauna, 'description'),
+                    "placeholder": 'Description',
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(FloraFauna, 'description'),
+                },
+                {
+                    'key': get_field_name(FloraFauna, 'image'),
+                    'title': "Flora and Fauna Image",
+                    'field_type': FieldTypes.image_field,
+                    'required': get_is_field_required(FloraFauna, 'image'),
+                }
+            ]
+        },
 ]
 
 

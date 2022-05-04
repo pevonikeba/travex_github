@@ -1,7 +1,6 @@
 from loguru import logger
 
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
-from django.contrib.auth.hashers import make_password
 from django_countries.serializers import CountryFieldMixin
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -12,7 +11,8 @@ from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
 from place.serializers.place.list import PlaceListSerializer
-from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer
+from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
+    AccommodationOptionSerializer, FloraFaunaSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -138,12 +138,6 @@ class NaturalPhenomenaSerializer(ModelSerializer):
         return NaturalPhenomena.objects.create(data=data, image=image)
 
 
-class AccommodationOptionSerializer(ModelSerializer):
-    class Meta:
-        model = AccommodationOption
-        fields = ('id', 'name', 'price', 'description',)
-
-
 class UniquenessPlaceSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
 
@@ -156,20 +150,6 @@ class UniquenessPlaceSerializer(ModelSerializer):
         data = validated_data.pop('data')
 
         return UniquenessPlace.objects.create(data=data, image=image)
-
-
-class MustSeeSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = MustSee
-        fields = ('id', 'name', 'description', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return MustSee.objects.create(data=data, image=image)
 
 
 class VibeSerializer(ModelSerializer):
@@ -200,21 +180,6 @@ class WhereToTakeAPictureSerializer(ModelSerializer):
         return WhereToTakeAPicture.objects.create(data=data, image=image)
 
 
-class FloraFaunaSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = FloraFauna
-        fields = ('id', 'name', 'description', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return FloraFauna.objects.create(data=data, image=image)
-
-
-
 class InterestingFactsSerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
 
@@ -232,20 +197,6 @@ class PracticalInformationSerializer(ModelSerializer):
     class Meta:
         model = PracticalInformation
         fields = ('id', 'description',)
-
-
-class CategorySerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return Category.objects.create(data=data, image=image)
 
 
 class TypeTransportSerializer(ModelSerializer):

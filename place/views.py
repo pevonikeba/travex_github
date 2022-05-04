@@ -23,11 +23,11 @@ from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
 from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
-    CategorySerializer, UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
+    UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
-    CustomSocialLoginSerializer, AccommodationOptionSerializer, MustSeeSerializer, \
-    FloraFaunaSerializer
-from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer
+    CustomSocialLoginSerializer
+from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
+    AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
