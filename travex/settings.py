@@ -108,7 +108,7 @@ SOCIALACCOUNT_PROVIDERS = {
             "client_id": os.environ.get("APPLE_CLIENT_ID"),
             # The KEY ID (visible in the "View Key Details" page).
             "secret": os.environ.get("APPLE_SECRET"),
-            "key": os.environ.get("attaplacekey"),
+            "key": os.environ.get("APPLE_KEY"),
             "certificate_key": os.environ.get("APPLE_CERTIFICATE_KEY"),
         }
     },
