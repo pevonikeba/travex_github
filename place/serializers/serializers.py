@@ -12,6 +12,7 @@ from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
 from place.serializers.place.list import PlaceListSerializer
+from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -233,14 +234,6 @@ class PracticalInformationSerializer(ModelSerializer):
         fields = ('id', 'description',)
 
 
-class PlaceImageSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = PlaceImage
-        fields = ('id', 'image', 'place',)
-
-
 class CategorySerializer(ModelSerializer):
     image = Base64ImageField()  # From DRF Extra Fields
 
@@ -254,12 +247,6 @@ class CategorySerializer(ModelSerializer):
 
         return Category.objects.create(data=data, image=image)
 
-class CategorySerializerArslion(ModelSerializer):
-
-    class Meta:
-        model = Category
-        fields = ('id', )
-
 
 class TypeTransportSerializer(ModelSerializer):
     class Meta:
@@ -267,22 +254,29 @@ class TypeTransportSerializer(ModelSerializer):
         fields = ('id', 'name',)
 
 
-class TransportSerializer(ModelSerializer):
-    image = Base64ImageField(required=False)  # From DRF Extra Fields
-    # name = TypeTransportSerializer(many=True, read_only=True)
-    # name = serializers.CharField(source='name.name')
+# class TransportSerializer(ModelSerializer):
+#     image = Base64ImageField(required=False)  # From DRF Extra Fields
+#     # name = TypeTransportSerializer(many=True, read_only=True)
+#     # name = serializers.CharField(source='name.name')
+#
+#     class Meta:
+#         model = Transport
+#         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image', 'place',)
+#
+#     def create(self, validated_data):
+#         image = validated_data.pop('image')
+#         data = validated_data.pop('data')
+#
+#         return Transport.objects.create(data=data, image=image)
 
-    class Meta:
-        model = Transport
-        fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image', 'place',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return Transport.objects.create(data=data, image=image)
-
-
+# class PlaceImageSerializer(ModelSerializer):
+#     image = Base64ImageField()  # From DRF Extra Fields
+#
+#     class Meta:
+#         model = PlaceImage
+#         fields = ('id', 'image', 'place',)
+#
+#
 class PlaceSerializer(ModelSerializer):
     class Meta:
         model = Place

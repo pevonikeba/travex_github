@@ -1,11 +1,6 @@
 from rest_framework import serializers
 from place.models import Place, CustomUser, PlaceImage
-
-
-class PlaceImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PlaceImage
-        fields = ('id', 'image',)
+from place.serializers.place_nested import PlaceImageSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

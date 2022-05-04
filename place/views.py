@@ -1,51 +1,39 @@
 import json
 
 # from rest_framework_simplejwt.locale import
-import djoser.urls.jwt
 
 import requests
-from dj_rest_auth.registration.serializers import SocialLoginSerializer
 from dj_rest_auth.registration.views import SocialLoginView
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from loguru import logger
-from rest_framework import viewsets, status, permissions
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.exceptions import ErrorDetail
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, DestroyAPIView, \
-    get_object_or_404
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import UpdateModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly, \
-    DjangoModelPermissions, AllowAny
-from rest_framework.utils.serializer_helpers import ReturnList
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, GenericViewSet, ViewSet
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
-from place.serializers.place.patch import PlacePatchSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
-from place.serializers.plus_place import get_plus_place
+from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     CategorySerializer, UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
-    CustomSocialLoginSerializer, PlaceImageSerializer, AccommodationOptionSerializer, MustSeeSerializer, \
+    CustomSocialLoginSerializer, AccommodationOptionSerializer, MustSeeSerializer, \
     FloraFaunaSerializer
-from place.serializers.transport.main import TransportSerializer
+from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client, AppleProvider
+from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client
 # from rest_auth.registration.views import SocialLoginView
 
-
-from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 # class CustomRenderer(JSONRenderer):
 #     def render(self, data, accepted_media_type=None, renderer_context=None):

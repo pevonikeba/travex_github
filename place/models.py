@@ -16,33 +16,33 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 CONTINENT_CHOICES =(
-    ("asia", "Asia"),
-    ("africa", "Africa"),
-    ("europe", "Europe"),
-    ("north america", "North America"),
-    ("south america", "South America"),
-    ("australia/oceania", "Australia/Oceania"),
-    ("antarctica", "Antarctica"),
+    ("Asia", "Asia"),
+    ("Africa", "Africa"),
+    ("Europe", "Europe"),
+    ("North America", "North America"),
+    ("South America", "South America"),
+    ("Australia/Oceania", "Australia/Oceania"),
+    ("Antarctica", "Antarctica"),
 )
 
-TYPE_OF_PEOPLE_AROUND_CHOICES =(
-    ("ambitious and passionate people", "Ambitious and passionate people"),
-    ("the doers", "The doers"),
-    ("the problem solvers", "The problem solvers"),
-    ("those who are on a similar journey as you", "Those who are on a similar journey as you"),
-    ("those who can inspire you and be your role model", "Those who can inspire you and be your role model"),
-    ("those who help you tap your full potential and bring out the best in you", "Those who help you tap your full potential and bring out the best in you"),
-    ("those who can provide a genuine feedback", "Those who can provide a genuine feedback"),
-    ("those who can help you keep happy, upbeat and positive", "Those who can help you keep happy, upbeat and positive"),
-    ("the ‘forward moving’ people", "The ‘forward moving’ people"),
+TYPE_OF_PEOPLE_AROUND_CHOICES = (
+    ("Ambitious and passionate people", "Ambitious and passionate people"),
+    ("The doers", "The doers"),
+    ("The problem solvers", "The problem solvers"),
+    ("Those who are on a similar journey as you", "Those who are on a similar journey as you"),
+    ("Those who can inspire you and be your role model", "Those who can inspire you and be your role model"),
+    ("Those who help you tap your full potential and bring out the best in you", "Those who help you tap your full potential and bring out the best in you"),
+    ("Those who can provide a genuine feedback", "Those who can provide a genuine feedback"),
+    ("Those who can help you keep happy, upbeat and positive", "Those who can help you keep happy, upbeat and positive"),
+    ("The ‘forward moving’ people", "The ‘forward moving’ people"),
 )
 
-HOW_DANGEROUS_CHOICES =(
-    ("very safe", "Very Safe"),
-    ("safe", "Safe"),
-    ("average", "Average"),
-    ("somewhat dangerous", "Somewhat Dangerous"),
-    ("dangerous", "Dangerous"),
+HOW_DANGEROUS_CHOICES = (
+    ("Very safe", "Very safe"),
+    ("Safe", "Safe"),
+    ("Average", "Average"),
+    ("Somewhat dangerous", "Somewhat dangerous"),
+    ("Dangerous", "Dangerous"),
 
 )
 
@@ -55,22 +55,22 @@ CLIMATE_CHOICES = (
 )
 
 HOW_COMFORTABLE_CHOICES = (
-    ("Very Comfortable", "Very Comfortable"),
+    ("Very comfortable", "Very comfortable"),
     ("Comfortable", "Comfortable"),
     ("Average", "Average"),
     ("Durable", "Durable"),
-    ("Totally Uncomfortable", "Totally Uncomfortable"),
+    ("Totally uncomfortable", "Totally uncomfortable"),
 
 )
 
 TYPES_OF_ECOSYSTEMS_CHOICES =(
-    ("terrestrial ecosystem", "Terrestrial ecosystem"),
-    ("forest ecosystem", "Forest ecosystem"),
-    ("grassland ecosystem", "Grassland ecosystem"),
-    ("desert ecosystem", "Desert ecosystem"),
-    ("tundra ecosystem", "Tundra ecosystem"),
-    ("freshwater ecosystem", "Freshwater ecosystem"),
-    ("marine ecosystem", "Marine ecosystem"),
+    ("Terrestrial ecosystem", "Terrestrial ecosystem"),
+    ("Forest ecosystem", "Forest ecosystem"),
+    ("Grassland ecosystem", "Grassland ecosystem"),
+    ("Desert ecosystem", "Desert ecosystem"),
+    ("Tundra ecosystem", "Tundra ecosystem"),
+    ("Freshwater ecosystem", "Freshwater ecosystem"),
+    ("Marine ecosystem", "Marine ecosystem"),
 )
 
 TYPES_OF_TRANSPORT_CHOICES = (
@@ -81,7 +81,7 @@ TYPES_OF_TRANSPORT_CHOICES = (
     ("Buses", "Buses"),
     ("Boats", "Boats"),
     ("Subways", "Subways"),
-    ("Aerial Tramways", "Aerial Tramways"),
+    ("Aerial tramways", "Aerial tramways"),
     ("Flying", "Flying"),
     ("Funiculars", "Funiculars"),
 )
@@ -172,20 +172,20 @@ class Category(MPTTModel):
 mptt.register(Category, order_insertion_by=['name'])
 
 ICON_CHOICES = (
-    ("article", "article"),
-    ("bed", "bed"),
-    ("people", "people"),
-    ("cloud", "cloud"),
-    ("restaurant_menu", "restaurant_menu"),
-    ("attractions_rounded", "attractions_rounded"),
-    ("grass", "grass"),
-    ("done", "done"),
-    ("star", "star"),
-    ("lock", "lock"),
-    ("terrain", "terrain"),
-    ("directions", "directions"),
-    ("camera", "camera"),
-    ("surfing", "surfing"),
+    ("Article", "Article"),
+    ("Bed", "Bed"),
+    ("People", "People"),
+    ("Cloud", "Cloud"),
+    ("Restaurant menu", "Restaurant menu"),
+    ("Attractions rounded", "Attractions rounded"),
+    ("Grass", "Grass"),
+    ("Done", "Done"),
+    ("Star", "Star"),
+    ("Lock", "Lock"),
+    ("Terrain", "Terrain"),
+    ("Directions", "Directions"),
+    ("Camera", "Camera"),
+    ("Surfing", "Surfing"),
 )
 
 FIELD_TYPE_CHOICES = (
@@ -354,7 +354,7 @@ class TypeTransport(models.Model):
 class Transport(models.Model):
     place = models.ForeignKey(Place, related_name="transports", on_delete=models.CASCADE)
     type_transport = models.ForeignKey(TypeTransport, related_name="transports", on_delete=models.CASCADE, blank=False)
-    price = models.DecimalField(max_digits=13, decimal_places=2, default=None, blank=False)
+    price = models.DecimalField(max_digits=13, decimal_places=2, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     comfortable = models.CharField(choices=HOW_COMFORTABLE_CHOICES, null=True, blank=True, max_length=255)
     image = models.ImageField(upload_to='images/transports/', null=True, blank=True)

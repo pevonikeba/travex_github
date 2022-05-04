@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna
 from loguru import logger
+
+from place.serializers.place_nested import PlaceImageSerializer
 from place.utils.utils import create_section
 
 
@@ -171,11 +173,6 @@ a = {
 #     class Meta:
 #         model = Transport
 #         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
-
-class PlaceImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PlaceImage
-        fields = ('id', 'image', )
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):

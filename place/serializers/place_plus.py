@@ -1,6 +1,6 @@
-from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport
+from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, PlaceImage
 from django.db import models
-from .serializers import TypeTransportSerializer
+from .serializers import TypeTransportSerializer, CategorySerializer
 
 from loguru import logger
 from rest_framework import serializers
@@ -439,223 +439,233 @@ def get_model_options(Obj: models.Model, serializer):
     return map(_transform_dict, options.data)
 
 
+def get_is_field_required(model, field_name):
+    return not model._meta.get_field(field_name).blank
+
+
+def get_field_name(model, field_name):
+    return model._meta.get_field(field_name).name
+
+
 def get_plus_place():
     return [
     {
-        "header": "General Info",
         "key": None,
+        "header": "General Info",
         "is_nested": False,
         "inputs": [
             {
+                "key": get_field_name(Place, 'name'),
                 "placeholder": "Name",
                 'title': 'Name',
-                "key": 'name',
                 'field_type': FieldTypes.char_field,
-                'required': True,
+                'required': get_is_field_required(Place, 'name'),
             },
             {
+                "key": get_field_name(Place, 'nickname'),
                 "placeholder": "Nickname",
                 'title': 'Nickname',
-                "key": 'nickname',
                 'field_type': FieldTypes.char_field,
-                'required': False,
+                'required': get_is_field_required(Place, 'nickname'),
             },
             {
+                "key": get_field_name(Place, 'description'),
                 "placeholder": "Overview",
                 'title': "Overview",
-                "key": 'description',
                 'field_type': FieldTypes.text_field,
-                'required': False,
+                'required': get_is_field_required(Place, 'description'),
             },
             {
+                "key": get_field_name(Place, 'rating'),
                 "placeholder": "Rating",
                 'title': "Rating",
-                "key": 'rating',
                 'field_type': FieldTypes.int_field,
-                'required': False,
+                'required': get_is_field_required(Place, 'rating'),
             }
         ]
     },
     {
+        "key": get_field_name(Place, "place_images"),
         "header": "Images",
-        "key": "place_images",
         "is_nested": True,
         "inputs": [
             {
+                "key": get_field_name(PlaceImage, 'image'),
                 'title': "Images",
-                "key": 'image',
                 'field_type': FieldTypes.multi_image_field,
-                'required': False,
+                'required': get_is_field_required(PlaceImage, 'image'),
             },
-
         ]
     },
     {
+        "key": None,
         "header": "Category",
-        "key": None,
         "is_nested": False,
         "inputs": [
             {
+                "key": get_field_name(Place, 'categories'),
                 'title': 'Category',
-                "key": 'categories',
                 'field_type': FieldTypes.multi_select,
-                "options": [
-                    {"text": 'Active', "value": 1, },
-                    {"text": 'Adventures', "value": 2, },
-                    {"text": 'Alien', "value": 3, },
-                    {"text": 'Animal', "value": 4, },
-                    {"text": 'Cinema', "value": 5, },
-                    {"text": 'Cultural', "value": 6, },
-                    {"text": 'Digging', "value": 7, },
-                    {"text": 'Eco', "value": 8, },
-                    {"text": 'Event', "value": 9, },
-                    {"text": 'Exotic', "value": 10, },
-                    {"text": 'Extreme', "value": 11, },
-                    {"text": 'Family', "value": 12, },
-                    {"text": 'From 7 d', "value": 13, },
-                    {"text": 'Gastro', "value": 14, },
-                    {"text": 'Gothic', "value": 15, },
-                    {"text": 'Jailoo', "value": 16, },
-                    {"text": 'Mystery', "value": 17, },
-                    {"text": 'Philosophy', "value": 18, },
-                    {"text": 'Recreation', "value": 19, },
-                    {"text": 'Pilgrimage', "value": 20, },
-                    {"text": 'Spirit', "value": 21, },
-                    {"text": 'Up to 3', "value": 22, },
-                    {"text": 'Up to 7 d', "value": 23, },
-                    {"text": 'Honeymoon', "value": 24, },
-                    {"text": 'Urban', "value": 25, },
-                    {"text": 'Welness', "value": 26, },
-                ],
-                'required': True,
+                "options": get_model_options(Category, CategorySerializer),
+                'required': get_is_field_required(Place, 'categories'),
             },
         ]
     },
     {
-        "header": "Civilization",
         "key": None,
+        "header": "Civilization",
         "is_nested": False,
         "inputs": [
             {
+                'key': get_field_name(Place, "population"),
                 "placeholder": "Population",
                 'title': "Population",
-                'key': "population",
                 'field_type': FieldTypes.int_field,
-                'required': False,
+                'required': get_is_field_required(Place, "population"),
             },
             {
+                'key': get_field_name(Place, "type_of_people_around"),
                 "placeholder": "Type Of People Around",
                 'title': "Type Of People Around",
-                'key': "type_of_people_around",
                 'field_type': FieldTypes.text_field,
-                'required': False,
+                'required': get_is_field_required(Place, "type_of_people_around"),
             },
             {
+                'key': get_field_name(Place, "turist_rating"),
                 "placeholder": "Turist Rating",
                 'title': "Turist Rating",
-                'key': "turist_rating",
                 'field_type': FieldTypes.int_field,
-                'required': False,
+                'required': get_is_field_required(Place, "turist_rating"),
             },
             {
+                'key': get_field_name(Place, "nation"),
                 "placeholder": "Nation",
                 'title': "Nation",
-                'key': "nation",
                 'field_type': FieldTypes.char_field,
-                'required': False,
+                'required': get_is_field_required(Place, "nation"),
             },
             {
+                'key': get_field_name(Place, "language"),
                 "placeholder": "Language",
                 'title': "Language",
-                'key': "language",
                 'field_type': FieldTypes.char_field,
-                'required': False,
+                'required': get_is_field_required(Place, "language"),
             },
             {
+                'key': get_field_name(Place, 'culture'),
                 "placeholder": "Culture",
                 'title': 'Culture',
-                'key': 'culture',
                 'field_type': FieldTypes.text_field,
-                'required': False,
+                'required': get_is_field_required(Place, 'culture'),
             },
             {
+                'key': get_field_name(Place, "currency"),
                 "placeholder": "Currency",
                 'title': "Currency",
-                'key': "currency",
                 'field_type': FieldTypes.char_field,
-                'required': False,
+                'required': get_is_field_required(Place, "currency"),
             },
             {
+                'key': get_field_name(Place, 'currency_buying_advice'),
                 "placeholder": "Currency Buying Advice",
                 'title': 'Currency Buying Advice',
-                'key': 'currency_buying_advice',
                 'field_type': FieldTypes.text_field,
-                'required': False,
+                'required': get_is_field_required(Place, 'currency_buying_advice'),
             },
             {
+                'key': get_field_name(Place, "simcards"),
                 "placeholder": "Sim Cards",
                 'title': "Sim Cards",
-                'key': "simcards",
                 'field_type': FieldTypes.char_field,
-                'required': False,
+                'required': get_is_field_required(Place, "simcards"),
             },
             {
+                'key': get_field_name(Place, "internet"),
                 "placeholder": "Internet",
                 'title': "Internet",
-                'key': "internet",
                 'field_type': FieldTypes.char_field,
-                'required': False,
+                'required': get_is_field_required(Place, "internet"),
             },
             {
+                'key': get_field_name(Place, 'pay_online_or_by_card'),
                 "placeholder": "Payment Method",
                 'title': 'Pay Online Or By Card',
-                'key': 'pay_online_or_by_card',
                 'field_type': FieldTypes.text_field,
-                'required': False,
+                'required': get_is_field_required(Place, 'pay_online_or_by_card'),
             },
         ]
     },
     {
+        "key": get_field_name(Place, "transports"),
         "header": "Transport",
-        "key": "transports",
         "is_nested": True,
         "inputs": [
             {
-                "placeholder": "Kind Of Transport",
-                'title': 'Kind Of Transport',
-                "key": "type_transport",
+                "key": get_field_name(Transport, "type_transport"),
+                "placeholder": "Type Of Transport",
+                'title': 'Type Of Transport',
                 'field_type': FieldTypes.picker,
                 "options": get_model_options(TypeTransport, TypeTransportSerializer),
-                'required': False,
+                'required': get_is_field_required(Transport, 'type_transport'),
             },
             {
+                'key': get_field_name(Transport, "price"),
                 "placeholder": "Transport Price",
                 'title': "Transport Price",
-                'key': "price",
                 'field_type': FieldTypes.float_field,
-                'required': False,
+                'required': get_is_field_required(Transport, 'price'),
             },
             {
+                'key': get_field_name(Transport, "description"),
                 "placeholder": "Transport Description",
                 'title': "Transport Description",
-                'key': "description",
                 'field_type': FieldTypes.text_field,
-                'required': False,
+                'required': get_is_field_required(Transport, "description"),
             },
             {
+                'key': get_field_name(Transport, "comfortable"),
                 "placeholder": "Transport Comfortable",
                 'title': "Transport Comfortable",
-                'key': "comfortable",
                 'field_type': FieldTypes.picker,
                 "options": get_choices_options(HOW_COMFORTABLE_CHOICES),
-                'required': False,
+                'required': get_is_field_required(Transport, "comfortable"),
             },
             {
+                'key': get_field_name(Transport, 'image'),
                 'title': "Transport Image",
-                'key': 'image',
                 'field_type': FieldTypes.image_field,
-                'required': False,
+                'required': get_is_field_required(Transport, 'image'),
             }
         ]
     },
 ]
+
+
+category_choices = (
+    {"text": 'Active', "value": 1, },
+    {"text": 'Adventures', "value": 2, },
+    {"text": 'Alien', "value": 3, },
+    {"text": 'Animal', "value": 4, },
+    {"text": 'Cinema', "value": 5, },
+    {"text": 'Cultural', "value": 6, },
+    {"text": 'Digging', "value": 7, },
+    {"text": 'Eco', "value": 8, },
+    {"text": 'Event', "value": 9, },
+    {"text": 'Exotic', "value": 10, },
+    {"text": 'Extreme', "value": 11, },
+    {"text": 'Family', "value": 12, },
+    {"text": 'From 7 d', "value": 13, },
+    {"text": 'Gastro', "value": 14, },
+    {"text": 'Gothic', "value": 15, },
+    {"text": 'Jailoo', "value": 16, },
+    {"text": 'Mystery', "value": 17, },
+    {"text": 'Philosophy', "value": 18, },
+    {"text": 'Recreation', "value": 19, },
+    {"text": 'Pilgrimage', "value": 20, },
+    {"text": 'Spirit', "value": 21, },
+    {"text": 'Up to 3', "value": 22, },
+    {"text": 'Up to 7 d', "value": 23, },
+    {"text": 'Honeymoon', "value": 24, },
+    {"text": 'Urban', "value": 25, },
+    {"text": 'Welness', "value": 26, },
+)
