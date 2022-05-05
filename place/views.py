@@ -210,6 +210,11 @@ class AppleLogin(SocialLoginView):
     # callback_url = 'https://anycallbackurlhere'
     client_class = AppleOAuth2Client
 
+    def process_login(self):
+        self.user.is_active = True
+        self.user.save()
+        super().process_login()
+
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter

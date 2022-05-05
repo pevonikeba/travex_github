@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Register your models here.
 from django.contrib.admin import ModelAdmin, TabularInline
 # from django.contrib.gis.admin import GISModelAdmin
-from modeltranslation.admin import TranslationAdmin
+# from modeltranslation.admin import TranslationAdmin
 from mptt.admin import MPTTModelAdmin
 
 # from geopy.geocoders import Nominatim
@@ -85,9 +85,9 @@ class BookmarkInline(TabularInline):
     model = Bookmark
 
 
-@admin.register(Transport)
-class TransportAdmin(TranslationAdmin):
-    group_fieldsets = True
+# @admin.register(Transport)
+# class TransportAdmin(TranslationAdmin):
+#     group_fieldsets = True
 
 @admin.register(PlaceImage)
 class ImageAdmin(ModelAdmin):
