@@ -105,11 +105,11 @@ SOCIALACCOUNT_PROVIDERS = {
     "apple": {
         "APP": {
             # Your service identifier.
-            "client_id": os.environ.get("APPLE_CLIENT_ID"),
+            "client_id": "com.discover.gelgel",
             # The KEY ID (visible in the "View Key Details" page).
             "secret": os.environ.get("APPLE_SECRET"),
             "key": os.environ.get("APPLE_KEY"),
-            "certificate_key": os.environ.get("APPLE_CERTIFICATE_KEY"),
+            "certificate_key": os.environ.get("APPLE_CERTIFICATE_KEY").replace(r'\n', '\n'),
         }
     },
     'google': {
