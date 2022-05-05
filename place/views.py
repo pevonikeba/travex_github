@@ -33,6 +33,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client
 # from rest_auth.registration.views import SocialLoginView
+from loguru import logger
 
 
 # class CustomRenderer(JSONRenderer):
@@ -75,6 +76,12 @@ class PlaceNestedViewSet(ModelViewSet):
 class TransportViewSet(PlaceNestedViewSet):
     queryset = Transport.objects.all()
     serializer_class = TransportSerializer
+    
+    def list(self, request, *args, **kwargs):
+        lang = request.headers.get('Accept-Language')
+        logger.warning(lang)
+
+        return super(TransportViewSet, self).list(request, *args, **kwargs)
 
 
 class AccommodationOptionViewSet(PlaceNestedViewSet):
@@ -200,7 +207,7 @@ class TypeCuisineViewSet(ModelViewSet):
 
 class AppleLogin(SocialLoginView):
     adapter_class = AppleOAuth2Adapter
-    callback_url = 'https://anycallbackurlhere'
+    # callback_url = 'https://anycallbackurlhere'
     client_class = AppleOAuth2Client
 
 

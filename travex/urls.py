@@ -15,9 +15,9 @@ Including another URLconf
 """
 from allauth.account.views import LogoutView
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
-
 
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
@@ -29,7 +29,6 @@ from place.views import GoogleLogin, CustomUserListCreateView, \
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/places/', include("place.urls", namespace="place")),
     path('api/drf-auth/', include('rest_framework.urls')),
     path('', include('social_django.urls', namespace='social')),
     path('auth/', include('djoser.urls')),
@@ -49,6 +48,7 @@ urlpatterns = [
     path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
     path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
     path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
+    path('i18n/', include('django.conf.urls.i18n'))
     # path('activate/<uid>/<token>', ActivateUser.as_view({'get': 'activation'}), name='activation'),
     # path(r'activate/<uid>/<token>', UserActivationView.as_view()),
     # path('activate/<str:uid>/<str:token>/', UserActivationView.as_view()),
@@ -56,6 +56,10 @@ urlpatterns = [
     # path("djoser_auth/", include("djoser.urls")),
     # path("djoser_auth/", include("djoser.urls.jwt")),
 ]
+
+urlpatterns += i18n_patterns(
+    path('api/places/', include("place.urls", namespace="place")),
+)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

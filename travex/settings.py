@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -32,6 +33,7 @@ ALLOWED_HOSTS = ['go.attaplace.info', '3.67.98.251', '127.0.0.1', '159.223.216.1
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -105,7 +107,7 @@ SOCIALACCOUNT_PROVIDERS = {
     "apple": {
         "APP": {
             # Your service identifier.
-            "client_id": "com.discover.gelgel",
+            "client_id": os.environ.get("APPLE_CLIENT_ID"),
             # The KEY ID (visible in the "View Key Details" page).
             "secret": os.environ.get("APPLE_SECRET"),
             "key": os.environ.get("APPLE_KEY"),
@@ -143,6 +145,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -150,7 +153,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'django.middleware.locale.LocaleMiddleware',
     # 'place.middleware.format_middleware.FormatMiddleware',
     # 'place.middleware.log.APILogMiddleware',
 ]
@@ -232,6 +234,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# gettext = lambda s: s
+LANGUAGES = (
+    ('en', _('English')),
+    ('ru', _('Russian')),
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
