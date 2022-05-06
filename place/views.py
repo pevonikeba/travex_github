@@ -66,6 +66,8 @@ from place.utils.utils import StandardResultsSetPagination
 
 class PlaceImageViewSet(ModelViewSet):
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['place', ]
     queryset = PlaceImage.objects.all()
     serializer_class = PlaceImageSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
