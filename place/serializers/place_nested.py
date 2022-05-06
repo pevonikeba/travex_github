@@ -15,12 +15,12 @@ class TransportSerializer(serializers.ModelSerializer):
 
 
 class PlaceImageSerializer(serializers.ModelSerializer):
-    image = Base64ImageField(required=False)  # From DRF Extra Fields
+    # image = Base64ImageField(required=False)  # From DRF Extra Fields
 
     class Meta:
         model = PlaceImage
         fields = [field.name for field in model._meta.fields]
-        fields.append('image')
+        # fields.append('image')
 
 
 class MustSeeSerializer(ModelSerializer):
@@ -39,13 +39,13 @@ class AccommodationOptionSerializer(ModelSerializer):
 
 
 class CategorySerializer(ModelSerializer):
-    image = Base64ImageField(required=False)  # From DRF Extra Fields
+    # image = Base64ImageField(required=False)  # From DRF Extra Fields
 
     class Meta:
         model = Category
         fields = [field.name for field in model._meta.fields]
-        fields.append('image')
-        # fields.append('places')
+        # fields.append('image')
+        fields.append('places')
 
 
 class FloraFaunaSerializer(ModelSerializer):

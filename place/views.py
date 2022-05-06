@@ -4,6 +4,7 @@ import json
 
 import requests
 from dj_rest_auth.registration.views import SocialLoginView
+from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
@@ -64,21 +65,17 @@ from loguru import logger
 from place.utils.utils import StandardResultsSetPagination
 
 
-class PlaceImageViewSet(ModelViewSet):
-    parser_classes = [JSONParser, FormParser, MultiPartParser, ]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['place', ]
-    queryset = PlaceImage.objects.all()
-    serializer_class = PlaceImageSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-
 class PlaceNestedViewSet(ModelViewSet):
     """Common ViewSet for place nested models"""
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['place', ]
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class PlaceImageViewSet(PlaceNestedViewSet):
+    queryset = PlaceImage.objects.all()
+    serializer_class = PlaceImageSerializer
 
 
 class TransportViewSet(PlaceNestedViewSet):
@@ -99,6 +96,12 @@ class MustSeeViewSet(PlaceNestedViewSet):
 class FloraFaunaViewSet(PlaceNestedViewSet):
     queryset = FloraFauna.objects.all()
     serializer_class = FloraFaunaSerializer
+
+
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class PlaceViewSet(ModelViewSet):
@@ -139,6 +142,13 @@ class PlaceViewSet(ModelViewSet):
     def plus_place(self, request):
         return Response(get_plus_place())
 
+    @action(detail=True, methods=['get'])
+    def plus_place_get(self, request, pk=None):
+        queryset = Place.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = PlaceSerializer(user)
+        return Response(serializer.data)
+
 
 class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
     queryset = UserPlaceRelation.objects.all()
@@ -150,13 +160,6 @@ class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
     def get_object(self):
         obj, created = UserPlaceRelation.objects.get_or_create(user=self.request.user, place_id=self.kwargs['place'])
         return obj
-
-
-class CategoryViewSet(ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
 class BookmarkViewSet(ModelViewSet):
