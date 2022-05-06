@@ -6,12 +6,12 @@ from place.models import Transport, PlaceImage, MustSee, AccommodationOption, Ca
 
 
 class TransportSerializer(serializers.ModelSerializer):
-    image = Base64ImageField(required=False)
+    # image = Base64ImageField(required=False)
 
     class Meta:
         model = Transport
         fields = [field.name for field in model._meta.fields]
-        fields.append('image')
+        # fields.append('image')
 
 
 class PlaceImageSerializer(serializers.ModelSerializer):

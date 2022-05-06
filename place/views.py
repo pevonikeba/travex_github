@@ -33,6 +33,8 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client
 from rest_framework.response import Response
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
+
 # from rest_auth.registration.views import SocialLoginView
 from loguru import logger
 
@@ -63,12 +65,15 @@ from place.utils.utils import StandardResultsSetPagination
 
 
 class PlaceImageViewSet(ModelViewSet):
+    parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = PlaceImage.objects.all()
     serializer_class = PlaceImageSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class PlaceNestedViewSet(ModelViewSet):
+    """Common ViewSet for place nested models"""
+    parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['place', ]
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -77,12 +82,6 @@ class PlaceNestedViewSet(ModelViewSet):
 class TransportViewSet(PlaceNestedViewSet):
     queryset = Transport.objects.all()
     serializer_class = TransportSerializer
-    
-    # def list(self, request, *args, **kwargs):
-    #     lang = request.headers.get('Accept-Language')
-    #     logger.warning(lang)
-    #
-    #     return super(TransportViewSet, self).list(request, *args, **kwargs)
 
 
 class AccommodationOptionViewSet(PlaceNestedViewSet):

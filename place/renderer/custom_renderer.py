@@ -10,7 +10,6 @@ class CustomRenderer(JSONRenderer):
             response_content['success'] = False
             response_content['error'] = data['code'] or 'unknown_error'
         else:
-
             NoneType = type(None)
             # print('data: ', data)
             # print('type(data): ', type(data))
