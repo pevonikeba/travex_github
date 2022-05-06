@@ -32,6 +32,7 @@ from place.serializers.place_nested import TransportSerializer, PlaceImageSerial
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client
+from rest_framework.response import Response
 # from rest_auth.registration.views import SocialLoginView
 from loguru import logger
 
@@ -77,11 +78,11 @@ class TransportViewSet(PlaceNestedViewSet):
     queryset = Transport.objects.all()
     serializer_class = TransportSerializer
     
-    def list(self, request, *args, **kwargs):
-        lang = request.headers.get('Accept-Language')
-        logger.warning(lang)
-
-        return super(TransportViewSet, self).list(request, *args, **kwargs)
+    # def list(self, request, *args, **kwargs):
+    #     lang = request.headers.get('Accept-Language')
+    #     logger.warning(lang)
+    #
+    #     return super(TransportViewSet, self).list(request, *args, **kwargs)
 
 
 class AccommodationOptionViewSet(PlaceNestedViewSet):
@@ -254,9 +255,7 @@ class CustomUserListCreateView(ListCreateAPIView):
 
 
 class CustomUserView(UserViewSet):
-
     def create(self, request, *args, **kwargs):
-
         try:
             user = CustomUser.objects.get(email=request.data['email'])
             if not user.is_active:
@@ -271,9 +270,6 @@ class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
-
-
-from rest_framework.response import Response
 
 
 # class ActivateUser(UserViewSet):

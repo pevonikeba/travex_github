@@ -29,6 +29,7 @@ from place.views import GoogleLogin, CustomUserListCreateView, \
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/places/', include("place.urls", namespace="place")),
     path('api/drf-auth/', include('rest_framework.urls')),
     path('', include('social_django.urls', namespace='social')),
     path('auth/', include('djoser.urls')),
@@ -44,11 +45,11 @@ urlpatterns = [
     path('auth/apple/', AppleLogin.as_view(), name="apple_login"),
     # gets all user profiles and create a new profile
     path("all-profiles/", CustomUserListCreateView.as_view(), name="all-profiles"),
-    # retrieves profile details of the currently logged in user
     path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
     path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
+    # retrieves profile details of the currently logged in user
     path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
-    path('i18n/', include('django.conf.urls.i18n'))
+    # path('i18n/', include('django.conf.urls.i18n')),
     # path('activate/<uid>/<token>', ActivateUser.as_view({'get': 'activation'}), name='activation'),
     # path(r'activate/<uid>/<token>', UserActivationView.as_view()),
     # path('activate/<str:uid>/<str:token>/', UserActivationView.as_view()),
@@ -57,9 +58,9 @@ urlpatterns = [
     # path("djoser_auth/", include("djoser.urls.jwt")),
 ]
 
-urlpatterns += i18n_patterns(
-    path('api/places/', include("place.urls", namespace="place")),
-)
+# urlpatterns += i18n_patterns(
+#
+# )
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

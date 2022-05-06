@@ -40,48 +40,35 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
+    ############################
     'django_filters',
-
     'django_countries',
-
     'django_extensions',
-
     'mptt',
-
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-
+    # 'rest_framework_swagger',
     'rest_framework_simplejwt',
-
     'oauth2_provider',
-
     # 'oauth2_provider',
     # 'oauth2_provider.models.Application',
-
     'dj_rest_auth',
-
     'django_otp',
     'django_otp.plugins.otp_totp',
-
     # 'oauth2_provider',
     # 'social_django',
     # 'drf_social_oauth2',
-
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.apple',
-
     "colorfield",
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
     # "leaflet",
-
     'place',
-
 ]
 AUTH_USER_MODEL = 'place.CustomUser'
 
@@ -89,10 +76,8 @@ AUTHENTICATION_BACKENDS = (
     # 'social_core.backends.google.GooglePlusAuth',
     # 'rest_framework_social_oauth2.backends.DjangoOAuth2',
     # 'django.contrib.auth.backends.ModelBackend',
-
     # # Google OAuth2
     # 'social_core.backends.google.GoogleOAuth2',
-    #
     # # drf-social-oauth2
     # 'drf_social_oauth2.backends.DjangoOAuth2',
     # # Django
@@ -161,7 +146,9 @@ ROOT_URLCONF = 'travex.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -234,11 +221,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-# gettext = lambda s: s
-LANGUAGES = (
-    ('en', _('English')),
-    ('ru', _('Russian')),
-)
+
+# LANGUAGES = (
+#     ('en', _('English')),
+#     ('ru', _('Russian')),
+# )
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
