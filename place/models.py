@@ -417,8 +417,8 @@ class NaturalPhenomena(models.Model):
 
 
 class PlaceImage(models.Model):
-    place = models.ForeignKey(Place, related_name="place_images", blank=True, null=True, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/places/', blank=False, null=True)
+    place = models.ForeignKey(Place, related_name="place_images", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/places/')
 
     def __str__(self):
         return f"{self.image}"
