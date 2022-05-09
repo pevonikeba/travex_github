@@ -316,15 +316,16 @@ class UserPlaceRelation(models.Model):
 
 
 class Location(models.Model):
-    place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
+    place = models.OneToOneField(Place, related_name="locations", on_delete=models.CASCADE, primary_key=True)
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
     country = models.CharField(max_length=255, null=True, blank=True)
     state = models.CharField(max_length=255, null=True, blank=True)
     county = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=13, decimal_places=10)
+    longitude = models.DecimalField(max_digits=13, decimal_places=10)
     nearest_place = models.TextField(null=True, blank=True)
+    # nearest_place = models.ForeignKey(Place, related_name="nearest_place_locations", on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"

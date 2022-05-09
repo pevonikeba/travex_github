@@ -18,7 +18,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
-    TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna
+    TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
+    Location
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
@@ -26,7 +27,7 @@ from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
-    CustomSocialLoginSerializer
+    CustomSocialLoginSerializer, LocationSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
 
@@ -61,8 +62,11 @@ from loguru import logger
 # from django.contrib.gis.geos import Point
 
 # from geopy.geocoders import Nominatim
-# geolocator = Nominatim(user_agent="location")
 from place.utils.utils import StandardResultsSetPagination
+# from OSMPythonTools.nominatim import Nominatim
+
+
+# geolocator = Nominatim(user_agent="attaplace")
 
 
 class PlaceNestedViewSet(ModelViewSet):
@@ -148,6 +152,48 @@ class PlaceViewSet(ModelViewSet):
         user = get_object_or_404(queryset, pk=pk)
         serializer = PlaceSerializer(user)
         return Response(serializer.data)
+
+
+def get_location(lat, lon):
+    url = f'https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&accept-language=en&zoom=10'
+    try:
+        result = requests.get(url=url)
+        result_json = result.json()
+        logger.warning(result_json)
+        return result_json
+    except:
+        return None
+
+
+class LocationViewSet(ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.is_valid():
+            latitude = serializer.validated_data["latitude"]
+            longitude = serializer.validated_data['longitude']
+            logger.warning(latitude)
+            logger.warning(longitude)
+            location = get_location(latitude, longitude)
+            if location:
+                logger.info(location)
+                address = location.get("address")
+                logger.warning(address)
+                # extra_data = serializer.data
+                if address:
+                    country = address.get("country")
+                    state = address.get("state")
+                    county = address.get("county")
+                    city = address.get("city")
+                    # TODO: get continent
+                    serializer.save(country=country, city=city, state=state, county=county)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return super(LocationViewSet, self).create(request, args, kwargs)
 
 
 class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):

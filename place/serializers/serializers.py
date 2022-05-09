@@ -52,8 +52,10 @@ class BookmarkPlaceSerializer(ModelSerializer):
         model = Bookmark
         fields = ('id', "user",)
 
+
 class BookmarkUserSerializer(ModelSerializer):
     place = serializers.SerializerMethodField()
+
     class Meta:
         model = Bookmark
         fields = ('id', "place",)
@@ -62,7 +64,6 @@ class BookmarkUserSerializer(ModelSerializer):
         serializer = BookmarkUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-
 
 
 class CustomSocialLoginSerializer(SocialLoginSerializer):
@@ -75,12 +76,14 @@ class CustomSocialLoginSerializer(SocialLoginSerializer):
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
     class Meta:
         model = Location
-        fields = ('id', 'continent', 'country', 'state', 'city', 'latitude', 'longitude', 'nearest_place',)
+        fields = "__all__"
+
 
 class SafeSerializer(ModelSerializer):
     class Meta:
         model = Safe
         fields = ('id', 'name', 'how_dangerous', 'rating_danger', 'description',)
+
 
 class TypeCuisineSerializer(ModelSerializer):
     class Meta:

@@ -2,7 +2,7 @@ from rest_framework.routers import SimpleRouter
 
 from place.views import PlaceViewSet, GroupViewSet, ClimateViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
     UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet, BookmarkViewSet, \
-    TransportViewSet, PlaceImageViewSet, AccommodationOptionViewSet, MustSeeViewSet, FloraFaunaViewSet
+    TransportViewSet, PlaceImageViewSet, AccommodationOptionViewSet, MustSeeViewSet, FloraFaunaViewSet, LocationViewSet
 
 app_name = "place"
 
@@ -14,6 +14,7 @@ router.register(r'transports', TransportViewSet)
 router.register(r'accommodation_options', AccommodationOptionViewSet)
 router.register(r'must_sees', MustSeeViewSet)
 router.register(r'flora_faunas', FloraFaunaViewSet)
+router.register(r'locations', LocationViewSet)
 
 router.register(r'place_relation', UserPlaceRelationView)
 router.register(r'type_transport', TypeTransportViewSet)

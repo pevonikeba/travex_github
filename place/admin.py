@@ -39,6 +39,7 @@ class NaturalPhenomenaInline(TabularInline):
 class LocationInline(TabularInline):
     extra = 0
     model = Location
+    fk_name = "place"
 
 class TransportInline(TabularInline):
     extra = 0
@@ -88,6 +89,11 @@ class BookmarkInline(TabularInline):
 # @admin.register(Transport)
 # class TransportAdmin(TranslationAdmin):
 #     group_fieldsets = True
+
+@admin.register(Location)
+class ImageAdmin(ModelAdmin):
+    pass
+
 
 @admin.register(PlaceImage)
 class ImageAdmin(ModelAdmin):
