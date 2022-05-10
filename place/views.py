@@ -119,7 +119,7 @@ class CategoryViewSet(ModelViewSet):
 class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['home_page', ]
+    filterset_fields = ['home_page', 'writer_user', ]
     default_serializer_class = PlaceSerializer
     serializer_classes = {
         'list': PlaceListSerializer,
