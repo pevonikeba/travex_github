@@ -9,7 +9,7 @@ from rest_framework.serializers import ModelSerializer
 from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, Bookmark
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer
@@ -42,10 +42,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-# class BookmarkSerializer(ModelSerializer):
-#     class Meta:
-#         model = Bookmark
-#         fields = ('id', 'user', 'place')
+
+class BookmarkSerializer(ModelSerializer):
+    class Meta:
+        model = Bookmark
+        fields = ('id', 'user', 'place')
 
     # def create(self, validated_data):
     #     user_data = validated_data.pop('user')

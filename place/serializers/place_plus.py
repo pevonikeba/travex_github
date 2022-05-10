@@ -415,7 +415,7 @@ def get_plus_place():
             {
                 "key": get_field_name(PlaceImage, 'image'),
                 'title': "Images",
-                'field_type': FieldTypes.multi_image_field,
+                'field_type': FieldTypes.image_field,
                 'required': get_is_field_required(PlaceImage, 'image'),
             },
         ]

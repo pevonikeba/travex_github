@@ -20,7 +20,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
-    Location
+    Location, Bookmark
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
@@ -28,7 +28,7 @@ from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    CustomSocialLoginSerializer, LocationSerializer
+    CustomSocialLoginSerializer, LocationSerializer, BookmarkSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
 
@@ -117,6 +117,7 @@ class CategoryViewSet(ModelViewSet):
 
 
 class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
+    parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['home_page', 'writer_user', ]
@@ -234,10 +235,10 @@ class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
         return obj
 
 
-# class BookmarkViewSet(ModelViewSet):
-#     queryset = Bookmark.objects.all()
-#     serializer_class = BookmarkSerializer
-#     permission_classes = [IsAuthenticatedOrReadOnly]
+class BookmarkViewSet(ModelViewSet):
+    queryset = Bookmark.objects.all()
+    serializer_class = BookmarkSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     # def destroy(self, request, *args, **kwargs):
     #     instance = self.get_object()
