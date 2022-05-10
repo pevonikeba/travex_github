@@ -221,7 +221,7 @@ class Place(models.Model):
     # families = models.ManyToManyField(AttributesFamily)
     is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
-    # books = models.ManyToManyField(CustomUser, related_name='books',  default=None, blank=True)
+    bookmarks = models.ManyToManyField(CustomUser, through='Bookmark', related_name="bookmarks")
     # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
     #                                         blank=True,)
     home_page = models.BooleanField(default=False)
@@ -502,12 +502,12 @@ class FloraFauna(models.Model):
         return f"{self.place.name} {self.name}"
 
 
-# class Bookmark(models.Model):
-#     place = models.ForeignKey(Place, related_name="bookmarks", on_delete=models.CASCADE, blank=False)
-#     user = models.ForeignKey(CustomUser, related_name="bookmarks", on_delete=models.CASCADE, blank=False)
-#
-#     def __str__(self):
-#         return f"{self.user.username} - {self.place.name}"
+class Bookmark(models.Model):
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, blank=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.place.name}"
 
 
 class Group(models.Model):
