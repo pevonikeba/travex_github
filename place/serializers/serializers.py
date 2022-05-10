@@ -9,7 +9,7 @@ from rest_framework.serializers import ModelSerializer
 from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Bookmark, Location
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer
@@ -42,28 +42,41 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class BookmarkSerializer(ModelSerializer):
-    class Meta:
-        model = Bookmark
-        fields = ('id', 'user', 'place')
+# class BookmarkSerializer(ModelSerializer):
+#     class Meta:
+#         model = Bookmark
+#         fields = ('id', 'user', 'place')
 
-class BookmarkPlaceSerializer(ModelSerializer):
-    class Meta:
-        model = Bookmark
-        fields = ('id', "user",)
+    # def create(self, validated_data):
+    #     user_data = validated_data.pop('user')
+    #     place_data = validated_data.pop('place')
+    #     if Bookmark.objects.filter(user=user_data, place=place_data).exists():
+    #         bookmark = Bookmark.objects.get(user=user_data, place=place_data)
+    #         bookmark.delete()
+    #         bookmark.save()
+    #         return bookmark
 
+        # user = User.objects.create(**validated_data)
+        # Profile.objects.create(user=user, **profile_data)
+        # return user
 
-class BookmarkUserSerializer(ModelSerializer):
-    place = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Bookmark
-        fields = ('id', "place",)
-
-    def create(self, request):
-        serializer = BookmarkUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+# class BookmarkPlaceSerializer(ModelSerializer):
+#     class Meta:
+#         model = Bookmark
+#         fields = ('id', "user",)
+#
+#
+# class BookmarkUserSerializer(ModelSerializer):
+#     place = serializers.SerializerMethodField()
+#
+#     class Meta:
+#         model = Bookmark
+#         fields = ('id', "place",)
+#
+#     def create(self, request):
+#         serializer = BookmarkUserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
 
 
 class CustomSocialLoginSerializer(SocialLoginSerializer):
@@ -238,7 +251,7 @@ class PlaceSerializer(ModelSerializer):
 
     id = serializers.ReadOnlyField()
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
-    bookmarks = BookmarkPlaceSerializer(many=True, read_only=True)
+    # bookmarks = BookmarkPlaceSerializer(many=True, read_only=True)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
     # images = serializers.StringRelatedField(many=True, required=False)
     place_images = PlaceImageSerializer(many=True, required=False)

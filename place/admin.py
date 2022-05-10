@@ -15,7 +15,7 @@ from place.models import Place, Group, PlaceImage, Transport, AccommodationOptio
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine, Bookmark, Location
+    PracticalInformation, TypeTransport, TypeCuisine, Location
 
 
 # admin.site.register(WorldBorder, admin.ModelAdmin)
@@ -81,9 +81,9 @@ class PracticalInformationInline(TabularInline):
     extra = 0
     model = PracticalInformation
 
-class BookmarkInline(TabularInline):
-    extra = 0
-    model = Bookmark
+# class BookmarkInline(TabularInline):
+#     extra = 0
+#     model = Bookmark
 
 
 # @admin.register(Transport)
@@ -105,7 +105,7 @@ class PlaceAdmin(ModelAdmin):
     save_on_top = True
     list_display = ('name', 'id', "home_page", "is_active",)
     list_filter = ('home_page',)
-    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraFaunaInline, BookmarkInline]
+    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraFaunaInline]
 
     # def save_model(self, request, obj, form, change):
     #
@@ -184,7 +184,7 @@ class GroupAdmin(ModelAdmin):
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image',)
-    inlines = [BookmarkInline]
+    # inlines = [BookmarkInline]
 
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):

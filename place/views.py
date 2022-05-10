@@ -19,7 +19,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
-    TypeTransport, TypeCuisine, CustomUser, Bookmark, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
+    TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
     Location
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
@@ -27,7 +27,7 @@ from place.serializers.place.retrieve import PlaceRetrieveSerializer
 from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
-    TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, BookmarkSerializer, \
+    TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
     CustomSocialLoginSerializer, LocationSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
@@ -162,10 +162,23 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     @action(detail=True, methods=['get'])
     def plus_place_get(self, request, pk=None):
         queryset = Place.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = PlaceSerializer(user)
+        place = get_object_or_404(queryset, pk=pk)
+        serializer = PlaceSerializer(place)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['post'])
+    def add_or_delete_bookmark(self, request, pk=None):
+        place = get_object_or_404(Place, pk=pk)
+        if place.bookmarks.filter(pk=request.user.id).exists():
+            place.bookmarks.remove(request.user)
+        else:
+            place.bookmarks.add(request.user)
+
+        serializer = PlaceSerializer(place)
+        return Response(serializer.data)
+
+
+    #     return Response(serializer.data)
 
 def get_location(lat, lon):
     url = f'https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&accept-language=en&zoom=10'
@@ -221,17 +234,15 @@ class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
         return obj
 
 
-class BookmarkViewSet(ModelViewSet):
-    queryset = Bookmark.objects.all()
-    serializer_class = BookmarkSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+# class BookmarkViewSet(ModelViewSet):
+#     queryset = Bookmark.objects.all()
+#     serializer_class = BookmarkSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    # def destroy(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     self.perform_destroy(instance)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class GroupViewSet(ModelViewSet):

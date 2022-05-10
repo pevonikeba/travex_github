@@ -25,7 +25,7 @@ from django.views.static import serve
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
 from place.views import GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, BookmarkViewSet, ActivateUserEmail, CustomUserView, AppleLogin
+    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -48,7 +48,7 @@ urlpatterns = [
     path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
     path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
     # retrieves profile details of the currently logged in user
-    path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
+    # path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
     # path('i18n/', include('django.conf.urls.i18n')),
     # path('activate/<uid>/<token>', ActivateUser.as_view({'get': 'activation'}), name='activation'),
     # path(r'activate/<uid>/<token>', UserActivationView.as_view()),
