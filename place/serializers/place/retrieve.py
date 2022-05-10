@@ -2,6 +2,7 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna
+from place.serializers.serializers import CustomUserSerializer
 from loguru import logger
 
 from place.serializers.place_nested import PlaceImageSerializer
@@ -177,6 +178,7 @@ a = {
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     place_images = PlaceImageSerializer(many=True, required=False)
+    writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Place

@@ -4,6 +4,7 @@ import json
 
 import requests
 from dj_rest_auth.registration.views import SocialLoginView
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -69,7 +70,14 @@ from place.utils.utils import StandardResultsSetPagination
 # geolocator = Nominatim(user_agent="attaplace")
 
 
-class PlaceNestedViewSet(ModelViewSet):
+class DestroyWithPayloadMixin(object):
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PlaceNestedViewSet(DestroyWithPayloadMixin, ModelViewSet):
     """Common ViewSet for place nested models"""
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     filter_backends = [DjangoFilterBackend]
@@ -108,7 +116,7 @@ class CategoryViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class PlaceViewSet(ModelViewSet):
+class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['home_page', ]
@@ -122,6 +130,11 @@ class PlaceViewSet(ModelViewSet):
     }
     pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    # def update(self, request, *args, **kwargs):
+    #     super().update(request, *args, **kwargs)
+    #     serializer = PlaceRetrieveSerializer(self.get_object())
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         if self.action == 'list':
