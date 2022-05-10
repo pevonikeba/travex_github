@@ -242,7 +242,7 @@ class PlaceSerializer(ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
     # images = serializers.StringRelatedField(many=True, required=False)
     place_images = PlaceImageSerializer(many=True, required=False)
-    locations = LocationSerializer(many=True, required=False)
+    locations = LocationSerializer()
     transports = TransportSerializer(many=True, required=False)
     accommodation_options = AccommodationOptionSerializer(many=True, required=False)
     uniqueness_places = UniquenessPlaceSerializer(many=True, required=False)
