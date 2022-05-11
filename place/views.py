@@ -16,7 +16,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
@@ -172,9 +172,11 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         place = get_object_or_404(Place, pk=pk)
         if place.bookmarks.filter(pk=request.user.id).exists():
             place.bookmarks.remove(request.user)
+            place.is_bookmarked = False
         else:
             place.bookmarks.add(request.user)
-
+            place.is_bookmarked = True
+        place.save()
         serializer = PlaceSerializer(place)
         return Response(serializer.data)
 
@@ -235,10 +237,14 @@ class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
         return obj
 
 
-class BookmarkViewSet(ModelViewSet):
+class BookmarkViewSet(ReadOnlyModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer
+    pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        return Bookmark.objects.filter(writer_user=self.request.user)
 
     # def destroy(self, request, *args, **kwargs):
     #     instance = self.get_object()

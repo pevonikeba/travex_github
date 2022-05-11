@@ -44,9 +44,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class BookmarkSerializer(ModelSerializer):
+    writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Bookmark
-        fields = ('id', 'user', 'place')
+        fields = ('id', 'writer_user', 'place')
 
     # def create(self, validated_data):
     #     user_data = validated_data.pop('user')

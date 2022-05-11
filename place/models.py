@@ -216,11 +216,16 @@ FIELD_TYPE_CHOICES = (
 # To get input type of model field -> str
 # Place._meta.get_field('name').get_internal_type()
 
+# class MyPlaceManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().filter(writer_user=self.req)
+
 
 class Place(models.Model):
     # families = models.ManyToManyField(AttributesFamily)
     is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
+    is_bookmarked = models.BooleanField(default=False)
     bookmarks = models.ManyToManyField(CustomUser, through='Bookmark', related_name="bookmarks")
     # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
     #                                         blank=True,)
@@ -504,7 +509,7 @@ class FloraFauna(models.Model):
 
 class Bookmark(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, blank=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False)
+    writer_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False)
 
     def __str__(self):
         return f"{self.user.username} - {self.place.name}"

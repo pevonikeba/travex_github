@@ -182,7 +182,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ('id', 'place_images', 'rating', 'locations', 'writer_user', 'sections', 'categories',)
+        fields = ('id', 'place_images', 'locations', 'writer_user', 'sections', 'categories',)
         # depth = 1
 
     def create_full_img_url(self, url: str):

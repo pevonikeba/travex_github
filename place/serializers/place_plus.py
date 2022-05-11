@@ -398,13 +398,13 @@ def get_plus_place():
                 'field_type': FieldTypes.text_field,
                 'required': get_is_field_required(Place, 'description'),
             },
-            {
-                "key": get_field_name(Place, 'rating'),
-                "placeholder": "Rating",
-                'title': "Rating",
-                'field_type': FieldTypes.int_field,
-                'required': get_is_field_required(Place, 'rating'),
-            }
+            # {
+            #     "key": get_field_name(Place, 'rating'),
+            #     "placeholder": "Rating",
+            #     'title': "Rating",
+            #     'field_type': FieldTypes.int_field,
+            #     'required': get_is_field_required(Place, 'rating'),
+            # }
         ]
     },
     {
