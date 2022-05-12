@@ -169,6 +169,13 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         serializer = PlaceOnAddDeleteBookmarkSerializer(place)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'])
+    def my_places(self, request):
+
+        queryset = Place.objects.filter(writer_user=request.user)
+        serializer = PlaceListSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
     #     return Response(serializer.data)
 

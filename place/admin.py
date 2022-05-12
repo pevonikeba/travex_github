@@ -103,7 +103,7 @@ class ImageAdmin(ModelAdmin):
 @admin.register(Place)
 class PlaceAdmin(ModelAdmin):
     save_on_top = True
-    list_display = ('name', 'id', "home_page", "is_active",)
+    list_display = ('name', 'id', "home_page", "is_active", 'writer_user',)
     list_filter = ('home_page',)
     inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraFaunaInline]
 

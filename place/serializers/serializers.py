@@ -44,6 +44,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class BookmarkSerializer(ModelSerializer):
+    place = PlaceListSerializer()
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
 
     class Meta:
