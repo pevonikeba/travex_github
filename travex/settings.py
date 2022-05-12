@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     # 'django.contrib.gis',
     # "leaflet",
     'place',
+    'achievement',
 ]
 AUTH_USER_MODEL = 'place.CustomUser'
 
@@ -138,6 +139,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # 'place.middleware.format_middleware.FormatMiddleware',
+    'achievement.middleware.achievement_middleware.CheckAchievementMiddleware',
     # 'place.middleware.log.APILogMiddleware',
 ]
 

@@ -175,6 +175,12 @@ a = {
 #         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
 
+class PlaceOnAddDeleteBookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Place
+        fields = ('id', 'is_bookmarked',)
+
+
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     place_images = PlaceImageSerializer(many=True, required=False)
@@ -182,7 +188,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ('id', 'place_images', 'locations', 'writer_user', 'sections', 'categories',)
+        fields = ('id', 'place_images', 'is_bookmarked', 'locations', 'writer_user', 'sections', 'categories',)
         # depth = 1
 
     def create_full_img_url(self, url: str):

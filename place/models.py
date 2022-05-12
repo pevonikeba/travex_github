@@ -109,20 +109,13 @@ TYPES_OF_TRANSPORT_CHOICES = (
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
-
     username = models.CharField(
         _("username"),
         max_length=150,
         help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.")
     )
-
     email_verify = models.BooleanField(default=False)
-
-    # bookmark_place = models.ManyToManyField("Place", verbose_name="bookmark_places", related_name="bookmark_places",
-    #                                         blank=True,)
-
     is_active = models.BooleanField(default=False)
-
     image = models.ImageField(upload_to='images/custom_user/', null=True, blank=True)
 
     USERNAME_FIELD = 'email'

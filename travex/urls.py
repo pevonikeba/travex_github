@@ -30,6 +30,7 @@ from place.views import GoogleLogin, CustomUserListCreateView, \
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/places/', include("place.urls", namespace="place")),
+    path('api/achievements/', include("achievement.urls", namespace="achievement")),
     path('api/drf-auth/', include('rest_framework.urls')),
     path('', include('social_django.urls', namespace='social')),
     path('auth/', include('djoser.urls')),

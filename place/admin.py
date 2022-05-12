@@ -8,14 +8,13 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from mptt.admin import MPTTModelAdmin
 
 # from geopy.geocoders import Nominatim
-
-
+from achievement.admin import OwnedAchievementInline
 from place import models
 from place.models import Place, Group, PlaceImage, Transport, AccommodationOption, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine, Location
+    PracticalInformation, TypeTransport, TypeCuisine, Location \
 
 
 # admin.site.register(WorldBorder, admin.ModelAdmin)
@@ -80,6 +79,7 @@ class InterestingFactsInline(TabularInline):
 class PracticalInformationInline(TabularInline):
     extra = 0
     model = PracticalInformation
+
 
 # class BookmarkInline(TabularInline):
 #     extra = 0
@@ -181,10 +181,12 @@ class GroupAdmin(ModelAdmin):
 # admin.site.register(models.CustomUser, UserAdmin)
 
 
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image',)
-    # inlines = [BookmarkInline]
+    inlines = [OwnedAchievementInline]
 
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):
@@ -193,9 +195,13 @@ class CategoryMPTTModelAdmin(MPTTModelAdmin):
 
 admin.site.register(Category, CategoryMPTTModelAdmin)
 
+
+
 @admin.register(UserPlaceRelation)
 class UserPlaceRelationAdmin(ModelAdmin):
     pass
+
+
 
 @admin.register(ClimaticCondition)
 class ClimaticConditionAdmin(ModelAdmin):

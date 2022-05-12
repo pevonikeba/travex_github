@@ -23,7 +23,7 @@ from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRel
     Location, Bookmark
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
-from place.serializers.place.retrieve import PlaceRetrieveSerializer
+from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkSerializer
 from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
@@ -142,17 +142,6 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             return Place.objects.filter(is_active=True)
         return Place.objects.all()
 
-
-    # def list(self, request, **kwargs):
-    #     logger.info(self.request.home_page)
-    #     queryset = Place.objects.filter(is_active=True)
-    #     page = self.paginate_queryset(queryset)
-    #     if page is not None:
-    #         serializer = self.get_serializer(page, many=True)
-    #         return self.get_paginated_response(serializer.data)
-    #     serializer = PlaceListSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
 
@@ -177,7 +166,7 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             place.bookmarks.add(request.user)
             place.is_bookmarked = True
         place.save()
-        serializer = PlaceSerializer(place)
+        serializer = PlaceOnAddDeleteBookmarkSerializer(place)
         return Response(serializer.data)
 
 
