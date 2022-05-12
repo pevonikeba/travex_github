@@ -219,7 +219,7 @@ class Place(models.Model):
     is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
     is_bookmarked = models.BooleanField(default=False)
-    bookmarks = models.ManyToManyField(CustomUser, through='Bookmark', related_name="bookmarks")
+    bookmarked_users = models.ManyToManyField(CustomUser, through='Bookmark', related_name="bookmarks")
     # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
     #                                         blank=True,)
     home_page = models.BooleanField(default=False)

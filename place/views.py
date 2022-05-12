@@ -176,8 +176,16 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         serializer = PlaceListSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'])
+    def bookmarks(self, request):
+        queryset = self.filter_queryset(self.get_queryset()).filter(bookmarked_users=request.user)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = PlaceListSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
-    #     return Response(serializer.data)
 
 def get_location(lat, lon):
     url = f'https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&accept-language=en&zoom=10'
@@ -233,14 +241,14 @@ class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
         return obj
 
 
-class BookmarkViewSet(ReadOnlyModelViewSet):
-    queryset = Bookmark.objects.all()
-    serializer_class = BookmarkSerializer
-    pagination_class = StandardResultsSetPagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        return Bookmark.objects.filter(writer_user=self.request.user)
+# class BookmarkViewSet(ReadOnlyModelViewSet):
+#     queryset = Bookmark.objects.all()
+#     serializer_class = BookmarkSerializer
+#     pagination_class = StandardResultsSetPagination
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+#
+#     def get_queryset(self):
+#         return Bookmark.objects.filter(writer_user=self.request.user)
 
     # def destroy(self, request, *args, **kwargs):
     #     instance = self.get_object()
