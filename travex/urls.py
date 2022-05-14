@@ -25,13 +25,14 @@ from django.views.static import serve
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
 from place.views import GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin
+    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin, eula
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/places/', include("place.urls", namespace="place")),
     path('api/achievements/', include("achievement.urls", namespace="achievement")),
     path('api/drf-auth/', include('rest_framework.urls')),
+    path('eula/', eula),
     path('', include('social_django.urls', namespace='social')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

@@ -27,3 +27,4 @@ router.register(r'terrains', TypeOfTerrainViewSet)
 router.register('', PlaceViewSet)
 
 urlpatterns = router.urls
+

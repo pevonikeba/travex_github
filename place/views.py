@@ -4,8 +4,8 @@ import json
 
 import requests
 from dj_rest_auth.registration.views import SocialLoginView
-from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
@@ -185,6 +185,18 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+def eula(request):
+    html = '''
+    </body></html>
+        <h2>End-User License Agreement (EULA) of Attaplace</h2>
+        <p>This End-User License Agreement ("EULA") is a legal agreement between you and Attaplace</p>
+        <p>This EULA agreement governs your acquisition and use of our Attaplace software ("Software") directly from Attaplace or indirectly through a Attaplace authorized reseller or distributor (a "Reseller").</p>
+        <p>Please read this EULA agreement carefully before completing the installation process and using the Attaplace software. It provides a l
+    <html><body>
+    '''
+    return HttpResponse(html)
 
 
 def get_location(lat, lon):
