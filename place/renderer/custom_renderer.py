@@ -1,3 +1,4 @@
+from loguru import logger
 from rest_framework.renderers import JSONRenderer
 
 
@@ -5,14 +6,11 @@ class CustomRenderer(JSONRenderer):
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         response_content = {}
-
-        if type(data) is dict and data.get('custom_error') == True:
+        if data.get('status_code'):
             response_content['success'] = False
-            response_content['error'] = data['code'] or 'unknown_error'
+            response_content['error'] = data['status_code'] or 'unknown_error'
         else:
             NoneType = type(None)
-            # print('data: ', data)
-            # print('type(data): ', type(data))
             if not isinstance(data, str) and not isinstance(data, NoneType) and not isinstance(data, int):
                 if "access_token" in data:
                     data['access'] = data.pop('access_token')
