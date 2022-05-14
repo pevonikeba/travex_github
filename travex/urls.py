@@ -22,10 +22,11 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
-from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
+# from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
+from rest_framework_simplejwt.views import TokenVerifyView
 
 from place.views import GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin, eula
+    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin, eula, TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),

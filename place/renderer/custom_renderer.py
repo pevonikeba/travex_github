@@ -9,7 +9,8 @@ class CustomRenderer(JSONRenderer):
         logger.info('here')
         if isinstance(data, dict) and data.get('status_code'):
             response_content['success'] = False
-            response_content['error'] = data['status_code'] or 'unknown_error'
+            response_content['error'] = data['token_error'] or data['status_code'] or 'unknown_error'
+            # response_content['token_error'] = or 'unknown_error'
         else:
             NoneType = type(None)
             if not isinstance(data, str) and not isinstance(data, NoneType) and not isinstance(data, int):

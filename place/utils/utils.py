@@ -1,3 +1,4 @@
+from loguru import logger
 from rest_framework.exceptions import APIException
 from rest_framework.views import exception_handler
 from rest_framework.pagination import PageNumberPagination
@@ -15,9 +16,25 @@ def custom_exception_handler(exc, context):
     #         'custom_error': True,
     #         'code': exc.default_code
     #     }
+    # logger.debug(response.data)
+    # logger.info(dir(response.data.get("messages")[0].get("token_class")))
+
     # Now add the HTTP status code to the response.
     if response is not None:
+        response.data['token_error'] = ''
         response.data['status_code'] = response.status_code
+        try:
+            if response.data.get("messages")[0].get("token_class").title() == "Accesstoken" and \
+                    response.data.get("messages")[0].get("token_class").code == "token_not_valid":
+                response.data["token_error"] = "access_" + response.data.get("messages")[0].get("token_class").code
+        except:
+            try:
+                if response.data.get('detail').code == 'token_not_valid':
+                    response.data["token_error"] = "refresh_token_not_valid"
+
+            except:
+                pass
+
     return response
 
 

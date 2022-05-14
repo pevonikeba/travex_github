@@ -86,7 +86,6 @@ class BookmarkSerializer(ModelSerializer):
 
 
 class TokenObtainLifetimeSerializer(TokenObtainPairSerializer):
-
     def validate(self, attrs):
         data = super().validate(attrs)
         refresh = self.get_token(self.user)
@@ -95,7 +94,6 @@ class TokenObtainLifetimeSerializer(TokenObtainPairSerializer):
 
 
 class TokenRefreshLifetimeSerializer(TokenRefreshSerializer):
-
     def validate(self, attrs):
         data = super().validate(attrs)
         refresh = RefreshToken(attrs['refresh'])
