@@ -314,7 +314,8 @@ EMAIL_PORT = 587
 # DEFAULT_FROM_EMAIL = 'travel.guid2022@gmail.com'
 
 # DOMAIN = '127.0.0.1:8000'
-DOMAIN = '159.223.216.170'
+# DOMAIN = '159.223.216.170'
+DOMAIN = 'go.attaplace.info'
 SITE_NAME = 'Attaplace'
 
 DJOSER = {

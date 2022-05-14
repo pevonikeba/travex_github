@@ -159,11 +159,11 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     @action(detail=True, methods=['post'])
     def add_or_delete_bookmark(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        if place.bookmarks.filter(pk=request.user.id).exists():
-            place.bookmarks.remove(request.user)
+        if place.bookmarked_users.filter(pk=request.user.id).exists():
+            place.bookmarked_users.remove(request.user)
             place.is_bookmarked = False
         else:
-            place.bookmarks.add(request.user)
+            place.bookmarked_users.add(request.user)
             place.is_bookmarked = True
         place.save()
         serializer = PlaceOnAddDeleteBookmarkSerializer(place)
