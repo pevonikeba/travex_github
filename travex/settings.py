@@ -82,7 +82,6 @@ AUTHENTICATION_BACKENDS = (
     # # drf-social-oauth2
     # 'drf_social_oauth2.backends.DjangoOAuth2',
     # # Django
-    # 'django.contrib.auth.backends.ModelBackend',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 )

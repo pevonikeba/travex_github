@@ -5,6 +5,8 @@ from django_countries.serializers import CountryFieldMixin
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
@@ -82,6 +84,23 @@ class BookmarkSerializer(ModelSerializer):
 #         if serializer.is_valid():
 #             serializer.save()
 
+
+class TokenObtainLifetimeSerializer(TokenObtainPairSerializer):
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+        data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
+        return data
+
+
+class TokenRefreshLifetimeSerializer(TokenRefreshSerializer):
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = RefreshToken(attrs['refresh'])
+        data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
+        return data
 
 class CustomSocialLoginSerializer(SocialLoginSerializer):
     access = serializers.CharField(source='access_token')

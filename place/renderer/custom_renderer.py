@@ -6,7 +6,8 @@ class CustomRenderer(JSONRenderer):
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         response_content = {}
-        if data.get('status_code'):
+        logger.info('here')
+        if isinstance(data, dict) and data.get('status_code'):
             response_content['success'] = False
             response_content['error'] = data['status_code'] or 'unknown_error'
         else:
