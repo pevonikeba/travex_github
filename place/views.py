@@ -268,7 +268,11 @@ def eula(request):
 <li>Reproduce, copy, distribute, resell or otherwise use the Software for any commercial purpose</li>
 <li>Allow any third party to use the Software on behalf of or for the benefit of any third party</li>
 <li>Use the Software in any way which breaches any applicable local, national or international law</li>
-<li>use the Software for any purpose that Attaplace considers is a breach of this EULA agreement</li>
+<li>Use the Software for any purpose that Attaplace considers is a breach of this EULA agreement</li>
+<li>Post illegal products or services, tobacco and related products, drugs and drug related products, spyware or malware, and prohibited financial products and services.</li>
+<li>Post abusive, illegal, sexual, or racist content. Users will be responsible for the actions taken within the application.</li>
+<li>To post pictures of your children as we are not taking responsibilities to where the content will be published.</li>
+
 </ul>
 
 <h3>Intellectual Property and Ownership</h3>
