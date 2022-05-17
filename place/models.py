@@ -494,7 +494,7 @@ class FloraFauna(models.Model):
     place = models.ForeignKey(Place, related_name="flora_faunas", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='images/flora_faunas/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/flora_faunas/')
 
     def __str__(self):
         return f"{self.place.name} {self.name}"

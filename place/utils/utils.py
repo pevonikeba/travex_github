@@ -31,7 +31,6 @@ def custom_exception_handler(exc, context):
             try:
                 if response.data.get('detail').code == 'token_not_valid':
                     response.data["token_error"] = "refresh_token_not_valid"
-
             except:
                 pass
 
