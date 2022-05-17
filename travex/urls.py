@@ -22,14 +22,15 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
-# from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
+from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from place.views import GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin, eula, TokenObtainPairView, TokenRefreshView
+    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin, eula, check_version
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('check_version/', check_version),
     path('api/places/', include("place.urls", namespace="place")),
     path('api/achievements/', include("achievement.urls", namespace="achievement")),
     path('api/drf-auth/', include('rest_framework.urls')),

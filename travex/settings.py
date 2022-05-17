@@ -30,6 +30,11 @@ DEBUG = str(os.environ.get('DEBUG')) == "1"
 ALLOWED_HOSTS = ['go.attaplace.info', '3.67.98.251', '127.0.0.1', '159.223.216.170']
 
 
+_VERSION = {
+    "WORKING": False,  # set True while working on new version of project. When True apps (mobile, ...) not work
+    "WHITELIST": ['1.0.0', ],
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -271,7 +276,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,

@@ -38,25 +38,27 @@ from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, Appl
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
+from place.utils.utils import StandardResultsSetPagination
+from django.conf import settings
 # from rest_auth.registration.views import SocialLoginView
 from loguru import logger
 
-from rest_framework_simplejwt.views import TokenViewBase
-from place.serializers.serializers import TokenObtainLifetimeSerializer, TokenRefreshLifetimeSerializer
+# from rest_framework_simplejwt.views import TokenViewBase
+# from place.serializers.serializers import TokenObtainLifetimeSerializer, TokenRefreshLifetimeSerializer
 
 
-class TokenObtainPairView(TokenViewBase):
-    """
-        Return JWT tokens (access and refresh) for specific user based on username and password.
-    """
-    serializer_class = TokenObtainLifetimeSerializer
-
-
-class TokenRefreshView(TokenViewBase):
-    """
-        Renew tokens (access and refresh) with new expire time based on specific user's access token.
-    """
-    serializer_class = TokenRefreshLifetimeSerializer
+# class TokenObtainPairView(TokenViewBase):
+#     """
+#         Return JWT tokens (access and refresh) for specific user based on username and password.
+#     """
+#     serializer_class = TokenObtainLifetimeSerializer
+#
+#
+# class TokenRefreshView(TokenViewBase):
+#     """
+#         Renew tokens (access and refresh) with new expire time based on specific user's access token.
+#     """
+#     serializer_class = TokenRefreshLifetimeSerializer
 
 
 # class CustomRenderer(JSONRenderer):
@@ -80,11 +82,39 @@ class TokenRefreshView(TokenViewBase):
 # from django.contrib.gis.geos import Point
 
 # from geopy.geocoders import Nominatim
-from place.utils.utils import StandardResultsSetPagination
 # from OSMPythonTools.nominatim import Nominatim
 
 
 # geolocator = Nominatim(user_agent="attaplace")
+
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
+@api_view()
+def check_version(request):
+    res = {
+        "WORKING": {
+            "status": "WORKING",
+            "message": "Sorry, we are working",
+        },
+        "UPDATE": {
+            "status": "UPDATE",
+            "message": "It is necessary to update the app",
+        },
+        "GOOD": {
+            "status": "GOOD",
+            "message": "You have a valid version",
+        }
+    }
+    if settings._VERSION.get('WORKING'):
+        return Response(res['WORKING'])
+
+    version = request.query_params.get('version')
+    if version not in settings._VERSION.get('WHITELIST'):
+        return Response(res['UPDATE'])
+    return Response(res['GOOD'])
 
 
 class DestroyWithPayloadMixin(object):
@@ -188,9 +218,13 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def my_places(self, request):
-
+        # get all places (active or not)
         queryset = Place.objects.filter(writer_user=request.user)
-        serializer = PlaceListSerializer(queryset, many=True)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = PlaceListSerializer(queryset, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])

@@ -85,20 +85,20 @@ class BookmarkSerializer(ModelSerializer):
 #             serializer.save()
 
 
-class TokenObtainLifetimeSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = self.get_token(self.user)
-        data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
-        return data
-
-
-class TokenRefreshLifetimeSerializer(TokenRefreshSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = RefreshToken(attrs['refresh'])
-        data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
-        return data
+# class TokenObtainLifetimeSerializer(TokenObtainPairSerializer):
+#     def validate(self, attrs):
+#         data = super().validate(attrs)
+#         refresh = self.get_token(self.user)
+#         data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
+#         return data
+#
+#
+# class TokenRefreshLifetimeSerializer(TokenRefreshSerializer):
+#     def validate(self, attrs):
+#         data = super().validate(attrs)
+#         refresh = RefreshToken(attrs['refresh'])
+#         data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
+#         return data
 
 class CustomSocialLoginSerializer(SocialLoginSerializer):
     access = serializers.CharField(source='access_token')
