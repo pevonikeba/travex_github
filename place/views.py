@@ -176,7 +176,7 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         # 'put': PlaceCreateSerializer,
         # 'patch': PlacePatchSerializer,
     }
-    pagination_class = StandardResultsSetPagination
+    # pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     # def update(self, request, *args, **kwargs):
