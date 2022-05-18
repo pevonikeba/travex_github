@@ -17,6 +17,7 @@ from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
+from django.views.generic import View
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
@@ -517,6 +518,25 @@ class ActivateUserEmail(APIView):
             message = "Pereydite w prelozheniye Attaplace"
 
         return Response(message)
+
+
+class ResetPasswordView(View):
+    def get (self, request, uid, token):
+        return render(request, 'reset_password.html')
+
+    def post (self, request, uid, token):
+        # logger.warning(request.POST)
+        new_password=request.POST.get("new_password")
+        re_new_password=request.POST.get("re_new_password")
+        payload = json.dumps({'uid': uid, 'token': token, 'new_password': new_password, 're_new_password': re_new_password})
+        protocol = 'https://' if request.is_secure() else 'http://'
+        web_url = protocol + request.get_host() + '/'
+        password_reset_url = "users/reset_password_confirm/" # url used for activate user
+        password_post_url = web_url + 'auth/' + password_reset_url
+        logger.warning(password_post_url)
+        logger.warning(payload)
+        response = requests.post(password_post_url, data=payload, headers={'Content-Type': 'application/json', })
+        return HttpResponse(response.text)
 
 # @api_view(["GET"])
 # @permission_classes([permissions.AllowAny])
