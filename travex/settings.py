@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['go.attaplace.info', '3.67.98.251', '127.0.0.1', '159.223.216.1
 
 _VERSION = {
     "WORKING": False,  # set True while working on new version of project. When True apps (mobile, ...) not work
-    "WHITELIST": ['1.0.0', ],
+    "WHITELIST": ['1.0.0', '1.1.0',],
 }
 
 # Application definition
@@ -69,14 +69,16 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.apple',
-    "colorfield",
+    'colorfield',
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
     # "leaflet",
     'place',
     'achievement',
 ]
+
 AUTH_USER_MODEL = 'place.CustomUser'
+
 
 AUTHENTICATION_BACKENDS = (
     # 'social_core.backends.google.GooglePlusAuth',
