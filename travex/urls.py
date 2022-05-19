@@ -13,20 +13,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from allauth.account.views import LogoutView
 from django.conf import settings
-from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
-
 from django.urls import path, include, re_path
+
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
-from rest_framework_simplejwt.views import TokenVerifyView
+
+from allauth.account.views import LogoutView
+
+from travex.views import ActivateUserEmail, ResetPasswordView, eula
 
 from place.views import GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, ActivateUserEmail, CustomUserView, AppleLogin, eula, check_version, ResetPasswordView
-
-AUTHENTICATION_BASE_ROUTE = 'authentication/v2/'
+    CustomUserDetailView, CustomUserView, AppleLogin, check_version
 
 
 urlpatterns = [
@@ -52,7 +51,7 @@ urlpatterns = [
     path("all-profiles/", CustomUserListCreateView.as_view(), name="all-profiles"),
     path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
     path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
-    re_path('auth/user/password/reset/confirm/(?P<uid>[\w-]+)/(?P<token>[\w-]+)/$', ResetPasswordView.as_view()),
+    path('email/reset/confirm/(?P<uid>[\w-]+)/(?P<token>[\w-]+)/$', ResetPasswordView.as_view()),
 
     # retrieves profile details of the currently logged in user
     # path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
