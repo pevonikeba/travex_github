@@ -51,7 +51,7 @@ urlpatterns = [
     path("all-profiles/", CustomUserListCreateView.as_view(), name="all-profiles"),
     path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
     path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
-    path(settings.DJOSER.get("PASSWORD_RESET_CONFIRM_URL"), ResetPasswordView.as_view()),
+    path('password/reset/confirm/<str:uid>/<str:token>/', ResetPasswordView.as_view()),  # settings.DJOSER.get("PASSWORD_RESET_CONFIRM_URL")
 
     # retrieves profile details of the currently logged in user
     # path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
