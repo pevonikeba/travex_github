@@ -387,6 +387,16 @@ LOGGING = {
             'filename': BASE_DIR / 'debug.log',
         },
     },
+    'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+                'style': '{',
+            },
+            'simple': {
+                'format': '{levelname} {message}',
+                'style': '{',
+            },
+    },
     'loggers': {
         'django': {
             'handlers': ['file'],
