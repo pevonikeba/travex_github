@@ -505,7 +505,7 @@ class Bookmark(models.Model):
     writer_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False)
 
     def __str__(self):
-        return f"{self.user.username} - {self.place.name}"
+        return f"{self.writer_user.username} - {self.place.name}"
 
 
 class Group(models.Model):

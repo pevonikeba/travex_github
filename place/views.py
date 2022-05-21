@@ -3,7 +3,6 @@ import json
 # from rest_framework_simplejwt.locale import
 
 import requests
-from dj_rest_auth.registration.views import SocialLoginView
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,13 +25,11 @@ from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    CustomSocialLoginSerializer, LocationSerializer, BookmarkSerializer
+    LocationSerializer, BookmarkSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
 
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client
+
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
 from place.utils.utils import StandardResultsSetPagination
@@ -333,31 +330,6 @@ class TypeCuisineViewSet(ModelViewSet):
     serializer_class = TypeCuisineSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
-
-
-class AppleLogin(SocialLoginView):
-    adapter_class = AppleOAuth2Adapter
-    # callback_url = 'https://anycallbackurlhere'
-    client_class = AppleOAuth2Client
-
-    def process_login(self):
-        self.user.is_active = True
-        self.user.save()
-        super().process_login()
-
-
-class GoogleLogin(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
-    client_class = OAuth2Client
-    serializer_class = CustomSocialLoginSerializer
-
-    # serializer_class = SocialLoginSerializer
-    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
-
-    def process_login(self):
-        self.user.is_active = True
-        self.user.save()
-        super().process_login()
 
 
 # class CsrfExemptSessionAuthentication(SessionAuthentication):

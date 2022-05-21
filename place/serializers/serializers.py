@@ -1,6 +1,5 @@
 from loguru import logger
 
-from dj_rest_auth.registration.serializers import SocialLoginSerializer
 from django_countries.serializers import CountryFieldMixin
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -99,13 +98,6 @@ class BookmarkSerializer(ModelSerializer):
 #         refresh = RefreshToken(attrs['refresh'])
 #         data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
 #         return data
-
-class CustomSocialLoginSerializer(SocialLoginSerializer):
-    access = serializers.CharField(source='access_token')
-
-    class Meta:
-        fields = ('__all__', 'access')
-
 
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
     class Meta:

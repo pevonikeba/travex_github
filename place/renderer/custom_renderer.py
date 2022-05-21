@@ -5,11 +5,18 @@ from rest_framework.renderers import JSONRenderer
 class CustomRenderer(JSONRenderer):
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
+        logger.warning(data)
         response_content = {}
-        logger.info('here')
+        # logger.info('here')
         if isinstance(data, dict) and data.get('status_code'):
             response_content['success'] = False
-            response_content['error'] = data['token_error'] or data or 'unknown_error'
+            logger.info(dir(data['detail']))
+            logger.warning(data['detail'].title())
+            if data['detail'].title() == 'Invalid Username/Password.':
+                error = 'authentication_failed'
+            else:
+                error = data['token_error'] or data or 'unknown_error'
+            response_content['error'] = error
             # response_content['message'] = data
             # response_content['token_error'] = or 'unknown_error'
         else:

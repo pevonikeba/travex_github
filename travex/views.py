@@ -8,7 +8,36 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client
 from loguru import logger
+
+from travex.serializers import CustomSocialLoginSerializer
+
+
+class AppleLogin(SocialLoginView):
+    adapter_class = AppleOAuth2Adapter
+    # callback_url = 'https://anycallbackurlhere'
+    client_class = AppleOAuth2Client
+
+    def process_login(self):
+        self.user.is_active = True
+        self.user.save()
+        super().process_login()
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    serializer_class = CustomSocialLoginSerializer
+
+    def process_login(self):
+        # if self.user.email
+        self.user.is_active = True
+        self.user.save()
+        super().process_login()
 
 
 class ActivateUserEmail(APIView):
@@ -42,8 +71,8 @@ class ResetPasswordView(View):
         web_url = protocol + request.get_host() + '/'
         password_reset_url = "users/reset_password_confirm/"  # url used for activate user
         password_post_url = web_url + 'auth/' + password_reset_url
-        logger.warning(password_post_url)
-        logger.warning(payload)
+        # logger.warning(password_post_url)
+        # logger.warning(payload)
         response = requests.post(password_post_url, data=payload, headers={'Content-Type': 'application/json', })
         return HttpResponse(response.text)
 

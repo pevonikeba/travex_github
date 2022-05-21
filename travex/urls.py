@@ -22,10 +22,9 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, To
 
 from allauth.account.views import LogoutView
 
-from travex.views import ActivateUserEmail, ResetPasswordView, eula
+from travex.views import ActivateUserEmail, ResetPasswordView, eula, GoogleLogin, AppleLogin
 
-from place.views import GoogleLogin, CustomUserListCreateView, \
-    CustomUserDetailView, CustomUserView, AppleLogin, check_version
+from place.views import CustomUserListCreateView, CustomUserDetailView, CustomUserView, check_version
 
 
 urlpatterns = [
