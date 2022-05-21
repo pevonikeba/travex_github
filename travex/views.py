@@ -37,6 +37,10 @@ class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     client_class = OAuth2Client
     serializer_class = CustomSocialLoginSerializer
+    
+    def post(self, request, *args, **kwargs):
+        logger.warning("POST in google login get")
+        super(GoogleLogin, self).post(request, args, kwargs)
 
     def login(self):
         logger.warning("LOGIN get")
