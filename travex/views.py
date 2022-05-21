@@ -25,8 +25,6 @@ class AppleLogin(SocialLoginView):
     # callback_url = 'https://anycallbackurlhere'
     client_class = AppleOAuth2Client
 
-
-
     def process_login(self):
         self.user.is_active = True
         self.user.save()
@@ -38,13 +36,13 @@ class GoogleLogin(SocialLoginView):
     client_class = OAuth2Client
     serializer_class = CustomSocialLoginSerializer
     
-    def post(self, request, *args, **kwargs):
-        logger.warning("POST in google login get")
-        super(GoogleLogin, self).post(request, args, kwargs)
-
-    def login(self):
-        logger.warning("LOGIN get")
-        super().login()
+    # def post(self, request, *args, **kwargs):
+    #     logger.warning("POST in google login get")
+    #     super(GoogleLogin, self).post(request, args, kwargs)
+    #
+    # def login(self):
+    #     logger.warning("LOGIN get")
+    #     super().login()
 
     def process_login(self):
         # if self.user.email
