@@ -377,37 +377,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 MPTT_ADMIN_LEVEL_INDENT = 20
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'formatters': {
-#     'verbose': {
-#     'format': '%(levelname)s [%(asctime)s] %(module)s %(message)s'
-#     },
-#     },
-#     'handlers': {
-#         # 'console': {
-#         # 'level': 'DEBUG',
-#         # 'class': 'logging.StreamHandler',
-#         # 'formatter': 'simple'
-#         # },
-#         # 'file': {
-#         # 'class': 'logging.handlers.RotatingFileHandler',
-#         # 'formatter': 'verbose',
-#         # 'filename': '/var/www/logs/ibiddjango.log',
-#         # 'maxBytes': 1024000,
-#         # 'backupCount': 3,
-#         # },
-#         'mail_admins': {
-#         'level': 'ERROR',
-#         'class': 'django.utils.log.AdminEmailHandler'
-#         }
-#     },
-#     'loggers': {
-#         'django': {
-#         'handlers': ['mail_admins'],
-#         'propagate': True,
-#         'level': 'DEBUG',
-#         },
-#     }
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
