@@ -47,10 +47,11 @@ urlpatterns = [
     path('auth/google/', GoogleLogin.as_view(), name='google_login'),
     path('auth/apple/', AppleLogin.as_view(), name="apple_login"),
     # gets all user profiles and create a new profile
-    path("all-profiles/", CustomUserListCreateView.as_view(), name="all-profiles"),
-    path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
     path('auth/user/activate/<str:uid>/<str:token>/', ActivateUserEmail.as_view(), name='activate email'),
     path('password/reset/confirm/<str:uid>/<str:token>/', ResetPasswordView.as_view()),  # settings.DJOSER.get("PASSWORD_RESET_CONFIRM_URL")
+
+    path("all-profiles/", CustomUserListCreateView.as_view(), name="all-profiles"),
+    path("profile/<int:pk>", CustomUserDetailView.as_view(), name="profile"),
 
     # retrieves profile details of the currently logged in user
     # path('api/bookmarks/<pk>', BookmarkViewSet.as_view({'get': 'list', 'delete': 'destroy'})),

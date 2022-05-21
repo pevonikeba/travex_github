@@ -88,12 +88,12 @@ AUTHENTICATION_BACKENDS = (
     # 'social_core.backends.google.GoogleOAuth2',
     # # drf-social-oauth2
     # 'drf_social_oauth2.backends.DjangoOAuth2',
-    # # Django
+    # # Djangodjoser
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
-ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
+# ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
 
 SOCIALACCOUNT_PROVIDERS = {
     "apple": {
