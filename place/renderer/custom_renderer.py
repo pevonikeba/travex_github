@@ -16,12 +16,13 @@ class CustomRenderer(JSONRenderer):
         logger.info('here')
         if isinstance(data, dict) and data.get('status_code'):
             response_content['success'] = False
+            error = 'unknown_error'
             detail = data.get('detail')
             if detail:
                 if detail.title() == 'Invalid Username/Password.':
                     error = 'authentication_failed'
                 else:
-                    error = data['token_error'] or data or 'unknown_error'
+                    error = data['token_error'] or data
             response_content['error'] = error
             # response_content['message'] = data
             # response_content['token_error'] = or 'unknown_error'
