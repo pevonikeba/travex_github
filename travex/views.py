@@ -12,7 +12,10 @@ from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.apple.views import AppleOAuth2Adapter, AppleOAuth2Client
-from loguru import logger
+# from loguru import logger
+import logging
+
+logger = logging.getLogger(__name__)
 
 from travex.serializers import CustomSocialLoginSerializer
 
@@ -21,6 +24,10 @@ class AppleLogin(SocialLoginView):
     adapter_class = AppleOAuth2Adapter
     # callback_url = 'https://anycallbackurlhere'
     client_class = AppleOAuth2Client
+
+    def login(self):
+        logger.warning("LOGIN get")
+        super().login()
 
     def process_login(self):
         self.user.is_active = True
