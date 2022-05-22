@@ -5,8 +5,12 @@ from rest_framework.pagination import PageNumberPagination
 
 from place.models import Place
 
+import logging
+
+logger = logging.getLogger('django')
 
 def custom_exception_handler(exc, context):
+    logger.warning(f'{exc}:::{context}')
     # Call REST framework's default exception handler first,
     # to get the standard error response.
     response = exception_handler(exc, context)
