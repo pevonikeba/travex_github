@@ -1,7 +1,9 @@
 from loguru import logger
 from rest_framework.renderers import JSONRenderer
 import enum
+import logging
 
+logger = logging.getLogger('django')
 
 class FullPath(enum.Enum):
     reset_password = '/auth/users/reset_password/'
@@ -16,6 +18,7 @@ class CustomRenderer(JSONRenderer):
         logger.info('here')
         if isinstance(data, dict) and data.get('status_code'):
             response_content['success'] = False
+            logger.warning(renderer_context)
             error = 'unknown_error'
             detail = data.get('detail')
             if detail:
