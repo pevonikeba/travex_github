@@ -325,6 +325,8 @@ EMAIL_PORT = 587
 DOMAIN = 'go.attaplace.info'
 SITE_NAME = 'Attaplace'
 
+ACCOUNT_UNIQUE_EMAIL = False
+
 DJOSER = {
     "LOGIN_FIELD": "email",
     # "USER_CREATE_PASSWORD_RETYPE": True,

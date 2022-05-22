@@ -15,6 +15,7 @@ try:
     from allauth.socialaccount.providers.base import AuthProcess
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
+from requests.exceptions import HTTPError
 
 
 class CustomSocialLoginSerializer(SocialLoginSerializer):
@@ -100,6 +101,8 @@ class CustomSocialLoginSerializer(SocialLoginSerializer):
                     email=login.user.email,
                 ).exists()
                 if account_exists:
+                    # attrs['user'] = login.account.user
+                    # return attrs
                     raise serializers.ValidationError(
                         _("User is already registered with this e-mail address.")
                     )
