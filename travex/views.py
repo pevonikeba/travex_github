@@ -38,7 +38,7 @@ class GoogleLogin(SocialLoginView):
     
     # def post(self, request, *args, **kwargs):
     #     logger.warning("POST in google login get")
-    #     super(GoogleLogin, self).post(request, args, kwargs)
+    #     super().post(request, args, kwargs)
     #
     # def login(self):
     #     logger.warning("LOGIN get")

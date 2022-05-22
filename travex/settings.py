@@ -93,7 +93,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
-# ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
 
 SOCIALACCOUNT_PROVIDERS = {
     "apple": {
