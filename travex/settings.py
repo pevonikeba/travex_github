@@ -326,7 +326,7 @@ DOMAIN = 'go.attaplace.info'
 SITE_NAME = 'Attaplace'
 
 # ACCOUNT_UNIQUE_EMAIL = False
-SOCIALACCOUNT_ADAPTER = 'travex.adapter.MySocialAccountAdapter'
+# SOCIALACCOUNT_ADAPTER = 'travex.adapter.MySocialAccountAdapter'
 
 DJOSER = {
     "LOGIN_FIELD": "email",
