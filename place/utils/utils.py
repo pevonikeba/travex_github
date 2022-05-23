@@ -50,9 +50,9 @@ def custom_exception_handler(exc, context):
 
 class SocialAccountError:
     ERROR_NAME = 'social_account_error'
-    GOOGLE = 'Need Google sign in'
-    APPLE = 'Need Apple sign in'
-    MULTIPLE = 'Need Social sign in'
+    GOOGLE = 'need_google_sign_in'
+    APPLE = 'need_apple_sign_in'
+    MULTIPLE = 'need_social_sign_in'
     NO_ERROR = ''
 
 

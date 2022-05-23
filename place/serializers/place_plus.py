@@ -1,5 +1,5 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
-    PlaceImage, MustSee, AccommodationOption, FloraFauna
+    PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition
 from django.db import models
 from .serializers import TypeTransportSerializer
 from .place_nested import CategorySerializer
@@ -17,6 +17,330 @@ class FieldTypes:
     image_field = "image_field"
     multi_select = "multi_select"
     multi_image_field = "multi_image_field"
+
+
+def get_choices_options(choices: tuple):
+    def from_tuple_to_dict(choice: tuple):
+        return {
+            "text": choice[1],
+            "value": choice[0]
+        }
+    return map(from_tuple_to_dict, choices)
+
+
+def get_model_options(Obj: models.Model, serializer):
+    def _transform_dict(obj):
+        return {
+            "text": obj["name"],
+            "value": obj["id"],
+        }
+    options = serializer(data=Obj.objects.all(), many=True)
+    options.is_valid()
+    return map(_transform_dict, options.data)
+
+
+def get_is_field_required(model, field_name):
+    return not model._meta.get_field(field_name).blank
+
+
+def get_field_name(model, field_name):
+    return model._meta.get_field(field_name).name
+
+
+def get_plus_place():
+    return [
+    {
+        "key": None,
+        "header": "General Info",
+        "is_nested": False,
+        "inputs": [
+            {
+                "key": get_field_name(Place, 'name'),
+                "placeholder": "Name",
+                'title': 'Name',
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Place, 'name'),
+            },
+            {
+                "key": get_field_name(Place, 'nickname'),
+                "placeholder": "Nickname",
+                'title': 'Nickname',
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Place, 'nickname'),
+            },
+            {
+                "key": get_field_name(Place, 'description'),
+                "placeholder": "Overview",
+                'title': "Overview",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Place, 'description'),
+            },
+            # {
+            #     "key": get_field_name(Place, 'rating'),
+            #     "placeholder": "Rating",
+            #     'title': "Rating",
+            #     'field_type': FieldTypes.int_field,
+            #     'required': get_is_field_required(Place, 'rating'),
+            # }
+        ]
+    },
+    {
+        "key": get_field_name(Place, "place_images"),
+        "header": "Images of place",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(PlaceImage, 'image'),
+                'title': "Images",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(PlaceImage, 'image'),
+            },
+        ]
+    },
+    {
+        "key": None,
+        "header": "Categories",
+        "is_nested": False,
+        "inputs": [
+            {
+                "key": get_field_name(Place, 'categories'),
+                'title': 'Category',
+                'field_type': FieldTypes.multi_select,
+                "options": get_model_options(Category, CategorySerializer),
+                'required': get_is_field_required(Place, 'categories'),
+            },
+        ]
+    },
+    {
+        "key": None,
+        "header": "Civilization",
+        "is_nested": False,
+        "inputs": [
+            {
+                'key': get_field_name(Place, "population"),
+                "placeholder": "Population",
+                'title': "Population",
+                'field_type': FieldTypes.int_field,
+                'required': get_is_field_required(Place, "population"),
+            },
+            {
+                'key': get_field_name(Place, "type_of_people_around"),
+                "placeholder": "Type Of People Around",
+                'title': "Type Of People Around",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Place, "type_of_people_around"),
+            },
+            {
+                'key': get_field_name(Place, "turist_rating"),
+                "placeholder": "Turist Rating",
+                'title': "Turist Rating",
+                'field_type': FieldTypes.int_field,
+                'required': get_is_field_required(Place, "turist_rating"),
+            },
+            {
+                'key': get_field_name(Place, "nation"),
+                "placeholder": "Nation",
+                'title': "Nation",
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Place, "nation"),
+            },
+            {
+                'key': get_field_name(Place, "language"),
+                "placeholder": "Language",
+                'title': "Language",
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Place, "language"),
+            },
+            {
+                'key': get_field_name(Place, 'culture'),
+                "placeholder": "Culture",
+                'title': 'Culture',
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Place, 'culture'),
+            },
+            {
+                'key': get_field_name(Place, "currency"),
+                "placeholder": "Currency",
+                'title': "Currency",
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Place, "currency"),
+            },
+            {
+                'key': get_field_name(Place, 'currency_buying_advice'),
+                "placeholder": "Currency Buying Advice",
+                'title': 'Currency Buying Advice',
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Place, 'currency_buying_advice'),
+            },
+            {
+                'key': get_field_name(Place, "simcards"),
+                "placeholder": "Sim Cards",
+                'title': "Sim Cards",
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Place, "simcards"),
+            },
+            {
+                'key': get_field_name(Place, "internet"),
+                "placeholder": "Internet",
+                'title': "Internet",
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Place, "internet"),
+            },
+            {
+                'key': get_field_name(Place, 'pay_online_or_by_card'),
+                "placeholder": "Payment Method",
+                'title': 'Pay Online Or By Card',
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Place, 'pay_online_or_by_card'),
+            },
+        ]
+    },
+    {
+        "key": get_field_name(Place, "transports"),
+        "header": "Transports",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(Transport, "type_transport"),
+                "placeholder": "Type Of Transport",
+                'title': 'Type Of Transport',
+                'field_type': FieldTypes.picker,
+                "options": get_model_options(TypeTransport, TypeTransportSerializer),
+                'required': get_is_field_required(Transport, 'type_transport'),
+            },
+            {
+                'key': get_field_name(Transport, "price"),
+                "placeholder": "Transport Price",
+                'title': "Transport Price",
+                'field_type': FieldTypes.float_field,
+                'required': get_is_field_required(Transport, 'price'),
+            },
+            {
+                'key': get_field_name(Transport, "description"),
+                "placeholder": "Transport Description",
+                'title': "Transport Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Transport, "description"),
+            },
+            {
+                'key': get_field_name(Transport, "comfortable"),
+                "placeholder": "Transport Comfortable",
+                'title': "Transport Comfortable",
+                'field_type': FieldTypes.picker,
+                "options": get_choices_options(HOW_COMFORTABLE_CHOICES),
+                'required': get_is_field_required(Transport, "comfortable"),
+            },
+            {
+                'key': get_field_name(Transport, 'image'),
+                'title': "Transport Image",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(Transport, 'image'),
+            }
+        ]
+    },
+        {
+            "key": get_field_name(Place, "must_sees"),
+            "header": "Must Sees",
+            "is_nested": True,
+            "inputs": [
+                {
+                    "key": get_field_name(MustSee, 'name'),
+                    "placeholder": "Must See Name",
+                    'title': 'Must See Name',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(MustSee, 'name'),
+                },
+                {
+                    'key': get_field_name(MustSee, 'description'),
+                    "placeholder": "Description",
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(MustSee, 'description'),
+                },
+                {
+                    'key': get_field_name(MustSee, 'image'),
+                    'title': "Must See Image",
+                    'field_type': FieldTypes.image_field,
+                    'required': get_is_field_required(MustSee, 'image'),
+                }
+            ]
+        },
+        {
+            "key": get_field_name(Place, 'accommodation_options'),
+            "header": "Accommodation Options",
+            "is_nested": True,
+            "inputs": [
+                {
+                    "key": get_field_name(AccommodationOption, 'name'),
+                    "placeholder": "Accommodation Options Name",
+                    'title': 'Accommodation Options Name',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(AccommodationOption, 'name'),
+                },
+                {
+                    'key': get_field_name(AccommodationOption, 'price'),
+                    "placeholder": "Price",
+                    'title': "Price",
+                    'field_type': FieldTypes.float_field,
+                    'required': get_is_field_required(AccommodationOption, 'price'),
+                },
+                {
+                    'key': get_field_name(AccommodationOption, 'description'),
+                    "placeholder": "Description",
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(AccommodationOption, 'description'),
+                },
+            ]
+        },
+        {
+            "key": get_field_name(Place, 'flora_faunas'),
+            "header": "Flora and Fauna",
+            "is_nested": True,
+            "inputs": [
+                {
+                    "key": get_field_name(FloraFauna, 'name'),
+                    "placeholder": "Flora and/or Fauna name",
+                    'title': 'Flora and/or Fauna name',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(FloraFauna, 'name'),
+                },
+                {
+                    'key': get_field_name(FloraFauna, 'description'),
+                    "placeholder": 'Description',
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(FloraFauna, 'description'),
+                },
+                {
+                    'key': get_field_name(FloraFauna, 'image'),
+                    'title': "Flora and Fauna Image",
+                    'field_type': FieldTypes.image_field,
+                    'required': get_is_field_required(FloraFauna, 'image'),
+                }
+            ]
+        },
+        # {
+        #     "key": None,
+        #     "header": "Climatic condition",
+        #     "is_nested": False,
+        #     "inputs": [
+        #         {
+        #             "key": get_field_name(Place, 'climatic_condition'),
+        #             'title': 'Climatic condition',
+        #             'field_type': FieldTypes.picker,
+        #             "options":  [
+        #                 {"text": 'Tropical', "value": 1, },
+        #                 {"text": 'Dry', "value": 1, },
+        #                 {"text": 'Mild', "value": 1, },
+        #                 {"text": 'Continental', "value": 1, },
+        #                 {"text": 'Polar', "value": 1, },
+        #             ],
+        #             'required': get_is_field_required(Place, 'climatic_condition'),
+        #         },
+        #     ]
+        # },
+]
 
 
 nested = [
@@ -338,312 +662,8 @@ nested = [
             },
         ]
     },
-
 ]
 
-
-def get_choices_options(choices: tuple):
-    def from_tuple_to_dict(choice: tuple):
-        return {
-            "text": choice[1],
-            "value": choice[0]
-        }
-    return map(from_tuple_to_dict, choices)
-
-
-def get_model_options(Obj: models.Model, serializer):
-    def _transform_dict(obj):
-        return {
-            "text": obj["name"],
-            "value": obj["id"],
-        }
-    options = serializer(data=Obj.objects.all(), many=True)
-    options.is_valid()
-    return map(_transform_dict, options.data)
-
-
-def get_is_field_required(model, field_name):
-    return not model._meta.get_field(field_name).blank
-
-
-def get_field_name(model, field_name):
-    return model._meta.get_field(field_name).name
-
-
-def get_plus_place():
-    return [
-    {
-        "key": None,
-        "header": "General Info",
-        "is_nested": False,
-        "inputs": [
-            {
-                "key": get_field_name(Place, 'name'),
-                "placeholder": "Name",
-                'title': 'Name',
-                'field_type': FieldTypes.char_field,
-                'required': get_is_field_required(Place, 'name'),
-            },
-            {
-                "key": get_field_name(Place, 'nickname'),
-                "placeholder": "Nickname",
-                'title': 'Nickname',
-                'field_type': FieldTypes.char_field,
-                'required': get_is_field_required(Place, 'nickname'),
-            },
-            {
-                "key": get_field_name(Place, 'description'),
-                "placeholder": "Overview",
-                'title': "Overview",
-                'field_type': FieldTypes.text_field,
-                'required': get_is_field_required(Place, 'description'),
-            },
-            # {
-            #     "key": get_field_name(Place, 'rating'),
-            #     "placeholder": "Rating",
-            #     'title': "Rating",
-            #     'field_type': FieldTypes.int_field,
-            #     'required': get_is_field_required(Place, 'rating'),
-            # }
-        ]
-    },
-    {
-        "key": get_field_name(Place, "place_images"),
-        "header": "Images of place",
-        "is_nested": True,
-        "inputs": [
-            {
-                "key": get_field_name(PlaceImage, 'image'),
-                'title': "Images",
-                'field_type': FieldTypes.image_field,
-                'required': get_is_field_required(PlaceImage, 'image'),
-            },
-        ]
-    },
-    {
-        "key": None,
-        "header": "Categories",
-        "is_nested": False,
-        "inputs": [
-            {
-                "key": get_field_name(Place, 'categories'),
-                'title': 'Category',
-                'field_type': FieldTypes.multi_select,
-                "options": get_model_options(Category, CategorySerializer),
-                'required': get_is_field_required(Place, 'categories'),
-            },
-        ]
-    },
-    {
-        "key": None,
-        "header": "Civilization",
-        "is_nested": False,
-        "inputs": [
-            {
-                'key': get_field_name(Place, "population"),
-                "placeholder": "Population",
-                'title': "Population",
-                'field_type': FieldTypes.int_field,
-                'required': get_is_field_required(Place, "population"),
-            },
-            {
-                'key': get_field_name(Place, "type_of_people_around"),
-                "placeholder": "Type Of People Around",
-                'title': "Type Of People Around",
-                'field_type': FieldTypes.text_field,
-                'required': get_is_field_required(Place, "type_of_people_around"),
-            },
-            {
-                'key': get_field_name(Place, "turist_rating"),
-                "placeholder": "Turist Rating",
-                'title': "Turist Rating",
-                'field_type': FieldTypes.int_field,
-                'required': get_is_field_required(Place, "turist_rating"),
-            },
-            {
-                'key': get_field_name(Place, "nation"),
-                "placeholder": "Nation",
-                'title': "Nation",
-                'field_type': FieldTypes.char_field,
-                'required': get_is_field_required(Place, "nation"),
-            },
-            {
-                'key': get_field_name(Place, "language"),
-                "placeholder": "Language",
-                'title': "Language",
-                'field_type': FieldTypes.char_field,
-                'required': get_is_field_required(Place, "language"),
-            },
-            {
-                'key': get_field_name(Place, 'culture'),
-                "placeholder": "Culture",
-                'title': 'Culture',
-                'field_type': FieldTypes.text_field,
-                'required': get_is_field_required(Place, 'culture'),
-            },
-            {
-                'key': get_field_name(Place, "currency"),
-                "placeholder": "Currency",
-                'title': "Currency",
-                'field_type': FieldTypes.char_field,
-                'required': get_is_field_required(Place, "currency"),
-            },
-            {
-                'key': get_field_name(Place, 'currency_buying_advice'),
-                "placeholder": "Currency Buying Advice",
-                'title': 'Currency Buying Advice',
-                'field_type': FieldTypes.text_field,
-                'required': get_is_field_required(Place, 'currency_buying_advice'),
-            },
-            {
-                'key': get_field_name(Place, "simcards"),
-                "placeholder": "Sim Cards",
-                'title': "Sim Cards",
-                'field_type': FieldTypes.char_field,
-                'required': get_is_field_required(Place, "simcards"),
-            },
-            {
-                'key': get_field_name(Place, "internet"),
-                "placeholder": "Internet",
-                'title': "Internet",
-                'field_type': FieldTypes.char_field,
-                'required': get_is_field_required(Place, "internet"),
-            },
-            {
-                'key': get_field_name(Place, 'pay_online_or_by_card'),
-                "placeholder": "Payment Method",
-                'title': 'Pay Online Or By Card',
-                'field_type': FieldTypes.text_field,
-                'required': get_is_field_required(Place, 'pay_online_or_by_card'),
-            },
-        ]
-    },
-    {
-        "key": get_field_name(Place, "transports"),
-        "header": "Transports",
-        "is_nested": True,
-        "inputs": [
-            {
-                "key": get_field_name(Transport, "type_transport"),
-                "placeholder": "Type Of Transport",
-                'title': 'Type Of Transport',
-                'field_type': FieldTypes.picker,
-                "options": get_model_options(TypeTransport, TypeTransportSerializer),
-                'required': get_is_field_required(Transport, 'type_transport'),
-            },
-            {
-                'key': get_field_name(Transport, "price"),
-                "placeholder": "Transport Price",
-                'title': "Transport Price",
-                'field_type': FieldTypes.float_field,
-                'required': get_is_field_required(Transport, 'price'),
-            },
-            {
-                'key': get_field_name(Transport, "description"),
-                "placeholder": "Transport Description",
-                'title': "Transport Description",
-                'field_type': FieldTypes.text_field,
-                'required': get_is_field_required(Transport, "description"),
-            },
-            {
-                'key': get_field_name(Transport, "comfortable"),
-                "placeholder": "Transport Comfortable",
-                'title': "Transport Comfortable",
-                'field_type': FieldTypes.picker,
-                "options": get_choices_options(HOW_COMFORTABLE_CHOICES),
-                'required': get_is_field_required(Transport, "comfortable"),
-            },
-            {
-                'key': get_field_name(Transport, 'image'),
-                'title': "Transport Image",
-                'field_type': FieldTypes.image_field,
-                'required': get_is_field_required(Transport, 'image'),
-            }
-        ]
-    },
-        {
-            "key": get_field_name(Place, "must_sees"),
-            "header": "Must Sees",
-            "is_nested": True,
-            "inputs": [
-                {
-                    "key": get_field_name(MustSee, 'name'),
-                    "placeholder": "Must See Name",
-                    'title': 'Must See Name',
-                    'field_type': FieldTypes.char_field,
-                    'required': get_is_field_required(MustSee, 'name'),
-                },
-                {
-                    'key': get_field_name(MustSee, 'description'),
-                    "placeholder": "Description",
-                    'title': "Description",
-                    'field_type': FieldTypes.text_field,
-                    'required': get_is_field_required(MustSee, 'description'),
-                },
-                {
-                    'key': get_field_name(MustSee, 'image'),
-                    'title': "Must See Image",
-                    'field_type': FieldTypes.image_field,
-                    'required': get_is_field_required(MustSee, 'image'),
-                }
-            ]
-        },
-        {
-            "key": get_field_name(Place, 'accommodation_options'),
-            "header": "Accommodation Options",
-            "is_nested": True,
-            "inputs": [
-                {
-                    "key": get_field_name(AccommodationOption, 'name'),
-                    "placeholder": "Accommodation Options Name",
-                    'title': 'Accommodation Options Name',
-                    'field_type': FieldTypes.char_field,
-                    'required': get_is_field_required(AccommodationOption, 'name'),
-                },
-                {
-                    'key': get_field_name(AccommodationOption, 'price'),
-                    "placeholder": "Price",
-                    'title': "Price",
-                    'field_type': FieldTypes.float_field,
-                    'required': get_is_field_required(AccommodationOption, 'price'),
-                },
-                {
-                    'key': get_field_name(AccommodationOption, 'description'),
-                    "placeholder": "Description",
-                    'title': "Description",
-                    'field_type': FieldTypes.text_field,
-                    'required': get_is_field_required(AccommodationOption, 'description'),
-                },
-            ]
-        },
-        {
-            "key": get_field_name(Place, 'flora_faunas'),
-            "header": "Flora and Fauna",
-            "is_nested": True,
-            "inputs": [
-                {
-                    "key": get_field_name(FloraFauna, 'name'),
-                    "placeholder": "Flora and/or Fauna name",
-                    'title': 'Flora and/or Fauna name',
-                    'field_type': FieldTypes.char_field,
-                    'required': get_is_field_required(FloraFauna, 'name'),
-                },
-                {
-                    'key': get_field_name(FloraFauna, 'description'),
-                    "placeholder": 'Description',
-                    'title': "Description",
-                    'field_type': FieldTypes.text_field,
-                    'required': get_is_field_required(FloraFauna, 'description'),
-                },
-                {
-                    'key': get_field_name(FloraFauna, 'image'),
-                    'title': "Flora and Fauna Image",
-                    'field_type': FieldTypes.image_field,
-                    'required': get_is_field_required(FloraFauna, 'image'),
-                }
-            ]
-        },
-]
 
 
 category_choices = (
