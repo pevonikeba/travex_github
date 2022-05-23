@@ -7,12 +7,14 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import status
+from rest_framework import status, exceptions
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.status import HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
@@ -32,17 +34,11 @@ from place.serializers.place_nested import TransportSerializer, PlaceImageSerial
 
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
-from place.utils.utils import StandardResultsSetPagination
+from place.utils.utils import StandardResultsSetPagination, get_social_account_brands
 from django.conf import settings
 # from rest_auth.registration.views import SocialLoginView
 from loguru import logger
 
-# class TokenObtainPairView(TokenViewBase):
-#     """
-#         Return JWT tokens (access and refresh) for specific user based on username and password.
-#     """
-#     serializer_class = TokenObtainLifetimeSerializer
-#
 #
 # class TokenRefreshView(TokenViewBase):
 #     """
@@ -359,12 +355,20 @@ class CustomUserView(UserViewSet):
     def create(self, request, *args, **kwargs):
         try:
             user = CustomUser.objects.get(email=request.data['email'])
+            social_account_brands = get_social_account_brands(user)
+            if social_account_brands:
+                # raise Exception("aaa")
+                return Response(social_account_brands, status=HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
             if not user.is_active:
                 user.delete()
         except:
             pass
         return super().create(request, *args, **kwargs)
 
+# >>> g_ars.get_provider_account().get_brand()
+# >>> g_ars.get_provider_account()
+# >>> arslion.socialaccount_set.all()
+# >>> arslion = CustomUser.objects.get(pk=2)
 
 class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()

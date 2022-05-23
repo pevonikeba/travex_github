@@ -1,12 +1,12 @@
 from loguru import logger
 from rest_framework.renderers import JSONRenderer
 import enum
-import logging
+# import logging
+# logger = logging.getLogger('django')
+from loguru import logger
+from rest_framework.status import is_client_error
 
-logger = logging.getLogger('django')
-
-class FullPath(enum.Enum):
-    reset_password = '/auth/users/reset_password/'
+from place.utils.utils import SocialAccountError
 
 # logger.warning(renderer_context.get('request').get_full_path())
 
@@ -15,20 +15,27 @@ class CustomRenderer(JSONRenderer):
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         response_content = {}
-        logger.info('here')
-        if isinstance(data, dict) and data.get('status_code'):
+        if is_client_error(renderer_context.get('response').status_code):
             response_content['success'] = False
-            logger.warning(renderer_context)
-            error = 'unknown_error'
+            # logger.warning(renderer_context)
+            request = renderer_context.get('request')
+            response = renderer_context.get('response')
+            error = response.data
             detail = data.get('detail')
-            if detail:
+            if request.path == '/users/' and request.method == 'POST':
+                social_account_error = response.data.get(SocialAccountError.ERROR_NAME)
+                if social_account_error:
+                    error = social_account_error
+            elif request.path == '/auth/jwt/create/' and request.method == 'POST':
+                social_account_error = response.data.get(SocialAccountError.ERROR_NAME)
+                if social_account_error:
+                    error = social_account_error
+            elif detail: # elif request.path == '/auth/users/me/' and request.method == 'GET':
                 if detail.title() == 'Invalid Username/Password.':
                     error = 'authentication_failed'
                 else:
                     error = data['token_error'] or data
             response_content['error'] = error
-            # response_content['message'] = data
-            # response_content['token_error'] = or 'unknown_error'
         else:
             NoneType = type(None)
             if not isinstance(data, str) and not isinstance(data, NoneType) and not isinstance(data, int):

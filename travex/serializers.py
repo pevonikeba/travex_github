@@ -1,8 +1,20 @@
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
-from rest_framework import serializers
+from django.contrib.auth.models import update_last_login
+from django.core.exceptions import ObjectDoesNotExist
+
+from loguru import logger
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
+from rest_framework.response import Response
+
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
+from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import exceptions, serializers
+
+from place.models import CustomUser
+from place.utils.utils import get_social_account_brands
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -114,4 +126,58 @@ class CustomSocialLoginSerializer(SocialLoginSerializer):
         attrs['user'] = login.account.user
 
         return attrs
+
+
+class MyTokenObtainPairSerializer(TokenObtainSerializer):
+    @classmethod
+    def get_token(cls, user):
+        return RefreshToken.for_user(user)
+
+    def my_validate(self, attrs):
+        # overridden from super
+        logger.info("in my_validate")
+        # return Response("aaa")
+        authenticate_kwargs = {
+            self.username_field: attrs[self.username_field],
+            'password': attrs['password'],
+        }
+        try:
+            authenticate_kwargs['request'] = self.context['request']
+        except KeyError:
+            pass
+
+        self.user = authenticate(**authenticate_kwargs)
+
+        if not api_settings.USER_AUTHENTICATION_RULE(self.user):
+            try:
+                finded_user = CustomUser.objects.get(email=attrs.get('email'))
+            except ObjectDoesNotExist:
+                finded_user = None
+            if finded_user:
+                social_account_brands = get_social_account_brands(finded_user)
+                if social_account_brands:
+                    raise exceptions.AuthenticationFailed(social_account_brands)
+                    # return Response()
+
+            raise exceptions.AuthenticationFailed(
+                self.error_messages['no_active_account'],
+                'no_active_account',
+            )
+
+        return {}
+
+    def validate(self, attrs):
+        logger.info("I am here")
+        data = self.my_validate(attrs)
+
+        refresh = self.get_token(self.user)
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
+
+        return data
+
 

@@ -16,8 +16,16 @@ from loguru import logger
 # import logging
 
 # logger = logging.getLogger(__name__)
+from rest_framework_simplejwt.views import TokenViewBase
 
-from travex.serializers import CustomSocialLoginSerializer
+from travex.serializers import CustomSocialLoginSerializer, MyTokenObtainPairSerializer
+
+
+class MyTokenObtainPairView(TokenViewBase):
+    """
+        Return JWT tokens (access and refresh) for specific user based on username and password.
+    """
+    serializer_class = MyTokenObtainPairSerializer
 
 
 class AppleLogin(SocialLoginView):

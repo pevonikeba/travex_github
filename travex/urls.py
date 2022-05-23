@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, To
 
 from allauth.account.views import LogoutView
 
-from travex.views import ActivateUserEmail, ResetPasswordView, eula, GoogleLogin, AppleLogin
+from travex.views import ActivateUserEmail, ResetPasswordView, eula, GoogleLogin, AppleLogin, MyTokenObtainPairView
 
 from place.views import CustomUserListCreateView, CustomUserDetailView, CustomUserView, check_version
 
@@ -35,6 +35,7 @@ urlpatterns = [
     path('api/drf-auth/', include('rest_framework.urls')),
     path('eula/', eula),
     path('', include('social_django.urls', namespace='social')),
+    path('auth/jwt/create/', MyTokenObtainPairView.as_view(), name="jwt-create"),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
