@@ -21,6 +21,7 @@ class CustomRenderer(JSONRenderer):
             request = renderer_context.get('request')
             response = renderer_context.get('response')
             error = response.data
+            logger.warning(response.data)
             detail = data.get('detail')
             if request.path == '/users/' and request.method == 'POST':
                 social_account_error = response.data.get(SocialAccountError.ERROR_NAME)
@@ -30,6 +31,7 @@ class CustomRenderer(JSONRenderer):
                 social_account_error = response.data.get(SocialAccountError.ERROR_NAME)
                 if social_account_error:
                     error = social_account_error
+                # else
             elif detail: # elif request.path == '/auth/users/me/' and request.method == 'GET':
                 if detail.title() == 'Invalid Username/Password.':
                     error = 'authentication_failed'

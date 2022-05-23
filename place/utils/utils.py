@@ -56,6 +56,10 @@ class SocialAccountError:
     NO_ERROR = ''
 
 
+def check_has_social_account_error_msg(social_account_brands: dict):
+    return social_account_brands.get(SocialAccountError.ERROR_NAME)
+
+
 def get_social_account_brands(user):
     social_account_error = SocialAccountError.ERROR_NAME
     social_account_brands = []

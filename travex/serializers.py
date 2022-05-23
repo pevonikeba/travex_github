@@ -14,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import exceptions, serializers
 
 from place.models import CustomUser
-from place.utils.utils import get_social_account_brands
+from place.utils.utils import get_social_account_brands, check_has_social_account_error_msg
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -155,7 +155,7 @@ class MyTokenObtainPairSerializer(TokenObtainSerializer):
                 finded_user = None
             if finded_user:
                 social_account_brands = get_social_account_brands(finded_user)
-                if social_account_brands:
+                if check_has_social_account_error_msg(social_account_brands):
                     raise exceptions.AuthenticationFailed(social_account_brands)
                     # return Response()
 

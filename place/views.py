@@ -34,7 +34,8 @@ from place.serializers.place_nested import TransportSerializer, PlaceImageSerial
 
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
-from place.utils.utils import StandardResultsSetPagination, get_social_account_brands
+from place.utils.utils import StandardResultsSetPagination, get_social_account_brands, SocialAccountError, \
+    check_has_social_account_error_msg
 from django.conf import settings
 # from rest_auth.registration.views import SocialLoginView
 from loguru import logger
@@ -356,7 +357,7 @@ class CustomUserView(UserViewSet):
         try:
             user = CustomUser.objects.get(email=request.data['email'])
             social_account_brands = get_social_account_brands(user)
-            if social_account_brands:
+            if check_has_social_account_error_msg(social_account_brands):
                 # raise Exception("aaa")
                 return Response(social_account_brands, status=HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
             if not user.is_active:
