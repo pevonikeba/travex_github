@@ -269,6 +269,7 @@ class ClimaticConditiomm(models.Model):
         Place,
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name='climatic_conditiomm',
     )
     condition = models.CharField(max_length=255)
     climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255)
