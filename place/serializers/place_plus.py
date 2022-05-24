@@ -1,5 +1,5 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
-    PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition
+    PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm
 from django.db import models
 from .serializers import TypeTransportSerializer
 from .place_nested import CategorySerializer
@@ -320,26 +320,35 @@ def get_plus_place():
                 }
             ]
         },
-        # {
-        #     "key": None,
-        #     "header": "Climatic condition",
-        #     "is_nested": False,
-        #     "inputs": [
-        #         {
-        #             "key": get_field_name(Place, 'climatic_condition'),
-        #             'title': 'Climatic condition',
-        #             'field_type': FieldTypes.picker,
-        #             "options":  [
-        #                 {"text": 'Tropical', "value": 1, },
-        #                 {"text": 'Dry', "value": 1, },
-        #                 {"text": 'Mild', "value": 1, },
-        #                 {"text": 'Continental', "value": 1, },
-        #                 {"text": 'Polar', "value": 1, },
-        #             ],
-        #             'required': get_is_field_required(Place, 'climatic_condition'),
-        #         },
-        #     ]
-        # },
+        {
+            "key": get_field_name(Place, 'climatic_conditiomm'),
+            "header": "Climate",
+            "is_nested": False,
+            "inputs": [
+                {
+                    "key": get_field_name(ClimaticConditiomm, 'condition'),
+                    "placeholder": 'Condition',
+                    'title': 'Condition',
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(ClimaticConditiomm, 'condition'),
+                },
+                {
+                    "key": get_field_name(ClimaticConditiomm, 'climate'),
+                    "placeholder": "Climate",
+                    'title': "Climate",
+                    'field_type': FieldTypes.picker,
+                    "options": get_choices_options(CLIMATE_CHOICES),
+                    'required': get_is_field_required(ClimaticConditiomm, 'climate'),
+                },
+                {
+                    'key': get_field_name(ClimaticConditiomm, 'description'),
+                    "placeholder": 'Description',
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(ClimaticConditiomm, 'description'),
+                },
+            ]
+        },
 ]
 
 

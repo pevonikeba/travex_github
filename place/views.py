@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import status, exceptions
+from rest_framework import status, exceptions, filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
@@ -19,15 +19,15 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
-    Location, Bookmark
+    Location, Bookmark, ClimaticConditiomm
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkSerializer
 from place.serializers.place_plus import get_plus_place
-from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimateSerializer, \
+from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimaticConditionSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    LocationSerializer, BookmarkSerializer
+    LocationSerializer, BookmarkSerializer, ClimaticConditiommSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
 
@@ -144,17 +144,31 @@ class FloraFaunaViewSet(PlaceNestedViewSet):
     serializer_class = FloraFaunaSerializer
 
 
+class ClimaticConditionViewSet(PlaceNestedViewSet):
+    queryset = ClimaticCondition.objects.all()
+    serializer_class = ClimaticConditionSerializer
+
+
+class ClimaticConditiommViewSet(PlaceNestedViewSet):
+    queryset = ClimaticConditiomm.objects.all()
+    serializer_class = ClimaticConditiommSerializer
+
+
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
+    # filterset_fields = ['home_page', 'writer_user', ]
+    search_fields = ['name', ]
 
 
 class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = Place.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
     filterset_fields = ['home_page', 'writer_user', ]
+    search_fields = ['name', ]
     default_serializer_class = PlaceSerializer
     serializer_classes = {
         'list': PlaceListSerializer,
@@ -206,7 +220,8 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     @action(detail=False, methods=['get'])
     def my_places(self, request):
         # get all places (active or not)
-        queryset = Place.objects.filter(writer_user=request.user)
+        queryset = self.filter_queryset(self.get_queryset()).filter(writer_user=request.user)
+        # queryset = Place.objects.filter(writer_user=request.user)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = PlaceListSerializer(queryset, many=True)
@@ -301,10 +316,10 @@ class GroupViewSet(ModelViewSet):
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 
-class ClimateViewSet(ModelViewSet, ListView):
-    queryset = ClimaticCondition.objects.all()
-    serializer_class = ClimateSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+# class ClimateViewSet(ModelViewSet, ListView):
+#     queryset = ClimaticCondition.objects.all()
+#     serializer_class = ClimaticConditionSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 

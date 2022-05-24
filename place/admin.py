@@ -81,6 +81,18 @@ class PracticalInformationInline(TabularInline):
     model = PracticalInformation
 
 
+class PlaceInline(TabularInline):
+    extra = 0
+    model = Place
+    fields = ('id', 'name', )
+    readonly_fields = ('id', )
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 # class BookmarkInline(TabularInline):
 #     extra = 0
 #     model = Bookmark
@@ -167,8 +179,6 @@ class PlaceAdmin(ModelAdmin):
     #     super().save_model(request, obj, form, change)
 
 
-
-
 # @admin.register(NoActivePlace)
 # class PlaceAdmin(ModelAdmin):
 #     inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraAndFaunaInline, BookmarkInline]
@@ -181,14 +191,11 @@ class GroupAdmin(ModelAdmin):
 # admin.site.register(models.CustomUser, UserAdmin)
 
 
-
-
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image', )
     list_display = ('pk', 'email', 'username', 'is_active', 'is_staff', )
     list_display_links = ('email', )
-
     inlines = [OwnedAchievementInline]
 
 
@@ -196,8 +203,8 @@ class CategoryMPTTModelAdmin(MPTTModelAdmin):
     # specify pixel amount for this ModelAdmin only:
     mptt_level_indent = 20
 
-admin.site.register(Category, CategoryMPTTModelAdmin)
 
+admin.site.register(Category, CategoryMPTTModelAdmin)
 
 
 @admin.register(UserPlaceRelation)
@@ -205,10 +212,10 @@ class UserPlaceRelationAdmin(ModelAdmin):
     pass
 
 
-
 @admin.register(ClimaticCondition)
 class ClimaticConditionAdmin(ModelAdmin):
-    pass
+    inlines = [PlaceInline, ]
+
 
 @admin.register(GeographicalFeature)
 class GeographicalFeatureAdmin(ModelAdmin):

@@ -252,7 +252,7 @@ class Place(models.Model):
     pay_online_or_by_card = models.CharField(max_length=255, null=True, blank=True)
     views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", blank=True)
     # geolocation = geomodels.PointField("Location in Map", geography=True, blank=True, null=True,
-    #     srid=4326, help_text="Point(longitude latitude)")
+    # srid=4326, help_text="Point(longitude latitude)")
     # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
     # coordinate = geomodels.PointField(geography=True, spatial_index=True,default=Point(58.238056, 37.862499, srid=4326), blank=True, null=True)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
@@ -262,6 +262,21 @@ class Place(models.Model):
     def __str__(self):
         return f'{self.id}: {self.name}'
 # ----------------------------------------------------------------------------------------
+
+
+class ClimaticConditiomm(models.Model):
+    place = models.OneToOneField(
+        Place,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    condition = models.CharField(max_length=255)
+    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.condition} - {self.climate}'
+
 
 
 class UserPlaceRelation(models.Model):

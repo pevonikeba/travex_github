@@ -10,7 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, Bookmark
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, Bookmark, \
+    ClimaticConditiomm
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer
@@ -451,9 +452,15 @@ class PlaceSerializer(ModelSerializer):
 #         return place
 
 
-class ClimateSerializer(ModelSerializer):
+class ClimaticConditionSerializer(ModelSerializer):
     class Meta:
         model = ClimaticCondition
+        fields = '__all__'
+
+
+class ClimaticConditiommSerializer(ModelSerializer):
+    class Meta:
+        model = ClimaticConditiomm
         fields = '__all__'
 
 
