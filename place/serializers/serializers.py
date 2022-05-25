@@ -17,6 +17,12 @@ from place.serializers.place_nested import PlaceImageSerializer, TransportSerial
     AccommodationOptionSerializer, FloraFaunaSerializer
 
 
+class CustomUserImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('image',)
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     password = serializers.CharField(max_length=255, write_only=True)

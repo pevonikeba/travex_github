@@ -218,8 +218,10 @@ class Place(models.Model):
     # families = models.ManyToManyField(AttributesFamily)
     is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
-    is_bookmarked = models.BooleanField(default=False)
+    # is_bookmarked = models.BooleanField(default=False)
     bookmarked_users = models.ManyToManyField(CustomUser, through='Bookmark', related_name="bookmarks")
+    wowed_users = models.ManyToManyField(CustomUser, through='Wow', related_name='wows')
+    nahed_users = models.ManyToManyField(CustomUser, through='Nah', related_name='nahs')
     # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
     #                                         blank=True,)
     home_page = models.BooleanField(default=False)
@@ -516,12 +518,28 @@ class FloraFauna(models.Model):
         return f"{self.place.name} {self.name}"
 
 
-class Bookmark(models.Model):
+class BookmarkLike(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, blank=False)
     writer_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False)
 
+    class Meta:
+        abstract = True
+
     def __str__(self):
         return f"{self.writer_user.username} - {self.place.name}"
+
+
+
+class Bookmark(BookmarkLike):
+    pass
+
+
+class Wow(BookmarkLike):
+    pass
+
+
+class Nah(BookmarkLike):
+    pass
 
 
 class Group(models.Model):

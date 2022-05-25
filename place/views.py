@@ -22,12 +22,12 @@ from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRel
     Location, Bookmark, ClimaticConditiomm
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
-from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkSerializer
+from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkLikeSerializer
 from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimaticConditionSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    LocationSerializer, BookmarkSerializer, ClimaticConditiommSerializer
+    LocationSerializer, BookmarkSerializer, ClimaticConditiommSerializer, CustomUserImageSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
 
@@ -204,18 +204,30 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         serializer = PlaceSerializer(place)
         return Response(serializer.data)
 
+    def add_or_delete_bookmark_like(self, request, pk=None, attr_name='', serializer=None):
+        place = get_object_or_404(Place, pk=pk)
+        if getattr(place, attr_name).filter(pk=request.user.id).exists():
+            getattr(place, attr_name).remove(request.user)
+        else:
+            getattr(place, attr_name).add(request.user)
+        place.save()
+        serializer = serializer(place)
+        return Response(serializer.data)
+
     @action(detail=True, methods=['post'])
     def add_or_delete_bookmark(self, request, pk=None):
-        place = get_object_or_404(Place, pk=pk)
-        if place.bookmarked_users.filter(pk=request.user.id).exists():
-            place.bookmarked_users.remove(request.user)
-            place.is_bookmarked = False
-        else:
-            place.bookmarked_users.add(request.user)
-            place.is_bookmarked = True
-        place.save()
-        serializer = PlaceOnAddDeleteBookmarkSerializer(place)
-        return Response(serializer.data)
+        return self.add_or_delete_bookmark_like(request, pk, 'bookmarked_users',
+                                                PlaceOnAddDeleteBookmarkLikeSerializer)
+
+    @action(detail=True, methods=['post'])
+    def add_or_delete_wow(self, request, pk=None):
+        return self.add_or_delete_bookmark_like(request, pk, 'wowed_users',
+                                                PlaceOnAddDeleteBookmarkLikeSerializer)
+
+    @action(detail=True, methods=['post'])
+    def add_or_delete_nah(self, request, pk=None):
+        return self.add_or_delete_bookmark_like(request, pk, 'nahed_users',
+                                                PlaceOnAddDeleteBookmarkLikeSerializer)
 
     @action(detail=False, methods=['get'])
     def my_places(self, request):
@@ -380,6 +392,14 @@ class CustomUserView(UserViewSet):
         except:
             pass
         return super().create(request, *args, **kwargs)
+    
+
+class UserImageUpdateView(ModelViewSet):
+    parser_classes = [JSONParser, FormParser, MultiPartParser, ]
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserImageSerializer
+
+
 
 # >>> g_ars.get_provider_account().get_brand()
 # >>> g_ars.get_provider_account()

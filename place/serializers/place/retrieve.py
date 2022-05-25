@@ -175,21 +175,46 @@ a = {
 #         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
 
-class PlaceOnAddDeleteBookmarkSerializer(serializers.ModelSerializer):
+class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ('id', 'is_bookmarked',)
+        fields = ('id', )
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     place_images = PlaceImageSerializer(many=True, required=False)
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
+    is_bookmarked = serializers.SerializerMethodField()
+    is_wowed = serializers.SerializerMethodField()
+    is_nahed = serializers.SerializerMethodField()
 
     class Meta:
         model = Place
-        fields = ('id', 'place_images', 'is_bookmarked', 'locations', 'writer_user', 'sections', 'categories',)
+        fields = ('id', 'place_images', 'is_bookmarked', 'is_wowed', 'is_nahed',
+                  'locations', 'writer_user', 'sections', 'categories',)
         # depth = 1
+
+    def is_bookmark_like(self, obj, attr_name):
+        request = self.context.get('request')
+        if getattr(obj, attr_name).filter(pk=request.user.id).exists():
+            return True
+        return False
+
+    def get_is_bookmarked(self, obj: Place):
+        return self.is_bookmark_like(obj, 'bookmarked_users')
+
+    def get_is_wowed(self, obj: Place):
+        return self.is_bookmark_like(obj, 'wowed_users')
+
+    def get_is_nahed(self, obj:Place):
+        return self.is_bookmark_like(obj, 'nahed_users')
+
+    def get_is_bookmarked(self, obj: Place):
+        request = self.context.get('request')
+        if obj.bookmarked_users.filter(pk=request.user.id).exists():
+            return True
+        return False
 
     def create_full_img_url(self, url: str):
         return self.context.get('request').build_absolute_uri(url)

@@ -23,9 +23,8 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, To
 from allauth.account.views import LogoutView
 
 from travex.views import ActivateUserEmail, ResetPasswordView, eula, GoogleLogin, AppleLogin, MyTokenObtainPairView
-
-from place.views import CustomUserListCreateView, CustomUserDetailView, CustomUserView, check_version
-
+from place.views import CustomUserListCreateView, CustomUserDetailView, CustomUserView, check_version, \
+    UserImageUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,7 +38,9 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
-    path('users/', CustomUserView.as_view({'post': 'create'})),
+    path('users/', CustomUserView.as_view({'post': 'create', 'patch': 'update'})),
+    path('users/avatar/<int:pk>/', UserImageUpdateView.as_view({'patch': 'update'})),
+    # path('users/<int:id>/', CustomUserView.as_view({'patch': 'update'})),
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

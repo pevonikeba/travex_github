@@ -1,3 +1,4 @@
+from loguru import logger
 from rest_framework import serializers
 from place.models import Place, CustomUser, PlaceImage
 from place.serializers.place_nested import PlaceImageSerializer
@@ -10,10 +11,35 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class PlaceListSerializer(serializers.ModelSerializer):
+    is_bookmarked = serializers.SerializerMethodField()
+    is_wowed = serializers.SerializerMethodField()
+    is_nahed = serializers.SerializerMethodField()
+
     class Meta:
         model = Place
-        fields = ('id', 'name', 'is_bookmarked', 'description', 'place_images', 'rating', 'locations', 'writer_user', 'home_page',)
+        fields = ('id', 'name', 'is_bookmarked', 'is_wowed', 'is_nahed',
+                  'description', 'place_images', 'rating', 'locations',
+                  'writer_user', 'home_page',)
         depth = 1
+
+    # def get_is_wowed(self, obj: Place):
+
+    def is_bookmark_like(self, obj, attr_name):
+        request = self.context.get('request')
+        if getattr(obj, attr_name).filter(pk=request.user.id).exists():
+            return True
+        return False
+
+    def get_is_bookmarked(self, obj: Place):
+        return self.is_bookmark_like(obj, 'bookmarked_users')
+
+    def get_is_wowed(self, obj: Place):
+        return self.is_bookmark_like(obj, 'wowed_users')
+
+    def get_is_nahed(self, obj:Place):
+        return self.is_bookmark_like(obj, 'nahed_users')
+
+
 
     writer_user = CustomUserSerializer()
     place_images = PlaceImageSerializer(many=True)
