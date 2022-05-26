@@ -6,6 +6,8 @@ from django.contrib.admin import ModelAdmin, TabularInline
 # from django.contrib.gis.admin import GISModelAdmin
 # from modeltranslation.admin import TranslationAdmin
 from mptt.admin import MPTTModelAdmin
+from imagekit.admin import AdminThumbnail
+
 
 # from geopy.geocoders import Nominatim
 from achievement.admin import OwnedAchievementInline
@@ -194,6 +196,7 @@ class GroupAdmin(ModelAdmin):
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image', )
+    image_thumb = AdminThumbnail(image_field='image_thumb')
     list_display = ('pk', 'email', 'username', 'is_active', 'is_staff', )
     list_display_links = ('email', )
     inlines = [OwnedAchievementInline]

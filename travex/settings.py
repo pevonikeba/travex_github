@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     # "leaflet",
     'place',
     'achievement',
+    'imagekit',
 ]
 
 AUTH_USER_MODEL = 'place.CustomUser'

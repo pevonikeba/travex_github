@@ -11,6 +11,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class PlaceListSerializer(serializers.ModelSerializer):
+    writer_user = CustomUserSerializer()
+    place_images = PlaceImageSerializer(many=True)
     is_bookmarked = serializers.SerializerMethodField()
     is_wowed = serializers.SerializerMethodField()
     is_nahed = serializers.SerializerMethodField()
@@ -41,5 +43,4 @@ class PlaceListSerializer(serializers.ModelSerializer):
 
 
 
-    writer_user = CustomUserSerializer()
-    place_images = PlaceImageSerializer(many=True)
+

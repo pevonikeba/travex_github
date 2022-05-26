@@ -9,9 +9,11 @@ from django.db import models
 # from location_field.forms.spatial import LocationField
 # from location_field.models.plain import PlainLocationField
 # from geopy import Point
+from imagekit import ImageSpec
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.translation import gettext_lazy as _
-
+from imagekit.models import ImageSpecField, ProcessedImageField
+from imagekit.processors import ResizeToFill, ResizeToFit
 
 # Create your models here.
 
@@ -106,6 +108,14 @@ TYPES_OF_TRANSPORT_CHOICES = (
 #
 # mptt.register(Category, order_insertion_by=['name'])
 
+# class CompressedImageField(ProcessedImageField):
+
+
+class Thumbnail(ImageSpec):
+    processors = [ResizeToFit(100)]
+    # format = 'JPEG'
+    options = {'quality': 60}
+
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
@@ -116,7 +126,12 @@ class CustomUser(AbstractUser):
     )
     email_verify = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='images/custom_user/', null=True, blank=True)
+    image = ProcessedImageField(upload_to='images/custom_user/',
+                                processors=[ResizeToFit(720)],
+                                options={'quality': 60},
+                                null=True, blank=True)
+    image_thumb = Thumbnail(source='image')
+    # image = models.ImageField(upload_to='images/custom_user/', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['is_active', 'username']
@@ -436,7 +451,11 @@ class NaturalPhenomena(models.Model):
 
 class PlaceImage(models.Model):
     place = models.ForeignKey(Place, related_name="place_images", on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/places/')
+    image = ProcessedImageField(upload_to='images/places/',
+                                processors=[ResizeToFit(720)],
+                                options={'quality': 60},
+                                null=True, blank=True)
+    image_thumb = Thumbnail(source='image')
 
     def __str__(self):
         return f"{self.image}"
