@@ -204,12 +204,16 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         serializer = PlaceSerializer(place)
         return Response(serializer.data)
 
-    def add_or_delete_bookmark_like(self, request, pk=None, attr_name='', serializer=None):
+    def add_or_delete_bookmark_like(self, request, pk=None, attr_name=None, suppport_attr_name=None, serializer=None):
         place = get_object_or_404(Place, pk=pk)
         if getattr(place, attr_name).filter(pk=request.user.id).exists():
             getattr(place, attr_name).remove(request.user)
         else:
             getattr(place, attr_name).add(request.user)
+            if suppport_attr_name:
+                if getattr(place, suppport_attr_name).filter(pk=request.user.id).exists():
+                    getattr(place, suppport_attr_name).remove(request.user)
+
         place.save()
         serializer = serializer(place)
         return Response(serializer.data)
@@ -217,17 +221,17 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     @action(detail=True, methods=['post'])
     def add_or_delete_bookmark(self, request, pk=None):
         return self.add_or_delete_bookmark_like(request, pk, 'bookmarked_users',
-                                                PlaceOnAddDeleteBookmarkLikeSerializer)
+                                                serializer=PlaceOnAddDeleteBookmarkLikeSerializer)
 
     @action(detail=True, methods=['post'])
     def add_or_delete_wow(self, request, pk=None):
-        return self.add_or_delete_bookmark_like(request, pk, 'wowed_users',
-                                                PlaceOnAddDeleteBookmarkLikeSerializer)
+        return self.add_or_delete_bookmark_like(request, pk, 'wowed_users', 'nahed_users',
+                                                serializer=PlaceOnAddDeleteBookmarkLikeSerializer)
 
     @action(detail=True, methods=['post'])
     def add_or_delete_nah(self, request, pk=None):
-        return self.add_or_delete_bookmark_like(request, pk, 'nahed_users',
-                                                PlaceOnAddDeleteBookmarkLikeSerializer)
+        return self.add_or_delete_bookmark_like(request, pk, 'nahed_users', 'wowed_users',
+                                                serializer=PlaceOnAddDeleteBookmarkLikeSerializer)
 
     @action(detail=False, methods=['get'])
     def my_places(self, request):

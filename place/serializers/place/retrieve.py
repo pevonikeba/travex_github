@@ -188,12 +188,23 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
     is_bookmarked = serializers.SerializerMethodField()
     is_wowed = serializers.SerializerMethodField()
     is_nahed = serializers.SerializerMethodField()
+    wows_count = serializers.SerializerMethodField()
+    nahs_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Place
-        fields = ('id', 'place_images', 'is_bookmarked', 'is_wowed', 'is_nahed',
+        fields = ('id', 'place_images',
+                  'is_bookmarked', 'is_wowed', 'is_nahed',
+                  'wows_count', 'nahs_count',
                   'locations', 'writer_user', 'sections', 'categories',)
         # depth = 1
+
+    def get_wows_count(self, obj: Place):
+        return obj.wowed_users.all().count()
+
+    def get_nahs_count(self, obj: Place):
+        return obj.nahed_users.all().count()
+
 
     def is_bookmark_like(self, obj, attr_name):
         request = self.context.get('request')
