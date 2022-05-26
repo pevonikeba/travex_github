@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import status, exceptions, filters
+from rest_framework import status, exceptions, filters, mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
@@ -236,10 +236,12 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         # queryset = Place.objects.filter(writer_user=request.user)
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = PlaceListSerializer(queryset, many=True)
+            logger.warning('is not None')
+            serializer = PlaceListSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
 
     @action(detail=False, methods=['get'])
     def bookmarks(self, request):
@@ -250,6 +252,19 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class MyPlacesViewSet(mixins.ListModelMixin, GenericViewSet):
+    """Only for own writer user places"""
+    permission_classes = [IsAuthenticated]
+    queryset = Place.objects.all()
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
+    filterset_fields = ['home_page', 'writer_user', ]
+    search_fields = ['name', ]
+    serializer_class = PlaceListSerializer
+
+    def get_queryset(self):
+        return Place.objects.filter(is_active=True, writer_user=self.request.user)
 
 
 def get_location(lat, lon):

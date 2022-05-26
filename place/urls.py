@@ -3,12 +3,13 @@ from rest_framework.routers import SimpleRouter
 from place.views import PlaceViewSet, GroupViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
     UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet, \
     TransportViewSet, PlaceImageViewSet, AccommodationOptionViewSet, MustSeeViewSet, FloraFaunaViewSet, \
-    LocationViewSet, ClimaticConditionViewSet, ClimaticConditiommViewSet
+    LocationViewSet, ClimaticConditionViewSet, ClimaticConditiommViewSet, MyPlacesViewSet
 
 app_name = "place"
 
 router = SimpleRouter()
 # root routing "api/places/"
+router.register(r'my_places', MyPlacesViewSet)
 router.register(r"place_images", PlaceImageViewSet)
 router.register(r'categories', CategoryViewSet)  # ????????
 router.register(r'transports', TransportViewSet)
