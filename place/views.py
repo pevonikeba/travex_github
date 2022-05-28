@@ -159,7 +159,7 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
-    # filterset_fields = ['home_page', 'writer_user', ]
+    filterset_fields = ['home_page', 'writer_user', ]
     search_fields = ['name', ]
 
 
@@ -167,8 +167,8 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
-    filterset_fields = ['home_page', 'writer_user', ]
-    search_fields = ['name', ]
+    filterset_fields = ['home_page', 'writer_user', 'categories']
+    search_fields = ['name', 'locations__country', 'locations__city', ]
     default_serializer_class = PlaceSerializer
     serializer_classes = {
         'list': PlaceListSerializer,
@@ -186,9 +186,15 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
+        queryset = Place.objects.all()
         if self.action == 'list':
-            return Place.objects.filter(is_active=True)
-        return Place.objects.all()
+            queryset = queryset.filter(is_active=True)
+            # TODO: if in query params has 'category' exec it, but change query param to 'categories' later on mob.app
+            category = self.request.query_params.get('category')
+            if category is not None:
+                queryset = queryset.filter(categories=category)
+            return queryset
+        return queryset
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)

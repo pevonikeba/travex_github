@@ -22,7 +22,7 @@ class PlaceListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
         fields = ('id', 'name', 'is_bookmarked', 'is_wowed', 'is_nahed',
-                  'wows_count', 'nahs_count',
+                  'wows_count', 'nahs_count', 'categories',
                   'description', 'place_images', 'rating', 'locations',
                   'writer_user', 'home_page',)
         depth = 1
