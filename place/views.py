@@ -159,7 +159,7 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
-    filterset_fields = ['home_page', 'writer_user', ]
+    # filterset_fields = ['home_page', 'writer_user', ]
     search_fields = ['name', ]
 
 
