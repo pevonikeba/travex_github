@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import status, exceptions, filters, mixins
+from rest_framework import status, exceptions, filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
@@ -15,6 +15,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.status import HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
@@ -27,7 +28,8 @@ from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimaticConditionSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    LocationSerializer, BookmarkSerializer, ClimaticConditiommSerializer, CustomUserImageSerializer
+    LocationSerializer, BookmarkSerializer, ClimaticConditiommSerializer, CustomUserImageSerializer, \
+    CustomUserPatchSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
 
@@ -180,6 +182,10 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     # pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get_serializer_class(self):
+        return self.serializer_classes.get(self.action, self.default_serializer_class)
+
+
     # def update(self, request, *args, **kwargs):
     #     super().update(request, *args, **kwargs)
     #     serializer = PlaceRetrieveSerializer(self.get_object())
@@ -196,8 +202,6 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             return queryset
         return queryset
 
-    def get_serializer_class(self):
-        return self.serializer_classes.get(self.action, self.default_serializer_class)
 
     @action(detail=False, methods=["get"])
     def plus_place(self, request):
@@ -210,34 +214,50 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         serializer = PlaceSerializer(place)
         return Response(serializer.data)
 
-    def add_or_delete_bookmark_like(self, request, pk=None, attr_name=None, suppport_attr_name=None, serializer=None):
-        place = get_object_or_404(Place, pk=pk)
-        if getattr(place, attr_name).filter(pk=request.user.id).exists():
-            getattr(place, attr_name).remove(request.user)
-        else:
-            getattr(place, attr_name).add(request.user)
-            if suppport_attr_name:
-                if getattr(place, suppport_attr_name).filter(pk=request.user.id).exists():
-                    getattr(place, suppport_attr_name).remove(request.user)
-
-        place.save()
-        serializer = serializer(place)
-        return Response(serializer.data)
-
     @action(detail=True, methods=['post'])
     def add_or_delete_bookmark(self, request, pk=None):
-        return self.add_or_delete_bookmark_like(request, pk, 'bookmarked_users',
-                                                serializer=PlaceOnAddDeleteBookmarkLikeSerializer)
+        place = get_object_or_404(Place, pk=pk)
+        is_bookmarked = False
+        if place.bookmarked_users.filter(pk=request.user.id).exists():
+            place.bookmarked_users.remove(request.user)
+        else:
+            place.bookmarked_users.add(request.user)
+            is_bookmarked = True
+
+        place.save()
+        return Response({'is_bookmarked': is_bookmarked})
 
     @action(detail=True, methods=['post'])
     def add_or_delete_wow(self, request, pk=None):
-        return self.add_or_delete_bookmark_like(request, pk, 'wowed_users', 'nahed_users',
-                                                serializer=PlaceOnAddDeleteBookmarkLikeSerializer)
+        place = get_object_or_404(Place, pk=pk)
+        is_wowed = False
+        if place.wowed_users.filter(pk=request.user.id).exists():
+            place.wowed_users.remove(request.user)
+        else:
+            place.wowed_users.add(request.user)
+            is_wowed = True
+            if place.nahed_users.filter(pk=request.user.id).exists():
+                place.nahed_users.remove(request.user)
+        return Response({
+            'is_wowed': is_wowed,
+            'is_nahed': not is_wowed,
+        })
 
     @action(detail=True, methods=['post'])
     def add_or_delete_nah(self, request, pk=None):
-        return self.add_or_delete_bookmark_like(request, pk, 'nahed_users', 'wowed_users',
-                                                serializer=PlaceOnAddDeleteBookmarkLikeSerializer)
+        place = get_object_or_404(Place, pk=pk)
+        is_nahed = False
+        if place.nahed_users.filter(pk=request.user.id).exists():
+            place.nahed_users.remove(request.user)
+        else:
+            place.nahed_users.add(request.user)
+            is_nahed = True
+            if place.wowed_users.filter(pk=request.user.id).exists():
+                place.wowed_users.remove(request.user)
+        return Response({
+            'is_nahed': is_nahed,
+            'is_wowed': not is_nahed,
+        })
 
     @action(detail=False, methods=['get'])
     def my_places(self, request):
@@ -251,7 +271,6 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
 
     @action(detail=False, methods=['get'])
     def bookmarks(self, request):
@@ -386,25 +405,25 @@ class TypeCuisineViewSet(ModelViewSet):
 #         return None
 
 
-class CustomUserListCreateView(ListCreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['email']
+# class CustomUserListCreateView(ListCreateAPIView):
+#     queryset = CustomUser.objects.all()
+#     serializer_class = CustomUserSerializer
+#     filter_backends = [DjangoFilterBackend, SearchFilter]
+#     filterset_fields = ['email']
+#
+#     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
+#     # permission_classes = [IsAuthenticated]
+#     # permission_classes = [DjangoModelPermissions]
+#     # permission_classes = [CsrfExemptSessionAuthentication]
+#
+#     def perform_create(self, serializer):
+#         # user = self.request.user
+#         # serializer.save(user=user)
+#
+#         serializer.save()
 
-    # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
-    # permission_classes = [IsAuthenticated]
-    # permission_classes = [DjangoModelPermissions]
-    # permission_classes = [CsrfExemptSessionAuthentication]
 
-    def perform_create(self, serializer):
-        # user = self.request.user
-        # serializer.save(user=user)
-
-        serializer.save()
-
-
-class CustomUserView(UserViewSet):
+class CustomUserViewSetFromDjoser(UserViewSet):
     def create(self, request, *args, **kwargs):
         try:
             user = CustomUser.objects.get(email=request.data['email'])
@@ -417,24 +436,32 @@ class CustomUserView(UserViewSet):
         except:
             pass
         return super().create(request, *args, **kwargs)
-    
 
-class UserImageUpdateView(ModelViewSet):
+
+class CustomUserViewSet(mixins.UpdateModelMixin,
+                        viewsets.GenericViewSet):
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserImageSerializer
-
-
-
-# >>> g_ars.get_provider_account().get_brand()
-# >>> g_ars.get_provider_account()
-# >>> arslion.socialaccount_set.all()
-# >>> arslion = CustomUser.objects.get(pk=2)
-
-class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = CustomUserPatchSerializer
     permission_classes = [IsAuthenticated]
+
+    @action(detail=True, methods=['patch'])
+    def add_or_delete_subscriber(self, request, pk=None):
+        user: CustomUser = request.user
+        subscriber: CustomUser = CustomUser.objects.filter(pk=pk).first()
+        if subscriber:
+            if user.subscribed_users.filter(pk=pk).exists():
+                user.subscribed_users.remove(subscriber)
+                return Response({'unsubscribed_from': subscriber.email})
+            else:
+                user.subscribed_users.add(subscriber)
+                return Response({'subscribed_to': subscriber.email})
+
+
+# class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
+#     queryset = CustomUser.objects.all()
+#     serializer_class = CustomUserSerializer
+#     permission_classes = [IsAuthenticated]
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 

@@ -23,6 +23,12 @@ class CustomUserImageSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
+class CustomUserPatchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('name', 'last_name', 'age', 'gender', 'language', 'image',)
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     password = serializers.CharField(max_length=255, write_only=True)
