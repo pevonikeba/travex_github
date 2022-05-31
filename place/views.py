@@ -16,7 +16,7 @@ from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.status import HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
@@ -179,17 +179,10 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
         # 'put': PlaceCreateSerializer,
         # 'patch': PlacePatchSerializer,
     }
-    # pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
-
-
-    # def update(self, request, *args, **kwargs):
-    #     super().update(request, *args, **kwargs)
-    #     serializer = PlaceRetrieveSerializer(self.get_object())
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         queryset = Place.objects.all()
@@ -217,80 +210,61 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     @action(detail=True, methods=['post'])
     def add_or_delete_bookmark(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        is_bookmarked = False
         if place.bookmarked_users.filter(pk=request.user.id).exists():
             place.bookmarked_users.remove(request.user)
+            is_bookmarked = False
         else:
             place.bookmarked_users.add(request.user)
             is_bookmarked = True
 
         place.save()
+        # logger.info(place.bookmarked_users.count())
         return Response({'is_bookmarked': is_bookmarked})
 
     @action(detail=True, methods=['post'])
     def add_or_delete_wow(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        is_wowed = False
         if place.wowed_users.filter(pk=request.user.id).exists():
             place.wowed_users.remove(request.user)
+            is_wowed = False
         else:
             place.wowed_users.add(request.user)
             is_wowed = True
             if place.nahed_users.filter(pk=request.user.id).exists():
                 place.nahed_users.remove(request.user)
+
         return Response({
             'is_wowed': is_wowed,
-            'is_nahed': not is_wowed,
+            'is_nahed': False,
         })
 
     @action(detail=True, methods=['post'])
     def add_or_delete_nah(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        is_nahed = False
         if place.nahed_users.filter(pk=request.user.id).exists():
             place.nahed_users.remove(request.user)
+            is_nahed = False
         else:
             place.nahed_users.add(request.user)
             is_nahed = True
             if place.wowed_users.filter(pk=request.user.id).exists():
                 place.wowed_users.remove(request.user)
+
         return Response({
             'is_nahed': is_nahed,
-            'is_wowed': not is_nahed,
+            'is_wowed': False,
         })
 
-    @action(detail=False, methods=['get'])
-    def my_places(self, request):
-        # get all places (active or not)
-        queryset = self.filter_queryset(self.get_queryset()).filter(writer_user=request.user)
-        # queryset = Place.objects.filter(writer_user=request.user)
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            logger.warning('is not None')
-            serializer = PlaceListSerializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
-    @action(detail=False, methods=['get'])
-    def bookmarks(self, request):
-        queryset = self.filter_queryset(self.get_queryset()).filter(bookmarked_users=request.user)
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = PlaceListSerializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class MyPlacesViewSet(mixins.ListModelMixin, GenericViewSet):
+class MyPlacesViewSet(mixins.ListModelMixin,
+                      GenericViewSet):
     """Only for own writer user places"""
-    permission_classes = [IsAuthenticated]
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
-    filterset_fields = ['home_page', 'writer_user', ]
-    search_fields = ['name', ]
+    filterset_fields = ['home_page', 'writer_user', 'categories']
+    search_fields = ['name', 'locations__country', 'locations__city', ]
     serializer_class = PlaceListSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Place.objects.filter(is_active=True, writer_user=self.request.user)
@@ -350,19 +324,15 @@ class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):
         return obj
 
 
-# class BookmarkViewSet(ReadOnlyModelViewSet):
-#     queryset = Bookmark.objects.all()
-#     serializer_class = BookmarkSerializer
-#     pagination_class = StandardResultsSetPagination
-#     permission_classes = [IsAuthenticatedOrReadOnly]
-#
-#     def get_queryset(self):
-#         return Bookmark.objects.filter(writer_user=self.request.user)
+class BookmarkedPlaceViewSet(mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
 
-    # def destroy(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     self.perform_destroy(instance)
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    queryset = Place.objects.all()
+    serializer_class = PlaceListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Place.objects.filter(bookmarked_users=self.request.user)
 
 
 class GroupViewSet(ModelViewSet):
@@ -456,7 +426,6 @@ class CustomUserViewSet(mixins.UpdateModelMixin,
             else:
                 user.subscribed_users.add(subscriber)
                 return Response({'subscribed_to': subscriber.email})
-
 
 # class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
 #     queryset = CustomUser.objects.all()
