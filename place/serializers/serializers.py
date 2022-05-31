@@ -26,7 +26,7 @@ class CustomUserImageSerializer(serializers.ModelSerializer):
 class CustomUserPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('name', 'last_name', 'age', 'gender', 'language', 'image',)
+        fields = ('name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', )
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
 
-        fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user')
+        fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user', 'image_social',)
 
     # def validate_password(self, value: str) -> str:
     #     """

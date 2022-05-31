@@ -195,7 +195,9 @@ class GroupAdmin(ModelAdmin):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image', 'subscribed_users',)
+    UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image',
+                                                                                 'subscribed_users',
+                                                                                 'image_social',)
     list_display = ('pk', 'email', 'username', 'is_active', 'is_staff')
     list_display_links = ('email', )
     inlines = [OwnedAchievementInline]
