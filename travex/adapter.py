@@ -9,9 +9,9 @@ logger = logging.getLogger('django')
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
         user = sociallogin.user
-        logger.warning(user)
+        logger.warning(dir(user))
         logger.warning('--------------------')
-        logger.warning(dir(sociallogin))
+        # logger.warning(dir(sociallogin))
         if user.id:
             return
         try:
