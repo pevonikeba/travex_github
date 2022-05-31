@@ -28,10 +28,10 @@ def get_choices_options(choices: tuple):
     return map(from_tuple_to_dict, choices)
 
 
-def get_model_options(Obj: models.Model, serializer):
+def get_model_options(Obj: models.Model, serializer, text_name_field='name'):
     def _transform_dict(obj):
         return {
-            "text": obj["name"],
+            "text": obj[text_name_field],
             "value": obj["id"],
         }
     options = serializer(data=Obj.objects.all(), many=True)
@@ -356,7 +356,7 @@ def get_plus_place():
             "placeholder": "Geographical feature",
             'title': 'Geographical feature',
             'field_type': FieldTypes.picker,
-            "options": get_model_options(GeographicalFeature, GeographicalFeatureSerializer),
+            "options": get_model_options(GeographicalFeature, GeographicalFeatureSerializer, '__str__'),
             'required': get_is_field_required(Place, 'geographical_feature'),
             # 'inputs': [
 

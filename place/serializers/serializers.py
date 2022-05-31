@@ -479,7 +479,7 @@ class ClimaticConditiommSerializer(ModelSerializer):
 class GeographicalFeatureSerializer(ModelSerializer):
     class Meta:
         model = GeographicalFeature
-        fields = '__all__'
+        fields = ('id', 'types_of_ecosystem', 'types_of_ecosystem_description', 'description', '__str__', )
 
 
 class UserPlaceRelationSerializer(ModelSerializer):
