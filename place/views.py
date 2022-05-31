@@ -261,7 +261,7 @@ class MyPlacesViewSet(mixins.ListModelMixin,
     """Only for own writer user places"""
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
-    filterset_fields = ['home_page', 'writer_user', 'categories']
+    filterset_fields = ['writer_user', 'categories']
     search_fields = ['name', 'locations__country', 'locations__city', ]
     serializer_class = PlaceListSerializer
     permission_classes = [IsAuthenticated]
