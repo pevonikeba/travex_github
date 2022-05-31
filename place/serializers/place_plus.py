@@ -349,19 +349,19 @@ def get_plus_place():
                 },
             ]
         },
-        {
-            'key': get_field_name(Place, 'geographical_feature'),
-            'header': 'Geographical feature',
-            'is_nested': False,
-            "placeholder": "Geographical feature",
-            'title': 'Geographical feature',
-            'field_type': FieldTypes.picker,
-            "options": get_model_options(GeographicalFeature, GeographicalFeatureSerializer, '__str__'),
-            'required': get_is_field_required(Place, 'geographical_feature'),
-            # 'inputs': [
-
-            # ]
-        }
+        # {
+        #     'key': get_field_name(Place, 'geographical_feature'),
+        #     'header': 'Geographical feature',
+        #     'is_nested': False,
+        #     "placeholder": "Geographical feature",
+        #     'title': 'Geographical feature',
+        #     'field_type': FieldTypes.picker,
+        #     "options": get_model_options(GeographicalFeature, GeographicalFeatureSerializer, '__str__'),
+        #     'required': get_is_field_required(Place, 'geographical_feature'),
+        #     # 'inputs': [
+        #
+        #     # ]
+        # }
 ]
 
 
