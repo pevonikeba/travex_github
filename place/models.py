@@ -131,6 +131,7 @@ class CustomUser(AbstractUser):
                                 options={'quality': 60},
                                 null=True, blank=True)
     image_thumb = Thumbnail(source='image')
+    image_social = models.CharField(max_length=512, null=True, blank=True)
     # image = models.ImageField(upload_to='images/custom_user/', null=True, blank=True)
     name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
@@ -8530,8 +8531,8 @@ class Transport(models.Model):
 
 
 class Safe(models.Model):
-    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="safes", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=False, default=None)
     how_dangerous = models.CharField(choices=HOW_DANGEROUS_CHOICES, max_length=255, blank=True)
     rating_danger = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
     description = models.TextField(blank=True, null=True)

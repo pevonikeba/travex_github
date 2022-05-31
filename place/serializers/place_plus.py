@@ -349,6 +349,28 @@ def get_plus_place():
                 },
             ]
         },
+        {
+            'key': None,
+            'header': 'Additional info',
+            'is_nested': False,
+            'inputs': [
+                {
+                    "key": get_field_name(Place, "nearest_airport"),
+                    "placeholder": "Nearest Airport",
+                    'title': 'Nearest Airport',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(Place, "nearest_airport"),
+
+                },
+                {
+                    'key': get_field_name(Place, "how_to_get_there"),
+                    "placeholder": "How To Get There",
+                    'title': "How To Get There",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(Place, "how_to_get_there"),
+                },
+            ]
+        },
         # {
         #     'key': get_field_name(Place, 'geographical_feature'),
         #     'header': 'Geographical feature',
@@ -414,21 +436,7 @@ nested = [
         "key": None,
         "is_nested": False,
         "inputs": [
-            {
-                "placeholder": "Nearest Airport",
-                'title': 'Nearest Airport',
-                "key": "nearest_airport",
-                'field_type': FieldTypes.char_field,
-                'required': False,
 
-            },
-            {
-                "placeholder": "How To Get There",
-                'title': "How To Get There",
-                'key': "how_to_get_there",
-                'field_type': FieldTypes.text_field,
-                'required': True,
-            },
         ]
     },
     {

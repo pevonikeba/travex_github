@@ -408,12 +408,21 @@ class CustomUserViewSetFromDjoser(UserViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class CustomUserViewSet(mixins.UpdateModelMixin,
+class CustomUserViewSet(mixins.RetrieveModelMixin,
+                        mixins.UpdateModelMixin,
                         viewsets.GenericViewSet):
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserPatchSerializer
     permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        update_user = CustomUser.objects.filter(pk=kwargs.get('pk')).first()
+        if update_user and request.user != update_user:
+            return Response({"Error": 'You are not valid user'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().update(request, args, kwargs)
+
 
     @action(detail=True, methods=['patch'])
     def add_or_delete_subscriber(self, request, pk=None):
