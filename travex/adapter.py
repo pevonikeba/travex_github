@@ -11,7 +11,7 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         user = sociallogin.user
         logger.warning(user)
         logger.warning('--------------------')
-        logger.warning(sociallogin)
+        logger.warning(sociallogin.extra_data)
         if user.id:
             return
         try:
