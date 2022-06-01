@@ -76,16 +76,6 @@ def get_social_account_brands(user):
     return {social_account_error: SocialAccountError.NO_ERROR}
 
 
-def create_section(obj: Place, key: str, icon_name: str, display_type: str, create_children):
-    return {
-        "title": key.capitalize(),
-        "key": key,
-        "icon_name": icon_name,
-        "display_type": display_type,
-        "children": map(create_children, getattr(obj, key).all()),
-    }
-
-
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 100
     page_size_query_param = 'page_size'

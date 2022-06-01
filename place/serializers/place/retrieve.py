@@ -6,7 +6,7 @@ from place.serializers.serializers import CustomUserSerializer
 from loguru import logger
 
 from place.serializers.place_nested import PlaceImageSerializer
-from place.utils.utils import create_section
+
 
 a = {
     "sections": [
@@ -191,6 +191,19 @@ class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
 
     def get_is_bookmarked(self, obj: Place):
         return self.is_bookmark_like(obj, 'bookmarked_users')
+
+
+def create_section(obj: Place, key: str, icon_name: str, display_type: str, create_children):
+    children = getattr(obj, key)
+    if not children.exists():
+        return {}
+    return {
+        "title": key.capitalize(),
+        "key": key,
+        "icon_name": icon_name,
+        "display_type": display_type,
+        "children": map(create_children, children.all()),
+    }
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
