@@ -315,7 +315,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 "title": 'General info',
                 "key": 'General info',
                 "icon_name": 'article',
-                "display_type": 'drop_down',
+                "display_type": '',
                 "children": [
                     {
                       'id': obj.pk,
