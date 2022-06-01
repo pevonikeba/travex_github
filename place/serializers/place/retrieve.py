@@ -1,4 +1,3 @@
-import pylab as p
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -318,30 +317,6 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def get_sections(self, obj: Place):
         return [
-            # {
-            #     "title": 'Info',
-            #     "key": 'info',
-            #     "icon_name": 'article',
-            #     "display_type": 'drop_down',
-            #     "children": [
-            #         {
-            #             'id': 1,
-            #             'title': 'General info',
-            #             'description': self.general_info_description(obj)
-            #         }
-            #     ],
-            # },
-            # {
-            #     'title': 'Civilization',
-            #     'key': 'Civilization',
-            #     'icon_name': 'article',
-            #     'display_type': '',
-            #     'children': [
-            #         {
-            #             'id': 1,
-            #         }
-            #     ]
-            # },
             create_section(
                 key="transports",
                 obj=obj,
