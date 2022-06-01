@@ -467,7 +467,7 @@ class PlaceSerializer(ModelSerializer):
 class ClimaticConditionSerializer(ModelSerializer):
     class Meta:
         model = ClimaticCondition
-        fields = '__all__'
+        fields = ('id', 'condition', 'climate', 'description', '__str__')
 
 
 class ClimaticConditiommSerializer(ModelSerializer):

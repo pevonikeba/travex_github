@@ -359,7 +359,7 @@ def get_plus_place():
                     "placeholder": 'Climatic condition',
                     'title': 'Climatic condition',
                     'field_type': FieldTypes.picker,
-                    "options": get_model_options(ClimaticCondition, ClimaticConditionSerializer),
+                    "options": get_model_options(ClimaticCondition, ClimaticConditionSerializer, '__str__'),
                     'required': get_is_field_required(Place, 'climatic_condition'),
                 },
                 {
@@ -367,7 +367,7 @@ def get_plus_place():
                     "placeholder": 'Geographical feature',
                     'title': 'Geographical feature',
                     'field_type': FieldTypes.picker,
-                    "options": get_model_options(GeographicalFeature, GeographicalFeatureSerializer),
+                    "options": get_model_options(GeographicalFeature, GeographicalFeatureSerializer, '__str__'),
                     'required': get_is_field_required(Place, 'geographical_feature'),
                 },
             ]
