@@ -311,6 +311,18 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def get_sections(self, obj: Place):
         return [
+            {
+                "title": 'General info',
+                "key": 'General info',
+                "icon_name": 'article',
+                "display_type": 'drop_down',
+                "children": [
+                    {
+                      'id': obj.pk,
+                      'title': obj.name,
+                    },
+                ],
+            },
             create_section(
                 key="transports",
                 obj=obj,
