@@ -318,19 +318,19 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def get_sections(self, obj: Place):
         return [
-            {
-                "title": 'Info',
-                "key": 'info',
-                "icon_name": 'article',
-                "display_type": 'drop_down',
-                "children": [
-                    {
-                        'id': 1,
-                        'title': 'General info',
-                        'description': self.general_info_description(obj)
-                    }
-                ],
-            },
+            # {
+            #     "title": 'Info',
+            #     "key": 'info',
+            #     "icon_name": 'article',
+            #     "display_type": 'drop_down',
+            #     "children": [
+            #         {
+            #             'id': 1,
+            #             'title': 'General info',
+            #             'description': self.general_info_description(obj)
+            #         }
+            #     ],
+            # },
             # {
             #     'title': 'Civilization',
             #     'key': 'Civilization',
