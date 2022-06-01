@@ -331,17 +331,17 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                     }
                 ],
             },
-            {
-                'title': 'Civilization',
-                'key': 'Civilization',
-                'icon_name': 'article',
-                'display_type': '',
-                'children': [
-                    {
-                        'id': 1,
-                    }
-                ]
-            },
+            # {
+            #     'title': 'Civilization',
+            #     'key': 'Civilization',
+            #     'icon_name': 'article',
+            #     'display_type': '',
+            #     'children': [
+            #         {
+            #             'id': 1,
+            #         }
+            #     ]
+            # },
             create_section(
                 key="transports",
                 obj=obj,
