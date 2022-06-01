@@ -1,7 +1,7 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
     PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm, GeographicalFeature
 from django.db import models
-from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer
+from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer
 from .place_nested import CategorySerializer
 
 from loguru import logger
@@ -351,6 +351,29 @@ def get_plus_place():
         },
         {
             'key': None,
+            'header': 'Climate and geography',
+            'is_nested': False,
+            'inputs': [
+                {
+                    "key": get_field_name(Place, 'climatic_condition'),
+                    "placeholder": 'Climatic condition',
+                    'title': 'Climatic condition',
+                    'field_type': FieldTypes.picker,
+                    "options": get_model_options(ClimaticCondition, ClimaticConditionSerializer),
+                    'required': get_is_field_required(Place, 'climatic_condition'),
+                },
+                {
+                    "key": get_field_name(Place, 'geographical_feature'),
+                    "placeholder": 'Geographical feature',
+                    'title': 'Geographical feature',
+                    'field_type': FieldTypes.picker,
+                    "options": get_model_options(GeographicalFeature, GeographicalFeatureSerializer),
+                    'required': get_is_field_required(Place, 'geographical_feature'),
+                },
+            ]
+        },
+        {
+            'key': None,
             'header': 'Additional info',
             'is_nested': False,
             'inputs': [
@@ -388,27 +411,27 @@ def get_plus_place():
 
 
 nested = [
-     {
-         "header": "Climate",
-         "key": None,
-         "is_nested": False,
-         "inputs": [
-             {
-                 "placeholder": "Climate",
-                 'title': 'Climate',
-                 'key': 'climatic_condition',
-                 'field_type': FieldTypes.picker,
-                 "options":  [
-                    {"text": 'Tropical', "value": 1, },
-                    {"text": 'Dry', "value": 1, },
-                    {"text": 'Mild', "value": 1, },
-                    {"text": 'Continental', "value": 1, },
-                    {"text": 'Polar', "value": 1, },
-                    ],
-                 'required': True,
-             },
-         ]
-     },
+     # {
+     #     "header": "Climate",
+     #     "key": None,
+     #     "is_nested": False,
+     #     "inputs": [
+     #         {
+     #             "placeholder": "Climate",
+     #             'title': 'Climate',
+     #             'key': 'climatic_condition',
+     #             'field_type': FieldTypes.picker,
+     #             "options":  [
+     #                {"text": 'Tropical', "value": 1, },
+     #                {"text": 'Dry', "value": 1, },
+     #                {"text": 'Mild', "value": 1, },
+     #                {"text": 'Continental', "value": 1, },
+     #                {"text": 'Polar', "value": 1, },
+     #                ],
+     #             'required': True,
+     #         },
+     #     ]
+     # },
     {
         "header": "Geographical Feature",
         'key': None,
