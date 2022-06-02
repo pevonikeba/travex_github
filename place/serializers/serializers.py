@@ -30,28 +30,28 @@ class FollowingSerializer(serializers.ModelSerializer):
 
 
 class CustomUserPatchSerializer(serializers.ModelSerializer):
-    following = FollowingSerializer(many=True, read_only=True)
+    followings = FollowingSerializer(many=True, read_only=True)
     followers = serializers.SerializerMethodField()
     following_amount = serializers.SerializerMethodField()
-    followers_amount = serializers.SerializerMethodField()
+    follower_amount = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', 'following',
-                  'followers', 'aaa', 'bbb', )
+        fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social',
+                  'followings', 'followers', 'following_amount', 'follower_amount', )
 
     def get_followers(self, obj):
-        followers = CustomUser.objects.filter(subscribed_users=obj)
+        followers = CustomUser.objects.filter(followings=obj)
         response = FollowingSerializer(followers,
                                        context={'request': self.context['request']},
                                        many=True).data
         return response
 
     def get_following_amount(self, obj: CustomUser):
-        return obj.following.count()
+        return obj.followings.count()
 
-    def get_followers_amount(self, obj: CustomUser):
-        return CustomUser.objects.filter(subscribed_users=obj).count()
+    def get_follower_amount(self, obj: CustomUser):
+        return CustomUser.objects.filter(followings=obj).count()
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
