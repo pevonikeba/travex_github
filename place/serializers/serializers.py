@@ -23,14 +23,14 @@ class CustomUserImageSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
-class SubscribedUserSerializer(serializers.ModelSerializer):
+class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', )
 
 
 class CustomUserPatchSerializer(serializers.ModelSerializer):
-    following = SubscribedUserSerializer(many=True, read_only=True)
+    following = FollowingSerializer(many=True, read_only=True)
     followers = serializers.SerializerMethodField()
     following_amount = serializers.SerializerMethodField()
     followers_amount = serializers.SerializerMethodField()
@@ -42,9 +42,9 @@ class CustomUserPatchSerializer(serializers.ModelSerializer):
 
     def get_followers(self, obj):
         followers = CustomUser.objects.filter(subscribed_users=obj)
-        response = SubscribedUserSerializer(followers,
-                                            context={'request': self.context['request']},
-                                            many=True).data
+        response = FollowingSerializer(followers,
+                                       context={'request': self.context['request']},
+                                       many=True).data
         return response
 
     def get_following_amount(self, obj: CustomUser):
