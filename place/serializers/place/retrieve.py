@@ -216,7 +216,7 @@ class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
 def create_section_nested(obj: Place, key: str, icon_name: str, display_type: str, create_children):
     children = getattr(obj, key)
     if not children.exists():
-        return {}
+        return None
     return {
         "title": key.capitalize(),
         "key": key,
