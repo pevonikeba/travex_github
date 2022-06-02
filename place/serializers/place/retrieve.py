@@ -407,8 +407,15 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             'description': description
         }
 
+    def check_sections(self, sections):
+        checked_sections = []
+        for section in sections:
+            if section is not None:
+                checked_sections.append(section)
+        return checked_sections
+
     def get_sections(self, obj: Place):
-        return [
+        return self.check_sections([
             create_section_simple(
                   title='Info',
                   key='Info',
@@ -491,6 +498,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 )
             ),
         ]
+        )
 
 '''
 {
