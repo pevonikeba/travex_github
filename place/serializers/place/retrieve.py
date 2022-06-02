@@ -200,7 +200,6 @@ class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
 
     def is_bookmark_like(self, obj, attr_name):
         request = self.context.get('request')
-        logger.info(request)
         if getattr(obj, attr_name).filter(pk=request.user.id).exists():
             return True
         return False
@@ -209,7 +208,7 @@ class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
         return self.is_bookmark_like(obj, 'bookmarked_users')
 
 
-def create_section(obj: Place, key: str, icon_name: str, display_type: str, create_children):
+def create_section_nested(obj: Place, key: str, icon_name: str, display_type: str, create_children):
     children = getattr(obj, key)
     if not children.exists():
         return {}
@@ -220,6 +219,22 @@ def create_section(obj: Place, key: str, icon_name: str, display_type: str, crea
         "display_type": display_type,
         "children": map(create_children, children.all()),
     }
+
+
+def create_section_simple(title, key, icon_name, display_type, children):
+    has_description = False
+    for child in children:
+        if child['description'].strip() != '':
+            has_description = True
+    if not has_description:
+        return {}
+    return {
+        "title": title,
+        "key": key,
+        "icon_name": icon_name,
+        "display_type": display_type,
+        "children": children,
+    },
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
@@ -372,91 +387,105 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         how_to_get_there = self.create_p_tag('How to get there', place.how_to_get_there)
         return f'{how_to_get_there}'
 
+    def check_children(self, children):
+        checked_children = []
+        for child in children:
+            if child is not None:
+                checked_children.append(child)
+        return checked_children
+
+    def create_child(self, id: int, title: str, description: str):
+        if not description.strip():
+            return None
+        return {
+            'id': id,
+            'title': title,
+            'description': description
+        }
 
     def get_sections(self, obj: Place):
         return [
-            {
-                "title": 'Info',
-                "key": 'Info',
-                "icon_name": IconNames.article,
-                "display_type": 'drop_down',
-                "children": [
-                    {
-                        'id': 1,
-                        'title': 'General info',
-                        'description': self.general_info_description(obj)
-                    },
-                    {
-                        'id': 2,
-                        'title': 'Civilization',
-                        'description': self.civilization_description(obj)
-                    },
-                ],
-            },
-            create_section(
+            create_section_simple(
+                  title='Info',
+                  key='Info',
+                  icon_name=IconNames.article,
+                  display_type='drop_down',
+                  children=self.check_children(
+                    [
+                        self.create_child(id=1,
+                                          title='General info',
+                                          description=self.general_info_description(obj)
+                                          ),
+                        self.create_child(id=2,
+                                          title='Civilization',
+                                          description=self.civilization_description(obj)
+                                          ),
+                    ]
+                )
+            ),
+            create_section_nested(
                 key="transports",
                 obj=obj,
                 icon_name=IconNames.directions,
                 display_type="drop_down",
                 create_children=self.transport_children,
             ),
-            create_section(
+            create_section_nested(
                 key="must_sees",
                 obj=obj,
                 icon_name=IconNames.article,
                 display_type="drop_down",
                 create_children=self.must_see_children,
             ),
-            create_section(
+            create_section_nested(
                 key="accommodation_options",
                 obj=obj,
                 icon_name=IconNames.bed,
                 display_type="drop_down",
                 create_children=self.accommodation_option_children,
             ),
-            create_section(
+            create_section_nested(
                 key="flora_faunas",
                 obj=obj,
                 icon_name=IconNames.article,
                 display_type="grid",
                 create_children=self.flora_fauna_children,
             ),
-            {
-                "title": 'Climate and geography',
-                "key": 'Climate and geography',
-                "icon_name": IconNames.article,
-                "display_type": 'drop_down',
-                "children": [
-                    {
-                        'id': 1,
-                        'title': 'Climatic condition',
-                        'description': self.climatic_condition_description(obj),
-                    },
-                    {
-                        'id': 2,
-                        'title': 'Geographical feature',
-                        'description': self.geographical_feature_description(obj),
-                    },
-                ],
-            },
-            {
-                "title": 'Additional info',
-                "key": 'Additional info',
-                "icon_name": IconNames.article,
-                "display_type": 'drop_down',
-                "children": [
-                    {
-                        'id': 1,
-                        'title': 'Nearest Airport',
-                        'description': self.nearest_airport_description(obj),
-                    },
-                    {
-                        'id': 2,
-                        'title': '',
-                        'description': self.how_to_get_there_description(obj),
-                    },
-                ],
-            },
+            create_section_simple(
+                title='Climate and geography',
+                key='Climate and geography',
+                icon_name=IconNames.article,
+                display_type='drop_down',
+                children=self.check_children(
+                    [
+                        self.create_child(id=1,
+                                          title='Climatic condition',
+                                          description=self.climatic_condition_description(obj),
+                                          ),
+                        self.create_child(id=2,
+                                          title='Geographical feature',
+                                          description=self.geographical_feature_description(obj)
+                                          ),
+                    ]
+                ),
+            ),
+            create_section_simple(
+                title='Additional info',
+                key='Additional info',
+                icon_name=IconNames.article,
+                display_type='drop_down',
+                children=self.check_children(
+                    [
+                        self.create_child(id=1,
+                                          title='Nearest Airport',
+                                          description=self.nearest_airport_description(obj),
+                                          ),
+                        self.create_child(id=2,
+                                          title='How to get there',
+                                          description=self.how_to_get_there_description(obj)),
+                    ]
+                )
+            ),
         ]
 
 '''
