@@ -192,6 +192,7 @@ class IconNames:
 
 
 class DisplayTypes:
+    simple = 'simple'
     drop_down = 'drop_down'
     grid = 'grid'
 

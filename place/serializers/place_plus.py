@@ -1,5 +1,6 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
-    PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm, GeographicalFeature
+    PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm, GeographicalFeature, \
+    Cuisine, Entertainment, NaturalPhenomena
 from django.db import models
 from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer
 from .place_nested import CategorySerializer
@@ -193,6 +194,94 @@ def get_plus_place():
                 'field_type': FieldTypes.text_field,
                 'required': get_is_field_required(Place, 'pay_online_or_by_card'),
             },
+        ]
+    },
+    {
+      'key': get_field_name(Place, 'cuisines'),
+      'header': 'Cuisines',
+      'is_nested': True,
+      'inputs': [
+          {
+              'key': get_field_name(Cuisine, 'name'),
+              'placeholder': 'Cuisine name',
+              'title': 'Cuisine name',
+              'field_type': FieldTypes.text_field,
+              'required': get_is_field_required(Cuisine, 'name')
+          },
+          {
+            'key': get_field_name(Cuisine, 'price'),
+            'placeholder': 'Cuisine price',
+            'title': 'Cuisine price',
+            'field_type': FieldTypes.float_field,
+            'required': get_is_field_required(Cuisine, 'price')
+          },
+          {
+              'key': get_field_name(Cuisine, 'description'),
+              'placeholder': 'Cuisine description',
+              'title': 'Cuisine description',
+              'field_type': FieldTypes.text_field,
+              'required': get_is_field_required(Cuisine, 'description')
+          },
+          {
+              'key': get_field_name(Cuisine, 'image'),
+              'title': "Cuisine Image",
+              'field_type': FieldTypes.image_field,
+              'required': get_is_field_required(Cuisine, 'image'),
+          }
+      ]
+    },
+    {
+        "key": get_field_name(Place, "entertainments"),
+        "header": "Entertainments",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(Entertainment, "name"),
+                "placeholder": "Entertainment name",
+                'title': 'Entertainment name',
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Entertainment, 'name'),
+            },
+            {
+                'key': get_field_name(Entertainment, "description"),
+                "placeholder": "Entertainment Description",
+                'title': "Entertainment Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Entertainment, "description"),
+            },
+            {
+                'key': get_field_name(Entertainment, 'image'),
+                'title': "Entertainment Image",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(Entertainment, 'image'),
+            }
+        ]
+    },
+    {
+        "key": get_field_name(Place, "natural_phenomenas"),
+        "header": "Natural Phenomena",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(NaturalPhenomena, "name"),
+                "placeholder": "Natural Phenomena name",
+                'title': 'Natural Phenomena name',
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(NaturalPhenomena, 'name'),
+            },
+            {
+                'key': get_field_name(NaturalPhenomena, "description"),
+                "placeholder": "Natural Phenomena Description",
+                'title': "Natural Phenomena Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(NaturalPhenomena, "description"),
+            },
+            {
+                'key': get_field_name(NaturalPhenomena, 'image'),
+                'title': "Natural Phenomena Image",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(NaturalPhenomena, 'image'),
+            }
         ]
     },
     {

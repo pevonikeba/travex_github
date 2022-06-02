@@ -8603,8 +8603,8 @@ class AccommodationOption(models.Model):
 
 
 class UniquenessPlace(models.Model):
-    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="uniqueness_places", on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='images/uniqueness_places/', null=True, blank=True)
 
@@ -8613,8 +8613,8 @@ class UniquenessPlace(models.Model):
 
 
 class MustSee(models.Model):
-    name = models.CharField(max_length=255)
     place = models.ForeignKey(Place, related_name="must_sees", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='images/must_sees/', null=True, blank=True)
 
@@ -8632,8 +8632,8 @@ class Vibe(models.Model):
 
 
 class WhereToTakeAPicture(models.Model):
-    name = models.CharField(max_length=255, blank=False, default=None)
     place = models.ForeignKey(Place, related_name="where_to_take_a_pictures", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=False, default=None)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='images/where_to_take_a_pictures/', null=True, blank=True)
 

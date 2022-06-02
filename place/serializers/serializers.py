@@ -30,15 +30,16 @@ class FollowingSerializer(serializers.ModelSerializer):
 
 
 class CustomUserPatchSerializer(serializers.ModelSerializer):
-    followings = FollowingSerializer(many=True, read_only=True)
-    followers = serializers.SerializerMethodField()
+    # followings = FollowingSerializer(many=True, read_only=True)
+    # followers = serializers.SerializerMethodField()
     following_amount = serializers.SerializerMethodField()
     follower_amount = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
         fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social',
-                  'followings', 'followers', 'following_amount', 'follower_amount', )
+                  # 'followings', 'followers',
+                  'following_amount', 'follower_amount', )
 
     def get_followers(self, obj):
         followers = CustomUser.objects.filter(followings=obj)
