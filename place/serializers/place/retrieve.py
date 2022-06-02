@@ -1,4 +1,4 @@
-from drf_extra_fields.fields import Base64ImageField
+# from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna
@@ -255,9 +255,9 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         return self.context.get('request').build_absolute_uri(url)
 
     def create_p_tag(self, key: str, value: str):
-        if value is None:
+        if not value or value == 'None':
             return ""
-        return f"<p>{key}: {value}</p>"
+        return f" <p>{key}: {value}</p>"
 
     def create_img_tag(self, url: str):
         if url is None:
@@ -315,8 +315,38 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         p_description = self.create_p_tag('Description', place.description)
         return f'{p_name} {p_nickname} {p_description}'
 
+    def civilization_description(self, place: Place):
+        logger.info(place.population)
+        p_population = self.create_p_tag('Population', str(place.population))
+        p_type_of_people_around = self.create_p_tag('Type of people around', place.type_of_people_around)
+        p_turist_rating = self.create_p_tag('Turist rating', place.turist_rating)
+        p_nation = self.create_p_tag('Nation', place.nation)
+        p_language = self.create_p_tag('Language', place.language)
+        p_culture = self.create_p_tag('Culture', place.culture)
+
+        return f'{p_population}{p_type_of_people_around}{p_turist_rating}{p_nation}{p_language}' \
+               f'{p_culture}'
+
     def get_sections(self, obj: Place):
         return [
+            {
+                "title": 'Info',
+                "key": 'Info',
+                "icon_name": 'article',
+                "display_type": 'drop_down',
+                "children": [
+                    {
+                        'id': 1,
+                        'title': 'General info',
+                        'description': self.general_info_description(obj)
+                    },
+                    {
+                        'id': 2,
+                        'title': 'Civilization',
+                        'description': self.civilization_description(obj)
+                    },
+                ],
+            },
             create_section(
                 key="transports",
                 obj=obj,
