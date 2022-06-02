@@ -23,10 +23,28 @@ class CustomUserImageSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
-class CustomUserPatchSerializer(serializers.ModelSerializer):
+class SubscribedUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', )
+        fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', )
+
+
+class CustomUserPatchSerializer(serializers.ModelSerializer):
+    subscribed_users = SubscribedUserSerializer(many=True, read_only=True)
+    subscribed_to_me_users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', 'subscribed_users',
+                  'subscribed_to_me_users', )
+
+    def get_subscribed_to_me_users(self, obj):
+        subscribed_to_me_users = CustomUser.objects.filter(subscribed_users=obj)
+        response = SubscribedUserSerializer(subscribed_to_me_users,
+                                            context={'request': self.context['request']},
+                                            many=True).data
+
+        return response
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
