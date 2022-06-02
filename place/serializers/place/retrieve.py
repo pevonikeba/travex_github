@@ -191,6 +191,11 @@ class IconNames:
     surfing = 'surfing'
 
 
+class DisplayTypes:
+    drop_down = 'drop_down'
+    grid = 'grid'
+
+
 class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
     is_bookmarked = serializers.SerializerMethodField()
 
@@ -234,7 +239,7 @@ def create_section_simple(title, key, icon_name, display_type, children):
         "icon_name": icon_name,
         "display_type": display_type,
         "children": children,
-    },
+    }
 
 
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
@@ -407,10 +412,11 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             'description': description
         }
 
-    def check_sections(self, sections):
+    def check_sections(self, sections: list) -> list:
         checked_sections = []
         for section in sections:
             if section is not None:
+                logger.info(type(section))
                 checked_sections.append(section)
         return checked_sections
 
@@ -420,7 +426,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                   title='Info',
                   key='Info',
                   icon_name=IconNames.article,
-                  display_type='drop_down',
+                  display_type=DisplayTypes.drop_down,
                   children=self.check_children(
                     [
                         self.create_child(id=1,
@@ -438,35 +444,35 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 key="transports",
                 obj=obj,
                 icon_name=IconNames.directions,
-                display_type="drop_down",
+                display_type=DisplayTypes.drop_down,
                 create_children=self.transport_children,
             ),
             create_section_nested(
                 key="must_sees",
                 obj=obj,
                 icon_name=IconNames.article,
-                display_type="drop_down",
+                display_type=DisplayTypes.drop_down,
                 create_children=self.must_see_children,
             ),
             create_section_nested(
                 key="accommodation_options",
                 obj=obj,
                 icon_name=IconNames.bed,
-                display_type="drop_down",
+                display_type=DisplayTypes.drop_down,
                 create_children=self.accommodation_option_children,
             ),
             create_section_nested(
                 key="flora_faunas",
                 obj=obj,
                 icon_name=IconNames.article,
-                display_type="grid",
+                display_type=DisplayTypes.grid,
                 create_children=self.flora_fauna_children,
             ),
             create_section_simple(
                 title='Climate and geography',
                 key='Climate and geography',
                 icon_name=IconNames.article,
-                display_type='drop_down',
+                display_type=DisplayTypes.drop_down,
                 children=self.check_children(
                     [
                         self.create_child(id=1,
@@ -484,7 +490,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 title='Additional info',
                 key='Additional info',
                 icon_name=IconNames.article,
-                display_type='drop_down',
+                display_type=DisplayTypes.drop_down,
                 children=self.check_children(
                     [
                         self.create_child(id=1,
