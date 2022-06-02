@@ -227,7 +227,7 @@ def create_section_simple(title, key, icon_name, display_type, children):
         if child['description'].strip() != '':
             has_description = True
     if not has_description:
-        return {}
+        return None
     return {
         "title": title,
         "key": key,
