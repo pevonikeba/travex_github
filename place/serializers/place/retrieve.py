@@ -364,6 +364,8 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def climatic_condition_description(self, place: Place):
         climatic_condition = place.climatic_condition
+        if not climatic_condition:
+            return ''
         condition = self.create_p_tag('Condition', climatic_condition.condition)
         climate = self.create_p_tag('Climate', climatic_condition.climate)
         description = self.create_p_tag('Description', climatic_condition.description)
@@ -372,6 +374,8 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def geographical_feature_description(self, place: Place):
         geographical_feature = place.geographical_feature
+        if not geographical_feature:
+            return ''
         types_of_ecosystem = self.create_p_tag('Types of ecosystem', geographical_feature.types_of_ecosystem)
         types_of_ecosystem_description = self.create_p_tag('Types of ecosystem description',
                                                            geographical_feature.types_of_ecosystem_description)
