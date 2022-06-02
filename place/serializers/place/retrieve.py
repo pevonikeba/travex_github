@@ -174,6 +174,22 @@ a = {
 #         model = Transport
 #         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image',)
 
+class IconNames:
+    article = 'article'
+    bed = 'bed'
+    people = 'people'
+    cloud = 'cloud'
+    restaurant_menu = 'restaurant_menu'
+    attractions_rounded = 'attractions_rounded'
+    grass = 'grass'
+    done = 'done'
+    star = 'star'
+    lock = 'lock'
+    terrain = 'terrain'
+    directions = 'directions'
+    camera = 'camera'
+    surfing = 'surfing'
+
 
 class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
     is_bookmarked = serializers.SerializerMethodField()
@@ -257,7 +273,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
     def create_p_tag(self, key: str, value: str):
         if not value or value == 'None':
             return ""
-        return f" <p>{key}: {value}</p>"
+        return f"<p>{key}: {value}</p>"
 
     def create_img_tag(self, url: str):
         if url is None:
@@ -310,29 +326,59 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         }
 
     def general_info_description(self, place: Place):
-        p_name = self.create_p_tag('Name', place.name)
-        p_nickname = self.create_p_tag('Nickname', place.nickname)
-        p_description = self.create_p_tag('Description', place.description)
-        return f'{p_name} {p_nickname} {p_description}'
+        name = self.create_p_tag('Name', place.name)
+        nickname = self.create_p_tag('Nickname', place.nickname)
+        description = self.create_p_tag('Description', place.description)
+        return f'{name}{nickname}{description}'
 
     def civilization_description(self, place: Place):
-        logger.info(place.population)
-        p_population = self.create_p_tag('Population', str(place.population))
-        p_type_of_people_around = self.create_p_tag('Type of people around', place.type_of_people_around)
-        p_turist_rating = self.create_p_tag('Turist rating', place.turist_rating)
-        p_nation = self.create_p_tag('Nation', place.nation)
-        p_language = self.create_p_tag('Language', place.language)
-        p_culture = self.create_p_tag('Culture', place.culture)
+        population = self.create_p_tag('Population', str(place.population))
+        type_of_people_around = self.create_p_tag('Type of people around', place.type_of_people_around)
+        turist_rating = self.create_p_tag('Turist rating', place.turist_rating)
+        nation = self.create_p_tag('Nation', place.nation)
+        language = self.create_p_tag('Language', place.language)
+        culture = self.create_p_tag('Culture', place.culture)
+        currency = self.create_p_tag('Currency', place.currency)
+        currency_buying_advice = self.create_p_tag('Currency buying advice', place.currency_buying_advice)
+        simcards = self.create_p_tag('Simcards', place.simcards)
+        internet = self.create_p_tag('Internet', place.internet)
+        pay_online_or_by_card = self.create_p_tag('Pay online or by card', place.pay_online_or_by_card)
 
-        return f'{p_population}{p_type_of_people_around}{p_turist_rating}{p_nation}{p_language}' \
-               f'{p_culture}'
+        return f'{population}{type_of_people_around}{turist_rating}{nation}{language}' \
+               f'{culture}{currency}{currency_buying_advice}{simcards}{internet}{pay_online_or_by_card}'
+
+    def climatic_condition_description(self, place: Place):
+        climatic_condition = place.climatic_condition
+        condition = self.create_p_tag('Condition', climatic_condition.condition)
+        climate = self.create_p_tag('Climate', climatic_condition.climate)
+        description = self.create_p_tag('Description', climatic_condition.description)
+
+        return f'{condition}{climate}{description}'
+
+    def geographical_feature_description(self, place: Place):
+        geographical_feature = place.geographical_feature
+        types_of_ecosystem = self.create_p_tag('Types of ecosystem', geographical_feature.types_of_ecosystem)
+        types_of_ecosystem_description = self.create_p_tag('Types of ecosystem description',
+                                                           geographical_feature.types_of_ecosystem_description)
+        description = self.create_p_tag('Description', geographical_feature.description)
+
+        return f'{types_of_ecosystem}{types_of_ecosystem_description}{description}'
+
+    def nearest_airport_description(self, place: Place):
+        nearest_airport = self.create_p_tag('Nearest airport', place.nearest_airport)
+        return f'{nearest_airport}'
+
+    def how_to_get_there_description(self, place: Place):
+        how_to_get_there = self.create_p_tag('How to get there', place.how_to_get_there)
+        return f'{how_to_get_there}'
+
 
     def get_sections(self, obj: Place):
         return [
             {
                 "title": 'Info',
                 "key": 'Info',
-                "icon_name": 'article',
+                "icon_name": IconNames.article,
                 "display_type": 'drop_down',
                 "children": [
                     {
@@ -350,30 +396,86 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section(
                 key="transports",
                 obj=obj,
-                icon_name="directions",
+                icon_name=IconNames.directions,
                 display_type="drop_down",
                 create_children=self.transport_children,
             ),
             create_section(
-                key="accommodation_options",
-                obj=obj,
-                icon_name="bed",
-                display_type="drop_down",
-                create_children=self.accommodation_option_children,
-            ),
-            create_section(
                 key="must_sees",
                 obj=obj,
-                icon_name="article",
+                icon_name=IconNames.article,
                 display_type="drop_down",
                 create_children=self.must_see_children,
             ),
             create_section(
+                key="accommodation_options",
+                obj=obj,
+                icon_name=IconNames.bed,
+                display_type="drop_down",
+                create_children=self.accommodation_option_children,
+            ),
+            create_section(
                 key="flora_faunas",
                 obj=obj,
-                icon_name="article",
+                icon_name=IconNames.article,
                 display_type="grid",
                 create_children=self.flora_fauna_children,
             ),
+            {
+                "title": 'Climate and geography',
+                "key": 'Climate and geography',
+                "icon_name": IconNames.article,
+                "display_type": 'drop_down',
+                "children": [
+                    {
+                        'id': 1,
+                        'title': 'Climatic condition',
+                        'description': self.climatic_condition_description(obj),
+                    },
+                    {
+                        'id': 2,
+                        'title': 'Geographical feature',
+                        'description': self.geographical_feature_description(obj),
+                    },
+                ],
+            },
+            {
+                "title": 'Additional info',
+                "key": 'Additional info',
+                "icon_name": IconNames.article,
+                "display_type": 'drop_down',
+                "children": [
+                    {
+                        'id': 1,
+                        'title': 'Nearest Airport',
+                        'description': self.nearest_airport_description(obj),
+                    },
+                    {
+                        'id': 2,
+                        'title': '',
+                        'description': self.how_to_get_there_description(obj),
+                    },
+                ],
+            },
         ]
 
+'''
+{
+    "title": '',
+    "key": '',
+    "icon_name": IconNames.,
+    "display_type": '',
+    "children": [
+        {
+            'id': 1,
+            'title': '',
+            'description': "",
+        },
+        {
+            'id': 2,
+            'title': '',
+            'description': "",
+        },
+    ],
+},
+'''

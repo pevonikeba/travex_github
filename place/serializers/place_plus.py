@@ -320,35 +320,35 @@ def get_plus_place():
                 }
             ]
         },
-        {
-            "key": get_field_name(Place, 'climatic_conditiomm'),
-            "header": "Climate",
-            "is_nested": False,
-            "inputs": [
-                {
-                    "key": get_field_name(ClimaticConditiomm, 'condition'),
-                    "placeholder": 'Condition',
-                    'title': 'Condition',
-                    'field_type': FieldTypes.text_field,
-                    'required': get_is_field_required(ClimaticConditiomm, 'condition'),
-                },
-                {
-                    "key": get_field_name(ClimaticConditiomm, 'climate'),
-                    "placeholder": "Climate",
-                    'title': "Climate",
-                    'field_type': FieldTypes.picker,
-                    "options": get_choices_options(CLIMATE_CHOICES),
-                    'required': get_is_field_required(ClimaticConditiomm, 'climate'),
-                },
-                {
-                    'key': get_field_name(ClimaticConditiomm, 'description'),
-                    "placeholder": 'Description',
-                    'title': "Description",
-                    'field_type': FieldTypes.text_field,
-                    'required': get_is_field_required(ClimaticConditiomm, 'description'),
-                },
-            ]
-        },
+        # {
+        #     "key": get_field_name(Place, 'climatic_conditiomm'),
+        #     "header": "Climate",
+        #     "is_nested": False,
+        #     "inputs": [
+        #         {
+        #             "key": get_field_name(ClimaticConditiomm, 'condition'),
+        #             "placeholder": 'Condition',
+        #             'title': 'Condition',
+        #             'field_type': FieldTypes.text_field,
+        #             'required': get_is_field_required(ClimaticConditiomm, 'condition'),
+        #         },
+        #         {
+        #             "key": get_field_name(ClimaticConditiomm, 'climate'),
+        #             "placeholder": "Climate",
+        #             'title': "Climate",
+        #             'field_type': FieldTypes.picker,
+        #             "options": get_choices_options(CLIMATE_CHOICES),
+        #             'required': get_is_field_required(ClimaticConditiomm, 'climate'),
+        #         },
+        #         {
+        #             'key': get_field_name(ClimaticConditiomm, 'description'),
+        #             "placeholder": 'Description',
+        #             'title': "Description",
+        #             'field_type': FieldTypes.text_field,
+        #             'required': get_is_field_required(ClimaticConditiomm, 'description'),
+        #         },
+        #     ]
+        # },
         {
             'key': None,
             'header': 'Climate and geography',
