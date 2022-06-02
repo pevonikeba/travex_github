@@ -8262,7 +8262,7 @@ class CustomUser(AbstractUser):
 
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, null=True, blank=True)
     language = models.CharField(max_length=8, choices=LANGUAGES, null=True, blank=True)
-    subscribed_users = models.ManyToManyField('self', blank=True, symmetrical=False)
+    following = models.ManyToManyField('self', blank=True, symmetrical=False) # following - mine, followers - is who to me
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['is_active', 'username']
