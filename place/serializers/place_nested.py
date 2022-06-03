@@ -3,11 +3,46 @@ from imagekit.cachefiles import ImageCacheFile
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from place.models import Transport, PlaceImage, MustSee, AccommodationOption, Category, FloraFauna
+from place.models import Transport, PlaceImage, MustSee, AccommodationOption, Category, FloraFauna, Cuisine, \
+    Entertainment, NaturalPhenomena
+
+
+class CuisineSerializer(ModelSerializer):
+    # image = Base64ImageField()  # From DRF Extra Fields
+    # name = TypeCuisineSerializer(many=True, required=False, read_only=True)
+    # name = serializers.CharField(source='name.type')
+
+    class Meta:
+        model = Cuisine
+        fields = [field.name for field in model._meta.fields]
+
+    # def create(self, validated_data):
+    #     # name_data = validated_data.pop('name')
+    #     image = validated_data.pop('image')
+    #     data = validated_data.pop('data')
+    #
+    #     cuisine = Cuisine.objects.create(data=data, image=image)
+    #
+    #     # cuisine.name.set(name_data)
+    #
+    #     return cuisine
+
+
+class EntertainmentSerializer(ModelSerializer):
+    class Meta:
+        model = Entertainment
+        fields = [field.name for field in model._meta.fields]
+
+
+class NaturalPhenomenaSerializer(ModelSerializer):
+    # image = Base64ImageField(Base64ImageField)  # From DRF Extra Fields
+
+    class Meta:
+        model = NaturalPhenomena
+        fields = [field.name for field in model._meta.fields]
 
 
 class TransportSerializer(serializers.ModelSerializer):
-
     # image = Base64ImageField(required=False)
 
     class Meta:

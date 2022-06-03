@@ -14,7 +14,8 @@ from place.models import Place, Group, PlaceImage, ClimaticCondition, \
     ClimaticConditiomm
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
-    AccommodationOptionSerializer, FloraFaunaSerializer
+    AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
+    NaturalPhenomenaSerializer
 
 
 class CustomUserImageSerializer(serializers.ModelSerializer):
@@ -153,57 +154,13 @@ class SafeSerializer(ModelSerializer):
 class TypeCuisineSerializer(ModelSerializer):
     class Meta:
         model = TypeCuisine
-        fields = ('id', 'type',)
-
-class CuisineSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-    # name = TypeCuisineSerializer(many=True, required=False, read_only=True)
-    name = serializers.CharField(source='name.type')
+        fields = ('id', 'name',)
 
 
+class TypeTransportSerializer(ModelSerializer):
     class Meta:
-        model = Cuisine
-        fields = ('id', 'name', 'description', 'image', 'price',)
-
-    def create(self, validated_data):
-        # name_data = validated_data.pop('name')
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        cuisine = Cuisine.objects.create(data=data, image=image)
-
-        # cuisine.name.set(name_data)
-
-        return cuisine
-
-
-
-class EntertainmentSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = Entertainment
-        fields = ('id', 'name', 'description', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return Entertainment.objects.create(data=data, image=image)
-
-
-class NaturalPhenomenaSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = NaturalPhenomena
-        fields = ('id', 'name', 'description', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return NaturalPhenomena.objects.create(data=data, image=image)
+        model = TypeTransport
+        fields = ('id', 'name',)
 
 
 class UniquenessPlaceSerializer(ModelSerializer):
@@ -267,10 +224,7 @@ class PracticalInformationSerializer(ModelSerializer):
         fields = ('id', 'description',)
 
 
-class TypeTransportSerializer(ModelSerializer):
-    class Meta:
-        model = TypeTransport
-        fields = ('id', 'name',)
+
 
 
 # class TransportSerializer(ModelSerializer):

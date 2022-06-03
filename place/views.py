@@ -20,7 +20,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelV
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
-    Location, Bookmark, ClimaticConditiomm
+    Location, Bookmark, ClimaticConditiomm, Cuisine, Entertainment, NaturalPhenomena
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkLikeSerializer
@@ -31,8 +31,8 @@ from place.serializers.serializers import PlaceSerializer, GroupSerializer, Clim
     LocationSerializer, BookmarkSerializer, ClimaticConditiommSerializer, CustomUserImageSerializer, \
     CustomUserPatchSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
-    AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer
-
+    AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
+    NaturalPhenomenaSerializer
 
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
@@ -124,6 +124,21 @@ class PlaceNestedViewSet(DestroyWithPayloadMixin, ModelViewSet):
 class PlaceImageViewSet(PlaceNestedViewSet):
     queryset = PlaceImage.objects.all()
     serializer_class = PlaceImageSerializer
+
+
+class CuisineViewSet(PlaceNestedViewSet):
+    queryset = Cuisine.objects.all()
+    serializer_class = CuisineSerializer
+
+
+class EntertainmentViewSet(PlaceNestedViewSet):
+    queryset = Entertainment.objects.all()
+    serializer_class = EntertainmentSerializer
+
+
+class NaturalPhenomenaViewSet(PlaceNestedViewSet):
+    queryset = NaturalPhenomena.objects.all()
+    serializer_class = NaturalPhenomenaSerializer
 
 
 class TransportViewSet(PlaceNestedViewSet):

@@ -1,7 +1,10 @@
 # from drf_extra_fields.fields import Base64ImageField
+from typing import List
+
 from rest_framework import serializers
 
-from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna
+from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna, Cuisine, Entertainment, \
+    NaturalPhenomena
 from place.serializers.serializers import CustomUserSerializer
 from loguru import logger
 
@@ -214,12 +217,13 @@ class PlaceOnAddDeleteBookmarkLikeSerializer(serializers.ModelSerializer):
         return self.is_bookmark_like(obj, 'bookmarked_users')
 
 
-def create_section_nested(obj: Place, key: str, icon_name: str, display_type: str, create_children):
+def create_section_nested(title: str, key: str, icon_name: str, display_type: str,
+                          obj: Place, create_children) -> dict or None:
     children = getattr(obj, key)
     if not children.exists():
         return None
     return {
-        "title": key.capitalize(),
+        "title": title,
         "key": key,
         "icon_name": icon_name,
         "display_type": display_type,
@@ -227,7 +231,7 @@ def create_section_nested(obj: Place, key: str, icon_name: str, display_type: st
     }
 
 
-def create_section_simple(title, key, icon_name, display_type, children):
+def create_section_simple(title, key, icon_name, display_type, children) -> dict or None:
     has_description = False
     for child in children:
         if child['description'].strip() != '':
@@ -303,6 +307,39 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         return f"<img src={full_img_url}/>"
 
     # def place_images_children(self, place_image: PlaceImage):
+
+    def cuisine_children(self, cuisine: Cuisine):
+        img = self.create_img_tag(cuisine.image.url) if cuisine.image else ""
+        price = self.create_p_tag('Price', cuisine.price)
+        description = self.create_p_tag('Description', cuisine.description)
+        return {
+            'id': cuisine.pk,
+            'title': cuisine.type_cuisine.name,
+            'description': f'{img}{price}{description}',
+            'image': None,
+        }
+
+    def entertainment_children(self, entertainment: Entertainment):
+        img = self.create_img_tag(entertainment.image.url) if entertainment.image else ""
+        name = self.create_p_tag('Name', entertainment.name)
+        description = self.create_p_tag('Description', entertainment.description)
+        return {
+            'id': entertainment.pk,
+            'title': entertainment.name,
+            'description': f'{img}{name}{description}',
+            'image': None,
+        }
+
+    def natural_phenomena_children(self, np: NaturalPhenomena):
+        img = self.create_img_tag(np.image.url) if np.image else ""
+        name = self.create_p_tag('Name', np.name)
+        description = self.create_p_tag('Description', np.description)
+        return {
+            'id': np.pk,
+            'title': np.name,
+            'description': f'{img}{name}{description}',
+            'image': None,
+        }
 
     def transport_children(self, trans: Transport):
         img = self.create_img_tag(trans.image.url) if trans.image else ""
@@ -397,14 +434,14 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         how_to_get_there = self.create_p_tag('How to get there', place.how_to_get_there)
         return f'{how_to_get_there}'
 
-    def check_children(self, children):
+    def check_children(self, children) -> list:
         checked_children = []
         for child in children:
             if child is not None:
                 checked_children.append(child)
         return checked_children
 
-    def create_child(self, id: int, title: str, description: str):
+    def create_child(self, id: int, title: str, description: str) -> dict:
         if not description.strip():
             return None
         return {
@@ -417,11 +454,10 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         checked_sections = []
         for section in sections:
             if section is not None:
-                logger.info(type(section))
                 checked_sections.append(section)
         return checked_sections
 
-    def get_sections(self, obj: Place):
+    def get_sections(self, obj: Place) -> List[dict]:
         return self.check_sections([
             create_section_simple(
                   title='Info',
@@ -442,31 +478,60 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 )
             ),
             create_section_nested(
-                key="transports",
+                title='Cuisines',
+                key='cuisines',
+                icon_name=IconNames.restaurant_menu,
+                display_type=DisplayTypes.drop_down,
                 obj=obj,
+                create_children=self.cuisine_children,
+            ),
+            create_section_nested(
+                title='Entertainments',
+                key='entertainments',
+                icon_name=IconNames.camera,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.entertainment_children,
+            ),
+            create_section_nested(
+                title='Natural Phenomena',
+                key='natural_phenomenas',
+                icon_name=IconNames.grass,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.natural_phenomena_children,
+
+            ),
+            create_section_nested(
+                title='Transports',
+                key="transports",
                 icon_name=IconNames.directions,
                 display_type=DisplayTypes.drop_down,
+                obj=obj,
                 create_children=self.transport_children,
             ),
             create_section_nested(
+                title='Must sees',
                 key="must_sees",
-                obj=obj,
                 icon_name=IconNames.article,
                 display_type=DisplayTypes.drop_down,
+                obj=obj,
                 create_children=self.must_see_children,
             ),
             create_section_nested(
+                title='Accomodation options',
                 key="accommodation_options",
-                obj=obj,
                 icon_name=IconNames.bed,
                 display_type=DisplayTypes.drop_down,
+                obj=obj,
                 create_children=self.accommodation_option_children,
             ),
             create_section_nested(
+                title='Flora and Fauna',
                 key="flora_faunas",
-                obj=obj,
                 icon_name=IconNames.article,
                 display_type=DisplayTypes.grid,
+                obj=obj,
                 create_children=self.flora_fauna_children,
             ),
             create_section_simple(

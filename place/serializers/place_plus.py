@@ -1,8 +1,9 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
     PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm, GeographicalFeature, \
-    Cuisine, Entertainment, NaturalPhenomena
+    Cuisine, Entertainment, NaturalPhenomena, TypeCuisine
 from django.db import models
-from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer
+from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer, \
+    TypeCuisineSerializer
 from .place_nested import CategorySerializer
 
 from loguru import logger
@@ -202,11 +203,12 @@ def get_plus_place():
       'is_nested': True,
       'inputs': [
           {
-              'key': get_field_name(Cuisine, 'name'),
-              'placeholder': 'Cuisine name',
-              'title': 'Cuisine name',
-              'field_type': FieldTypes.text_field,
-              'required': get_is_field_required(Cuisine, 'name')
+              "key": get_field_name(Cuisine, "type_cuisine"),
+              "placeholder": "Type of cuisine",
+              'title': 'Type of cuisine',
+              'field_type': FieldTypes.picker,
+              "options": get_model_options(TypeCuisine, TypeCuisineSerializer),
+              'required': get_is_field_required(Cuisine, 'type_cuisine'),
           },
           {
             'key': get_field_name(Cuisine, 'price'),
