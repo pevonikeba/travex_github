@@ -8556,7 +8556,7 @@ class Cuisine(models.Model):
     image = models.ImageField(upload_to='images/cuisines/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.place.name} {self.name}"
+        return f"{self.place.name} {self.type_cuisine}"
 
 
 class Entertainment(models.Model):
