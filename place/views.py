@@ -20,7 +20,8 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelV
 
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
-    Location, Bookmark, ClimaticConditiomm, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace
+    Location, Bookmark, ClimaticConditiomm, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
+    InterestingFacts, PracticalInformation, WhereToTakeAPicture
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkLikeSerializer
@@ -32,7 +33,8 @@ from place.serializers.serializers import PlaceSerializer, GroupSerializer, Clim
     CustomUserPatchSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
-    NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer
+    NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, PracticalInformationSerializer, \
+    InterestingFactsSerializer, WhereToTakeAPictureSerializer, VibeSerializer
 
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
@@ -149,6 +151,26 @@ class SafeViewSet(PlaceNestedViewSet):
 class UniquenessPlaceViewSet(PlaceNestedViewSet):
     queryset = UniquenessPlace.objects.all()
     serializer_class = UniquenessPlaceSerializer
+
+
+class VibeViewSet(PlaceNestedViewSet):
+    queryset = Vibe.objects.all()
+    serializer_class = VibeSerializer
+
+
+class InterestingFactsViewSet(PlaceNestedViewSet):
+    queryset = InterestingFacts.objects.all()
+    serializer_class = InterestingFactsSerializer
+
+
+class WhereToTakeAPictureViewSet(PlaceNestedViewSet):
+    queryset = WhereToTakeAPicture.objects.all()
+    serializer_class = WhereToTakeAPictureSerializer
+
+
+class PracticalInformationViewSet(PlaceNestedViewSet):
+    queryset = PracticalInformation.objects.all()
+    serializer_class = PracticalInformationSerializer
 
 
 class TransportViewSet(PlaceNestedViewSet):

@@ -4,7 +4,8 @@ from place.views import PlaceViewSet, GroupViewSet, TypeOfTerrainViewSet, Catego
     UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet, \
     TransportViewSet, PlaceImageViewSet, AccommodationOptionViewSet, MustSeeViewSet, FloraFaunaViewSet, \
     LocationViewSet, ClimaticConditionViewSet, ClimaticConditiommViewSet, MyPlacesViewSet, BookmarkedPlaceViewSet, \
-    CuisineViewSet, EntertainmentViewSet, SafeViewSet, UniquenessPlaceViewSet
+    CuisineViewSet, EntertainmentViewSet, SafeViewSet, UniquenessPlaceViewSet, VibeViewSet, InterestingFactsViewSet, \
+    WhereToTakeAPictureViewSet, PracticalInformationViewSet
 
 app_name = "place"
 
@@ -17,7 +18,10 @@ router.register(r'cuisines', CuisineViewSet)
 router.register(r'entertainments', EntertainmentViewSet)
 router.register(r'safes', SafeViewSet)
 router.register(r'uniqueness_places', UniquenessPlaceViewSet)
-
+router.register(r'vibes', VibeViewSet)
+router.register(r'interesting_facts', InterestingFactsViewSet)
+router.register(r'where_to_take_a_pictures', WhereToTakeAPictureViewSet)
+router.register(r'practical_informations', PracticalInformationViewSet)
 router.register(r'transports', TransportViewSet)
 router.register(r'accommodation_options', AccommodationOptionViewSet)
 router.register(r'must_sees', MustSeeViewSet)

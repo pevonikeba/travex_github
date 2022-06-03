@@ -4,7 +4,7 @@ from typing import List
 from rest_framework import serializers
 
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna, Cuisine, Entertainment, \
-    NaturalPhenomena, Safe, UniquenessPlace
+    NaturalPhenomena, Safe, UniquenessPlace, Vibe, WhereToTakeAPicture, InterestingFacts, PracticalInformation
 from place.serializers.serializers import CustomUserSerializer
 from loguru import logger
 
@@ -364,6 +364,46 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             'image': None,
         }
 
+    def vibe_children(self, vibe: Vibe) -> dict:
+        img = self.create_img_tag(vibe.image.url) if vibe.image else ""
+        # name = self.create_p_tag('Name', vibe.name)
+        return {
+            'id': vibe.pk,
+            'title': vibe.name,
+            'description': f'{img}',
+            'image': None,
+        }
+
+    def where_to_take_a_picture_children(self, wttp: WhereToTakeAPicture) -> dict:
+        img = self.create_img_tag(wttp.image.url) if wttp.image else ""
+        # name = self.create_p_tag('Name', wttp.name)
+        description = self.create_p_tag('Description', wttp.description)
+        return {
+            'id': wttp.pk,
+            'title': wttp.name,
+            'description': f'{img}{description}',
+            'image': None,
+        }
+
+    def interesting_fact_children(self, inter_fact: InterestingFacts) -> dict:
+        img = self.create_img_tag(inter_fact.image.url) if inter_fact.image else ""
+        description = self.create_p_tag('Description', inter_fact.description)
+        return {
+            'id': inter_fact.pk,
+            'title': inter_fact.pk,
+            'description': f'{img}{description}',
+            'image': None,
+        }
+
+    def practical_information_children(self, pi: PracticalInformation):
+        description = self.create_p_tag('Description', pi.description)
+        return {
+            'id': pi.pk,
+            'title': pi.pk,
+            'description': f'{description}',
+            'image': None,
+        }
+
     def transport_children(self, trans: Transport):
         img = self.create_img_tag(trans.image.url) if trans.image else ""
         price = self.create_p_tag("Price", trans.price)
@@ -540,6 +580,38 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.uniqueness_place_children,
+            ),
+            create_section_nested(
+                title='Vibes',
+                key='vibes',
+                icon_name=IconNames.article,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.vibe_children,
+            ),
+            create_section_nested(
+                title='Where to take a pictures',
+                key='where_to_take_a_pictures',
+                icon_name=IconNames.article,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.where_to_take_a_picture_children,
+            ),
+            create_section_nested(
+                title='Interesting facts',
+                key='interesting_facts',
+                icon_name=IconNames.article,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.interesting_fact_children,
+            ),
+            create_section_nested(
+                title='Practical informations',
+                key='practical_informations',
+                icon_name=IconNames.article,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.practical_information_children,
             ),
             create_section_nested(
                 title='Transports',

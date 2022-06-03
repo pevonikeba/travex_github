@@ -1,6 +1,7 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
     PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm, GeographicalFeature, \
-    Cuisine, Entertainment, NaturalPhenomena, TypeCuisine, Safe, HOW_DANGEROUS_CHOICES, UniquenessPlace
+    Cuisine, Entertainment, NaturalPhenomena, TypeCuisine, Safe, HOW_DANGEROUS_CHOICES, UniquenessPlace, Vibe, \
+    WhereToTakeAPicture, InterestingFacts, PracticalInformation
 from django.db import models
 from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer, \
     TypeCuisineSerializer
@@ -350,6 +351,87 @@ def get_plus_place():
         ]
     },
     {
+        "key": get_field_name(Place, 'vibes'),
+        "header": "Vibe",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(Vibe, "name"),
+                "placeholder": "Vibe Name",
+                'title': 'Vibe Name',
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(Vibe, 'name'),
+            },
+            {
+                'key': get_field_name(Vibe, 'image'),
+                'title': "Vibe Image",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(Vibe, 'image'),
+            }
+        ]
+    },
+    {
+        "key": get_field_name(Place, 'interesting_facts'),
+        "header": "Interesting Facts",
+        "is_nested": True,
+        "inputs": [
+            {
+                'key': get_field_name(InterestingFacts, 'description'),
+                "placeholder": "Description",
+                'title': "Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(InterestingFacts, 'description'),
+            },
+            {
+                'key': get_field_name(InterestingFacts, 'image'),
+                'title': "Interesting Facts Image",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(InterestingFacts, 'image'),
+            }
+        ]
+    },
+    {
+        "key": get_field_name(Place, "where_to_take_a_pictures"),
+        "header": "Where To Take A Picture",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(WhereToTakeAPicture, "name"),
+                "placeholder": "Where To Take A Picture Name",
+                'title': 'Where To Take A Picture Name',
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(WhereToTakeAPicture, 'name'),
+            },
+            {
+                'key': get_field_name(WhereToTakeAPicture, 'description'),
+                "placeholder": "Description",
+                'title': "Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(WhereToTakeAPicture, 'description'),
+            },
+            {
+                'key': get_field_name(WhereToTakeAPicture, 'image'),
+                'title': "Where To Take A Picture Image",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(WhereToTakeAPicture, 'image'),
+            }
+        ]
+    },
+    {
+        "key": get_field_name(Place, 'practical_informations'),
+        "header": "Practical Information",
+        "is_nested": True,
+        "inputs": [
+            {
+                'key': get_field_name(PracticalInformation, 'description'),
+                "placeholder": "Description",
+                'title': "Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(PracticalInformation, 'description'),
+            },
+        ]
+    },
+    {
         "key": get_field_name(Place, "transports"),
         "header": "Transports",
         "is_nested": True,
@@ -618,90 +700,7 @@ nested = [
         ]
     },
 
-    {
-        "header": "Vibe",
-        "key": "vibe",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Vibe Name",
-                'title': 'Vibe Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': False,
-            },
-            {
-                'title': "Vibe Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
-        ]
-    },
-    {
-        "header": "Where To Take A Picture",
-        "key": "where_to_take_a_picture",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Where To Take A Picture Name",
-                'title': 'Where To Take A Picture Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-            {
-                'title': "Where To Take A Picture Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
 
-        ]
-    },
-    {
-        "header": "Interesting Facts",
-        "key": "interesting_fact",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-            {
-                'title': "Interesting Facts Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
-
-        ]
-    },
-
-    {
-        "header": "Practical Information",
-        "key": "practical_information",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-        ]
-    },
 ]
 
 

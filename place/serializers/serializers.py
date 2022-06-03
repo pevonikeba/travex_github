@@ -15,7 +15,8 @@ from place.models import Place, Group, PlaceImage, ClimaticCondition, \
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
-    NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer
+    NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, WhereToTakeAPictureSerializer, \
+    VibeSerializer, InterestingFactsSerializer, PracticalInformationSerializer
 
 
 class CustomUserImageSerializer(serializers.ModelSerializer):
@@ -155,56 +156,6 @@ class TypeTransportSerializer(ModelSerializer):
     class Meta:
         model = TypeTransport
         fields = ('id', 'name',)
-
-
-class VibeSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = Vibe
-        fields = ('id', 'name', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return Vibe.objects.create(data=data, image=image)
-
-
-class WhereToTakeAPictureSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = WhereToTakeAPicture
-        fields = ('id', 'name', 'description', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return WhereToTakeAPicture.objects.create(data=data, image=image)
-
-
-class InterestingFactsSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = InterestingFacts
-        fields = ('id', 'description', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return InterestingFacts.objects.create(data=data, image=image)
-
-class PracticalInformationSerializer(ModelSerializer):
-    class Meta:
-        model = PracticalInformation
-        fields = ('id', 'description',)
-
-
-
 
 
 # class TransportSerializer(ModelSerializer):
