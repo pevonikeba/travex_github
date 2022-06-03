@@ -1,6 +1,6 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
     PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm, GeographicalFeature, \
-    Cuisine, Entertainment, NaturalPhenomena, TypeCuisine
+    Cuisine, Entertainment, NaturalPhenomena, TypeCuisine, Safe, HOW_DANGEROUS_CHOICES, UniquenessPlace
 from django.db import models
 from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer, \
     TypeCuisineSerializer
@@ -287,6 +287,69 @@ def get_plus_place():
         ]
     },
     {
+        "key": get_field_name(Place, 'safes'),
+        "header": "Safes",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(Safe, "name"),
+                "placeholder": "Safe name",
+                'title': 'Safe name',
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Safe, 'name'),
+            },
+            {
+                'key': get_field_name(Safe, 'how_dangerous'),
+                "placeholder": "How Dangerous",
+                'title': "How Dangerous",
+                'field_type': FieldTypes.picker,
+                "options": get_choices_options(HOW_DANGEROUS_CHOICES),
+                'required': get_is_field_required(Safe, 'how_dangerous'),
+            },
+            {
+                'key': get_field_name(Safe, "rating_danger"),
+                "placeholder": "Rating Danger",
+                'title': "Rating Danger",
+                'field_type': FieldTypes.int_field,
+                'required': get_is_field_required(Safe, "rating_danger"),
+            },
+            {
+                'key': get_field_name(Safe, 'description'),
+                "placeholder": "Description",
+                'title': "Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(Safe, 'description'),
+            }
+        ]
+    },
+    {
+        "key": get_field_name(Place, "uniqueness_places"),
+        "header": "Uniqueness Place",
+        "is_nested": True,
+        "inputs": [
+            {
+                "key": get_field_name(UniquenessPlace, "name"),
+                "placeholder": "Uniqueness Place Name",
+                'title': 'Uniqueness Place Name',
+                'field_type': FieldTypes.char_field,
+                'required': get_is_field_required(UniquenessPlace, 'name'),
+            },
+            {
+                'key': get_field_name(UniquenessPlace, 'description'),
+                "placeholder": "Description",
+                'title': "Description",
+                'field_type': FieldTypes.text_field,
+                'required': get_is_field_required(UniquenessPlace, 'description'),
+            },
+            {
+                'key': get_field_name(UniquenessPlace, 'image'),
+                'title': "Uniqueness Place Image",
+                'field_type': FieldTypes.image_field,
+                'required': get_is_field_required(UniquenessPlace, 'image'),
+            }
+        ]
+    },
+    {
         "key": get_field_name(Place, "transports"),
         "header": "Transports",
         "is_nested": True,
@@ -552,174 +615,6 @@ nested = [
         "is_nested": False,
         "inputs": [
 
-        ]
-    },
-    {
-        "header": "Cuisine",
-        "key": "cuisines",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Kind Of Cuisine",
-                'title': 'Kind Of Cuisine',
-                "key": "name",
-                'field_type': FieldTypes.picker,
-                "options": [
-                    {"text": 'French Cuisine', "value": 'French Cuisine', },
-                    {"text": 'Chinese Cuisine', "value": 'Chinese Cuisine', },
-                    {"text": 'Japanese Cuisine', "value": 'Japanese Cuisine', },
-                    {"text": 'Indian Cuisine', "value": 'Indian Cuisine', },
-                    {"text": 'Italian Cuisine', "value": 'Italian Cuisine', },
-                    {"text": 'Greek Cuisine', "value": 'Greek Cuisine', },
-                    {"text": 'Spanish Cuisine', "value": 'Spanish Cuisine', },
-                    {"text": 'Mediterranean Cuisine', "value": 'Mediterranean Cuisine', },
-                ],
-                'required': False,
-            },
-            {
-                "placeholder": "Cuisine Price",
-                'title': "Cuisine Price",
-                'key': "price",
-                'field_type': FieldTypes.float_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Transport Description",
-                'title': "Transport Description",
-                'key': "description",
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-            {
-                'title': "Cuisine Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
-        ]
-    },
-    {
-        "header": "Safe",
-        "key": "safe",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Safe Name",
-                'title': 'Safe Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': False,
-            },
-            {
-                "placeholder": "How Dangerous",
-                'title': "How Dangerous",
-                'key': "how_dangerous",
-                'field_type': FieldTypes.picker,
-                "options": [
-                    {"text": 'Very Safe', "value": 1, },
-                    {"text": 'Safe', "value": 1, },
-                    {"text": 'Average', "value": 1, },
-                    {"text": 'Somewhat Dangerous', "value": 1, },
-                    {"text": 'Dangerous', "value": 1, },
-                ],
-                'required': False,
-            },
-            {
-                "placeholder": "Rating Danger",
-                'title': "Rating Danger",
-                'key': "rating_danger",
-                'field_type': FieldTypes.int_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            }
-        ]
-    },
-    {
-        "header": "Entertainment",
-        "key": "entertainment",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Entertainment Name",
-                'title': 'Entertainment Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-            {
-                'title': "Cuisine Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
-        ]
-    },
-    {
-        "header": "Natural Phenomena",
-        "key": "natural_phenomena",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Natural Phenomena Name",
-                'title': 'Natural Phenomena Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': False,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': False,
-            },
-            {
-                'title': "Cuisine Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
-        ]
-    },
-
-    {
-        "header": "Uniqueness Place",
-        "key": "uniqueness_place",
-        "is_nested": True,
-        "inputs": [
-            {
-                "placeholder": "Uniqueness Place Name",
-                'title': 'Uniqueness Place Name',
-                "key": "name",
-                'field_type': FieldTypes.char_field,
-                'required': True,
-            },
-            {
-                "placeholder": "Description",
-                'title': "Description",
-                'key': 'description',
-                'field_type': FieldTypes.text_field,
-                'required': True,
-            },
-            {
-                'title': "Uniqueness Place Image",
-                'key': 'image',
-                'field_type': FieldTypes.image_field,
-                'required': False,
-            }
         ]
     },
 

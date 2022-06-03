@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from place.models import Transport, PlaceImage, MustSee, AccommodationOption, Category, FloraFauna, Cuisine, \
-    Entertainment, NaturalPhenomena
+    Entertainment, NaturalPhenomena, Safe, UniquenessPlace
 
 
 class CuisineSerializer(ModelSerializer):
@@ -39,6 +39,18 @@ class NaturalPhenomenaSerializer(ModelSerializer):
 
     class Meta:
         model = NaturalPhenomena
+        fields = [field.name for field in model._meta.fields]
+
+
+class SafeSerializer(ModelSerializer):
+    class Meta:
+        model = Safe
+        fields = [field.name for field in model._meta.fields]
+
+
+class UniquenessPlaceSerializer(ModelSerializer):
+    class Meta:
+        model = UniquenessPlace
         fields = [field.name for field in model._meta.fields]
 
 

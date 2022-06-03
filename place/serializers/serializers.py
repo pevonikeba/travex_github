@@ -15,7 +15,7 @@ from place.models import Place, Group, PlaceImage, ClimaticCondition, \
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
-    NaturalPhenomenaSerializer
+    NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer
 
 
 class CustomUserImageSerializer(serializers.ModelSerializer):
@@ -145,12 +145,6 @@ class LocationSerializer(CountryFieldMixin, ModelSerializer):
         fields = "__all__"
 
 
-class SafeSerializer(ModelSerializer):
-    class Meta:
-        model = Safe
-        fields = ('id', 'name', 'how_dangerous', 'rating_danger', 'description',)
-
-
 class TypeCuisineSerializer(ModelSerializer):
     class Meta:
         model = TypeCuisine
@@ -161,20 +155,6 @@ class TypeTransportSerializer(ModelSerializer):
     class Meta:
         model = TypeTransport
         fields = ('id', 'name',)
-
-
-class UniquenessPlaceSerializer(ModelSerializer):
-    image = Base64ImageField()  # From DRF Extra Fields
-
-    class Meta:
-        model = UniquenessPlace
-        fields = ('id', 'name', 'description', 'image',)
-
-    def create(self, validated_data):
-        image = validated_data.pop('image')
-        data = validated_data.pop('data')
-
-        return UniquenessPlace.objects.create(data=data, image=image)
 
 
 class VibeSerializer(ModelSerializer):

@@ -4,7 +4,7 @@ from typing import List
 from rest_framework import serializers
 
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna, Cuisine, Entertainment, \
-    NaturalPhenomena
+    NaturalPhenomena, Safe, UniquenessPlace
 from place.serializers.serializers import CustomUserSerializer
 from loguru import logger
 
@@ -341,6 +341,29 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             'image': None,
         }
 
+    def safe_children(self, safe: Safe) -> dict:
+        # name = self.create_p_tag('Name', safe.name)
+        how_dangerous = self.create_p_tag('How dangerous', safe.how_dangerous)
+        rating_danger = self.create_p_tag('Rating danger', str(safe.rating_danger))
+        description = self.create_p_tag('Description', safe.description)
+        return {
+            'id': safe.pk,
+            'title': safe.name,
+            'description': f'{how_dangerous}{rating_danger}{description}',
+            'image': None,
+        }
+
+    def uniqueness_place_children(self, up: UniquenessPlace) -> dict:
+        # name = self.create_p_tag('Name', up.name)
+        img = self.create_img_tag(up.image.url) if up.image else ""
+        description = self.create_p_tag('Description', up.description)
+        return {
+            'id': up.pk,
+            'title': up.name,
+            'description': f'{img}{description}',
+            'image': None,
+        }
+
     def transport_children(self, trans: Transport):
         img = self.create_img_tag(trans.image.url) if trans.image else ""
         price = self.create_p_tag("Price", trans.price)
@@ -494,13 +517,29 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
                 create_children=self.entertainment_children,
             ),
             create_section_nested(
-                title='Natural Phenomena',
+                title='Natural Phenomenas',
                 key='natural_phenomenas',
                 icon_name=IconNames.grass,
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.natural_phenomena_children,
 
+            ),
+            create_section_nested(
+                title='Safes',
+                key='safes',
+                icon_name=IconNames.lock,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.safe_children,
+            ),
+            create_section_nested(
+                title='Uniqueness Places',
+                key='uniqueness_places',
+                icon_name=IconNames.done,
+                display_type=DisplayTypes.drop_down,
+                obj=obj,
+                create_children=self.uniqueness_place_children,
             ),
             create_section_nested(
                 title='Transports',
