@@ -36,25 +36,33 @@ class CustomUserPatchSerializer(serializers.ModelSerializer):
     # followers = serializers.SerializerMethodField()
     following_amount = serializers.SerializerMethodField()
     follower_amount = serializers.SerializerMethodField()
+    achievement_level_amount = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
         fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social',
                   # 'followings', 'followers',
-                  'following_amount', 'follower_amount', )
+                  'following_amount', 'follower_amount',
+                  'achievement_level_amount', )
 
-    def get_followers(self, obj):
-        followers = CustomUser.objects.filter(followings=obj)
-        response = FollowingSerializer(followers,
-                                       context={'request': self.context['request']},
-                                       many=True).data
-        return response
+    # def get_followers(self, obj):
+    #     followers = CustomUser.objects.filter(followings=obj)
+    #     response = FollowingSerializer(followers,
+    #                                    context={'request': self.context['request']},
+    #                                    many=True).data
+    #     return response
 
     def get_following_amount(self, obj: CustomUser):
         return obj.followings.count()
 
     def get_follower_amount(self, obj: CustomUser):
         return CustomUser.objects.filter(followings=obj).count()
+
+    def get_achievement_level_amount(self, obj: CustomUser):
+        achievement_level_amount = 0
+        for ach in obj.achievements.all():
+            achievement_level_amount += ach.level_increase_to
+        return achievement_level_amount
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

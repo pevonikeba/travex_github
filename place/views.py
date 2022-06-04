@@ -18,6 +18,7 @@ from rest_framework.status import HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 
+from achievement.models import Achievement
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
     Location, Bookmark, ClimaticConditiomm, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
@@ -439,19 +440,27 @@ class TypeCuisineViewSet(ModelViewSet):
 #
 #         serializer.save()
 
+def add_register_achievement(user: CustomUser) -> bool:
+    on_register_achievement = Achievement.objects.filter(title=Achievement.ACHIEVEMENT_TITLE_CHOICES[0][0]).first()
+    if on_register_achievement:
+        user.achievements.add(on_register_achievement)
+        return True
+    return False
+
 
 class CustomUserViewSetFromDjoser(UserViewSet):
     def create(self, request, *args, **kwargs):
-        try:
-            user = CustomUser.objects.get(email=request.data['email'])
-            social_account_brands = get_social_account_brands(user)
-            if check_has_social_account_error_msg(social_account_brands):
-                # raise Exception("aaa")
-                return Response(social_account_brands, status=HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
-            if not user.is_active:
-                user.delete()
-        except:
-            pass
+        user: CustomUser = CustomUser.objects.filter(email=request.data['email']).first()
+        if user:
+            add_register_achievement(user)
+            try:
+                social_account_brands = get_social_account_brands(user)
+                if check_has_social_account_error_msg(social_account_brands):
+                    return Response(social_account_brands, status=HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
+                if not user.is_active:
+                    user.delete()
+            except:
+                pass
         return super().create(request, *args, **kwargs)
 
 

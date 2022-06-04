@@ -5,12 +5,14 @@ from django.contrib.auth.models import User
 from django.contrib.admin import ModelAdmin, TabularInline
 # from django.contrib.gis.admin import GISModelAdmin
 # from modeltranslation.admin import TranslationAdmin
+from loguru import logger
 from mptt.admin import MPTTModelAdmin
 from imagekit.admin import AdminThumbnail
 
 
 # from geopy.geocoders import Nominatim
 from achievement.admin import OwnedAchievementInline
+from achievement.models import Achievement
 from place import models
 from place.models import Place, Group, PlaceImage, Transport, AccommodationOption, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
@@ -120,6 +122,32 @@ class PlaceAdmin(ModelAdmin):
     list_display = ('name', 'id', "home_page", "is_active", 'writer_user',)
     list_filter = ('home_page',)
     inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraFaunaInline]
+
+    def get_achievement(self, choice_number) -> Achievement:
+        return Achievement.objects.filter(title=Achievement.ACHIEVEMENT_TITLE_CHOICES[choice_number][0]).first()
+
+    def save_model(self, request, obj: Place, form, change):
+        super().save_model(request, obj, form, change)
+
+        user: CustomUser = obj.writer_user
+
+        posting_1_achievement = self.get_achievement(choice_number=1)
+        posting_3_achievement = self.get_achievement(choice_number=2)
+        posting_5_achievement = self.get_achievement(choice_number=3)
+
+        place_count = Place.objects.filter(is_active=True, writer_user=obj.writer_user).count()
+
+        if place_count >= 1:
+            if posting_1_achievement:
+                user.achievements.add(posting_1_achievement)
+        if place_count >= 3:
+            if posting_3_achievement:
+                user.achievements.add(posting_3_achievement)
+        if place_count >= 5:
+            if posting_5_achievement:
+                user.achievements.add(posting_5_achievement)
+        user.save()
+        logger.info(place_count)
 
     # def save_model(self, request, obj, form, change):
     #

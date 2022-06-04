@@ -4,6 +4,7 @@ import requests
 from django.views.generic import View
 from django.http import HttpResponse
 from django.shortcuts import render
+from rest_framework.status import HTTP_200_OK
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -68,9 +69,9 @@ class ActivateUserEmail(APIView):
         result = requests.post(post_url, data=post_data, headers={'Content-Type': 'application/json'})
         message = result.text
         if message == '':
-            message = "Pereydite w prelozheniye Attaplace"
+            message = "Go to the app"
 
-        return Response(message)
+        return Response({"message": message}, status=HTTP_200_OK)
 
 
 class ResetPasswordView(View):
@@ -92,9 +93,12 @@ class ResetPasswordView(View):
         password_post_url = web_url + 'auth/' + password_reset_url
         # logger.warning(password_post_url)
         # logger.warning(payload)
-        response = requests.post(password_post_url, data=payload, headers={'Content-Type': 'application/json', })
-        return HttpResponse(response.text)
+        result = requests.post(password_post_url, data=payload, headers={'Content-Type': 'application/json', })
+        message = result.text
+        if message == '':
+            message = "Go to the app"
 
+        return Response({"message": message}, status=HTTP_200_OK)
 
 def eula(request):
     html = '''
