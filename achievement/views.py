@@ -12,21 +12,23 @@ from achievement.serializers import AchievementSerializer, OwnedAchievementSeria
 class AchievementViewSet(ReadOnlyModelViewSet):
     queryset = Achievement.objects.all()
     serializer_class = AchievementSerializer
+    filterset_fields = ['owner', ]
 
-    @action(detail=True, methods=['post'])
-    def add_or_update_own_achievement(self, request, pk=None):
-        achievement = get_object_or_404(Achievement, pk=pk)
-        # TODO: check if its true
-
-        if achievement.how_to_own == "Get on register":
-            pass
-        owned_achievement, created = OwnedAchievement.objects.update_or_create(
-            writer_user=request.user, achievement=achievement,
-            defaults={'level': F('level') + 1}
-        )
-        serializer = AchievementSerializer(achievement)
-        logger.info(serializer.data)
-        return Response(serializer.data)
+    #
+    # @action(detail=True, methods=['post'])
+    # def add_or_update_own_achievement(self, request, pk=None):
+    #     achievement = get_object_or_404(Achievement, pk=pk)
+    #     # TODO: check if its true
+    #
+    #     if achievement.how_to_own == "Get on register":
+    #         pass
+    #     owned_achievement, created = OwnedAchievement.objects.update_or_create(
+    #         writer_user=request.user, achievement=achievement,
+    #         defaults={'level': F('level') + 1}
+    #     )
+    #     serializer = AchievementSerializer(achievement)
+    #     logger.info(serializer.data)
+    #     return Response(serializer.data)
         # answer, created = OwnedAchievement.objects.update_or_create(
         #     question=validated_data.get('question', None),
         #     defaults={'answer': validated_data.get('answer', None)})

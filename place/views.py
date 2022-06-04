@@ -440,19 +440,10 @@ class TypeCuisineViewSet(ModelViewSet):
 #
 #         serializer.save()
 
-def add_register_achievement(user: CustomUser) -> bool:
-    on_register_achievement = Achievement.objects.filter(title=Achievement.ACHIEVEMENT_TITLE_CHOICES[0][0]).first()
-    if on_register_achievement:
-        user.achievements.add(on_register_achievement)
-        return True
-    return False
-
-
 class CustomUserViewSetFromDjoser(UserViewSet):
     def create(self, request, *args, **kwargs):
         user: CustomUser = CustomUser.objects.filter(email=request.data['email']).first()
         if user:
-            add_register_achievement(user)
             try:
                 social_account_brands = get_social_account_brands(user)
                 if check_has_social_account_error_msg(social_account_brands):
@@ -465,12 +456,16 @@ class CustomUserViewSetFromDjoser(UserViewSet):
 
 
 class CustomUserViewSet(mixins.RetrieveModelMixin,
+                        mixins.CreateModelMixin,
                         mixins.UpdateModelMixin,
                         viewsets.GenericViewSet):
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserPatchSerializer
     permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        return super(CustomUserViewSet, self).create()
 
     def update(self, request, *args, **kwargs):
         update_user = CustomUser.objects.filter(pk=kwargs.get('pk')).first()

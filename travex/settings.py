@@ -147,7 +147,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # 'place.middleware.format_middleware.FormatMiddleware',
-    'achievement.middleware.achievement_middleware.CheckAchievementMiddleware',
+    # 'achievement.middleware.achievement_middleware.CheckAchievementMiddleware',
     # 'place.middleware.log.APILogMiddleware',
 ]
 

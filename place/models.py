@@ -10,12 +10,13 @@ from django.db import models
 # from location_field.models.plain import PlainLocationField
 # from geopy import Point
 from imagekit import ImageSpec
+from loguru import logger
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill, ResizeToFit
 
-# Create your models here.
+from achievement.models import Achievement
 
 CONTINENT_CHOICES =(
     ("Asia", "Asia"),
@@ -116,6 +117,13 @@ class Thumbnail(ImageSpec):
     # format = 'JPEG'
     options = {'quality': 60}
 
+
+def add_register_achievement(user) -> bool:
+    on_register_achievement = Achievement.objects.filter(title=Achievement.ACHIEVEMENT_TITLE_CHOICES[0][0]).first()
+    if on_register_achievement:
+        user.achievements.add(on_register_achievement)
+        return True
+    return False
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
@@ -8267,8 +8275,13 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['is_active', 'username']
 
+    def save(self, *args, **kwargs):
+        super(CustomUser, self).save(args, kwargs)
+        add_register_achievement(self)
+
     def __str__(self):
         return self.email
+#
 
 
 # class TypeOfPeople(models.Model):
