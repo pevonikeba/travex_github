@@ -125,6 +125,7 @@ def add_register_achievement(user) -> bool:
         return True
     return False
 
+
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
     username = models.CharField(
@@ -8277,7 +8278,9 @@ class CustomUser(AbstractUser):
 
     def save(self, *args, **kwargs):
         super(CustomUser, self).save(args, kwargs)
-        add_register_achievement(self)
+        on_register_achievement = Achievement.objects.filter(title=Achievement.ACHIEVEMENT_TITLE_CHOICES[0][0]).first()
+        if on_register_achievement:
+            self.achievements.add(on_register_achievement)
 
     def __str__(self):
         return self.email
