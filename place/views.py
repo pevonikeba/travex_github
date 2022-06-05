@@ -22,7 +22,7 @@ from achievement.models import Achievement
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
     Location, Bookmark, ClimaticConditiomm, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
-    InterestingFacts, PracticalInformation, WhereToTakeAPicture, add_register_achievement
+    InterestingFacts, PracticalInformation, WhereToTakeAPicture
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkLikeSerializer
@@ -445,7 +445,6 @@ class CustomUserViewSetFromDjoser(UserViewSet):
     def create(self, request, *args, **kwargs):
         user: CustomUser = CustomUser.objects.filter(email=request.data['email']).first()
         if user:
-            add_register_achievement(user)
             try:
                 social_account_brands = get_social_account_brands(user)
                 if check_has_social_account_error_msg(social_account_brands):

@@ -67,11 +67,14 @@ class ActivateUserEmail(APIView):
         post_url = web_url + "/auth/users/activation/"
         post_data = json.dumps({'uid': uid, 'token': token})
         result = requests.post(post_url, data=post_data, headers={'Content-Type': 'application/json'})
-        message = result.text
-        if message == '':
-            message = "Go to the app"
+        # message = result.text
+        # if message == '':
+        #     message = "Go to the app"
+        # return Response({"message": message}, status=HTTP_200_OK)
 
-        return Response({"message": message}, status=HTTP_200_OK)
+        return HttpResponse(f"<html><body><h2>"
+                            f"Congratulations. You are registered successfully. Go to the app"
+                            f"</h2></body></html>")
 
 
 class ResetPasswordView(View):
@@ -98,7 +101,11 @@ class ResetPasswordView(View):
         if message == '':
             message = "Go to the app"
 
-        return Response({"message": message}, status=HTTP_200_OK)
+        return HttpResponse(f"<html><body><h2>"
+                            f"Congratulations. You are reset password successfully. Go to the app"
+                            f"</h2></body></html>")
+        # return Response({"message": message}, status=HTTP_200_OK)
+
 
 def eula(request):
     html = '''
