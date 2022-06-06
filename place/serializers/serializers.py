@@ -28,7 +28,7 @@ class CustomUserImageSerializer(serializers.ModelSerializer):
 class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', )
+        fields = ('id', 'email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', )
 
 
 class CustomUserPatchSerializer(serializers.ModelSerializer):
@@ -37,13 +37,27 @@ class CustomUserPatchSerializer(serializers.ModelSerializer):
     following_amount = serializers.SerializerMethodField()
     follower_amount = serializers.SerializerMethodField()
     achievement_level_amount = serializers.SerializerMethodField()
+    is_follower = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social',
+        fields = ('id', 'email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social',
                   # 'followings', 'followers',
-                  'following_amount', 'follower_amount',
+                  'following_amount', 'follower_amount', 'is_follower', 'is_following',
                   'achievement_level_amount', )
+
+    def get_is_follower(self, obj):
+        requested_user = self.context['request'].user
+        if obj.followings.filter(pk=requested_user.pk).exists():
+            return True
+        return False
+
+    def get_is_following(self, obj):
+        requested_user: CustomUser = self.context['request'].user
+        if requested_user.followings.filter(pk=obj.pk).exists():
+            return True
+        return False
 
     # def get_followers(self, obj):
     #     followers = CustomUser.objects.filter(followings=obj)

@@ -458,17 +458,38 @@ class CustomUserViewSetFromDjoser(UserViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class CustomUserViewSet(mixins.RetrieveModelMixin,
-                        mixins.CreateModelMixin,
+class FollowingViewSet(mixins.ListModelMixin,
+                       viewsets.GenericViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserPatchSerializer
+
+    def get_queryset(self):
+        return
+
+
+class CustomUserViewSet(
+                        mixins.ListModelMixin,
+                        mixins.RetrieveModelMixin,
                         mixins.UpdateModelMixin,
                         viewsets.GenericViewSet):
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
+
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserPatchSerializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        return super(CustomUserViewSet, self).create()
+    def get_queryset(self):
+        queryset = CustomUser.objects.all()
+        requested_user: CustomUser = self.request.user
+
+        followings = self.request.query_params.get('followings')
+        followers = self.request.query_params.get('followers')
+        if followings is not None and followings == 'true':
+            logger.info(requested_user.followings.all())
+            return requested_user.followings.all()
+        elif followers is not None and followers == 'true':
+            return queryset.filter(followings=requested_user)
+        return queryset
 
     def update(self, request, *args, **kwargs):
         update_user = CustomUser.objects.filter(pk=kwargs.get('pk')).first()
@@ -479,16 +500,16 @@ class CustomUserViewSet(mixins.RetrieveModelMixin,
 
 
     @action(detail=True, methods=['patch'])
-    def add_or_delete_subscriber(self, request, pk=None):
+    def add_or_delete_following(self, request, pk=None):
         user: CustomUser = request.user
         subscriber: CustomUser = CustomUser.objects.filter(pk=pk).first()
         if subscriber:
-            if user.subscribed_users.filter(pk=pk).exists():
-                user.subscribed_users.remove(subscriber)
-                return Response({'unsubscribed_from': subscriber.email})
+            if user.followings.filter(pk=pk).exists():
+                user.followings.remove(subscriber)
+                return Response({'unfollowing': subscriber.email})
             else:
-                user.subscribed_users.add(subscriber)
-                return Response({'subscribed_to': subscriber.email})
+                user.followings.add(subscriber)
+                return Response({'following': subscriber.email})
 
 # class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
 #     queryset = CustomUser.objects.all()

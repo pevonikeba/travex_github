@@ -28,6 +28,7 @@ from place.views import CustomUserViewSetFromDjoser, check_version, CustomUserVi
 
 router = SimpleRouter()
 router.register(r'users/profiles', CustomUserViewSet)
+# router.register(r'users/followings', )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
