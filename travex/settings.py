@@ -70,12 +70,13 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.apple',
     'colorfield',
+    'imagekit',
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
     # "leaflet",
     'place',
     'achievement',
-    'imagekit',
+    'comment',
 ]
 
 AUTH_USER_MODEL = 'place.CustomUser'

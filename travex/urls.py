@@ -47,6 +47,7 @@ urlpatterns = [
     # path('users/profiles/<int:pk>/', CustomUserViewSet.as_view({'patch': 'update'})),
     # path('users/<int:id>/', CustomUserView.as_view({'patch': 'update'})),
     path('accounts/', include('allauth.urls')),
+    path('api/comments/', include('comment.urls')),
     path('logout', LogoutView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -485,7 +485,6 @@ class CustomUserViewSet(
         followings = self.request.query_params.get('followings')
         followers = self.request.query_params.get('followers')
         if followings is not None and followings == 'true':
-            logger.info(requested_user.followings.all())
             return requested_user.followings.all()
         elif followers is not None and followers == 'true':
             return queryset.filter(followings=requested_user)

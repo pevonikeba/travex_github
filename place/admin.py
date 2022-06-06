@@ -18,8 +18,7 @@ from place.models import Place, Group, PlaceImage, Transport, AccommodationOptio
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine, Location \
-
+    PracticalInformation, TypeTransport, TypeCuisine, Location
 
 # admin.site.register(WorldBorder, admin.ModelAdmin)
 
