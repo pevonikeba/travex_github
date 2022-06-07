@@ -179,7 +179,15 @@ WSGI_APPLICATION = 'travex.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+# 'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': 'travex_db',
+#         'USER': 'travex_user',
+#         'PASSWORD': '123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',

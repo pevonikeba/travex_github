@@ -27,11 +27,13 @@ from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkLikeSerializer
 from place.serializers.place_plus import get_plus_place
-from place.serializers.serializers import PlaceSerializer, GroupSerializer, ClimaticConditionSerializer, \
+from place.serializers.serializers import PlaceSerializer, ClimaticConditionSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    LocationSerializer, BookmarkSerializer, ClimaticConditiommSerializer, CustomUserImageSerializer, \
+    LocationSerializer, ClimaticConditiommSerializer, \
     CustomUserPatchSerializer
+from place.serializers.group_serializer import GroupSerializer
+from place.serializers.bookmark_serializer import BookmarkSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, CategorySerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
     NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, PracticalInformationSerializer, \
@@ -454,7 +456,6 @@ class CustomUserViewSetFromDjoser(UserViewSet):
             except:
                 pass
 
-
         return super().create(request, *args, **kwargs)
 
 
@@ -480,14 +481,17 @@ class CustomUserViewSet(
 
     def get_queryset(self):
         queryset = CustomUser.objects.all()
-        requested_user: CustomUser = self.request.user
-
+        # requested_user: CustomUser = self.request.user
         followings = self.request.query_params.get('followings')
         followers = self.request.query_params.get('followers')
-        if followings is not None and followings == 'true':
-            return requested_user.followings.all()
-        elif followers is not None and followers == 'true':
-            return queryset.filter(followings=requested_user)
+        writer_user_id_query_param = self.request.query_params.get('writer_user')
+        if writer_user_id_query_param is not None:
+            writer_user = CustomUser.objects.filter(pk=writer_user_id_query_param).first()
+            if writer_user:
+                if followings is not None and followings == 'true':
+                    return writer_user.followings.all()
+                elif followers is not None and followers == 'true':
+                    return queryset.filter(followings=writer_user)
         return queryset
 
     def update(self, request, *args, **kwargs):

@@ -2,16 +2,11 @@ from loguru import logger
 from rest_framework import serializers
 from place.models import Place, CustomUser, PlaceImage
 from place.serializers.place_nested import PlaceImageSerializer
-
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'username', 'image',)
+from place.serializers.serializers import CustomUserPatchSerializer
 
 
 class PlaceListSerializer(serializers.ModelSerializer):
-    writer_user = CustomUserSerializer()
+    writer_user = CustomUserPatchSerializer()
     place_images = PlaceImageSerializer(many=True)
     is_bookmarked = serializers.SerializerMethodField()
     is_wowed = serializers.SerializerMethodField()

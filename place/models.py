@@ -135,23 +135,23 @@ class CustomUser(AbstractUser):
                                 options={'quality': 60},
                                 null=True, blank=True)
     image_thumb = Thumbnail(source='image')
-    image_social = models.CharField(max_length=512, null=True, blank=True)
+    # image_social = models.CharField(max_length=512, null=True, blank=True)
     # image = models.ImageField(upload_to='images/custom_user/', null=True, blank=True)
-    name = models.CharField(max_length=50, null=True, blank=True)
+    first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     age = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)],
                                       null=True, blank=True)
     GENDER_CHOICES = [
         ('m', 'Male'),
         ('f', 'Female'),
-        ('o', 'Other'),
+        ('u', 'unknown'),
     ]
     LANGUAGES = (
         ('en', 'en'),
         ('ru', 'ru'),
     )
-
-    gender = models.CharField(max_length=2, choices=GENDER_CHOICES, null=True, blank=True)
+    bio = models.TextField(blank=True, default="Awesome Earth traveller")
+    gender = models.CharField(max_length=2, choices=GENDER_CHOICES, default='u', null=True, blank=True)
     language = models.CharField(max_length=8, choices=LANGUAGES, null=True, blank=True)
     followings = models.ManyToManyField('self', blank=True, symmetrical=False) # following - mine, followers - is who to me
 
@@ -264,6 +264,10 @@ FIELD_TYPE_CHOICES = (
 #     def get_queryset(self):
 #         return super().get_queryset().filter(writer_user=self.req)
 
+class ActivePlaceManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
 
 class Place(models.Model):
     # families = models.ManyToManyField(AttributesFamily)
@@ -310,8 +314,9 @@ class Place(models.Model):
     # coordinate = geomodels.PointField(geography=True, spatial_index=True,default=Point(58.238056, 37.862499, srid=4326), blank=True, null=True)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
                                  null=True, blank=True, default=None)
-
     # category = TreeForeignKey(Category, verbose_name="categorys", related_name="categorys", on_delete=models.CASCADE, null=True, blank=True)
+    objects = models.Manager()  # The default manager.
+    active_objects = ActivePlaceManager()  # The Dahl-specific manager.
     def __str__(self):
         return f'{self.id}: {self.name}'
 # ----------------------------------------------------------------------------------------
@@ -330,7 +335,6 @@ class ClimaticConditiomm(models.Model):
 
     def __str__(self):
         return f'{self.condition} - {self.climate}'
-
 
 
 class UserPlaceRelation(models.Model):

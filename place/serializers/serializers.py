@@ -1,51 +1,60 @@
 from loguru import logger
 
 from django_countries.serializers import CountryFieldMixin
-from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
 
-from place.models import Place, Group, PlaceImage, ClimaticCondition, \
+from achievement.serializers import AchievementSerializer
+from place.models import Place, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, Bookmark, \
-    ClimaticConditiomm
-from place.serializers.place.list import PlaceListSerializer
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, ClimaticConditiomm
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
     NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, WhereToTakeAPictureSerializer, \
     VibeSerializer, InterestingFactsSerializer, PracticalInformationSerializer
 
 
-class CustomUserImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('image',)
-
-
 class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social', )
+        fields = ('id', 'email', 'first_name', 'last_name', 'age', 'bio',
+                  'achievements', 'gender', 'language', 'image',)
 
 
 class CustomUserPatchSerializer(serializers.ModelSerializer):
     # followings = FollowingSerializer(many=True, read_only=True)
     # followers = serializers.SerializerMethodField()
+    achievements = AchievementSerializer(many=True)
+    added_places_amount = serializers.SerializerMethodField()
     following_amount = serializers.SerializerMethodField()
     follower_amount = serializers.SerializerMethodField()
     achievement_level_amount = serializers.SerializerMethodField()
     is_follower = serializers.SerializerMethodField()
     is_following = serializers.SerializerMethodField()
+    social_auth_img = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'name', 'last_name', 'age', 'gender', 'language', 'image', 'image_social',
+        fields = ('id', 'email', 'first_name', 'last_name', 'age', 'bio', 'gender', 'language', 'image',
                   # 'followings', 'followers',
+                  'added_places_amount', 'achievements', 'social_auth_img',
                   'following_amount', 'follower_amount', 'is_follower', 'is_following',
                   'achievement_level_amount', )
+
+    def get_social_auth_img(self, user: CustomUser):
+        image = None
+        if user.socialaccount_set.exists():
+            for social_account in user.socialaccount_set.all():
+                brand_name = social_account.get_provider_account().get_brand().get('name')
+                if brand_name == 'Google':
+                    google_picture = social_account.extra_data['picture']
+                    if google_picture:
+                        image = google_picture
+        return image
+
+    def get_added_places_amount(self, obj: CustomUser):
+        return Place.active_objects.filter(writer_user=obj).count()
 
     def get_is_follower(self, obj):
         requested_user = self.context['request'].user
@@ -87,7 +96,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
 
-        fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user', 'image_social',)
+        fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user',)
 
     # def validate_password(self, value: str) -> str:
     #     """
@@ -107,61 +116,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
 
 
-class BookmarkSerializer(ModelSerializer):
-    place = PlaceListSerializer()
-    writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = Bookmark
-        fields = ('id', 'writer_user', 'place')
-
-    # def create(self, validated_data):
-    #     user_data = validated_data.pop('user')
-    #     place_data = validated_data.pop('place')
-    #     if Bookmark.objects.filter(user=user_data, place=place_data).exists():
-    #         bookmark = Bookmark.objects.get(user=user_data, place=place_data)
-    #         bookmark.delete()
-    #         bookmark.save()
-    #         return bookmark
-
-        # user = User.objects.create(**validated_data)
-        # Profile.objects.create(user=user, **profile_data)
-        # return user
-
-# class BookmarkPlaceSerializer(ModelSerializer):
-#     class Meta:
-#         model = Bookmark
-#         fields = ('id', "user",)
-#
-#
-# class BookmarkUserSerializer(ModelSerializer):
-#     place = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Bookmark
-#         fields = ('id', "place",)
-#
-#     def create(self, request):
-#         serializer = BookmarkUserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-
-
-# class TokenObtainLifetimeSerializer(TokenObtainPairSerializer):
-#     def validate(self, attrs):
-#         data = super().validate(attrs)
-#         refresh = self.get_token(self.user)
-#         data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
-#         return data
-#
-#
-# class TokenRefreshLifetimeSerializer(TokenRefreshSerializer):
-#     def validate(self, attrs):
-#         data = super().validate(attrs)
-#         refresh = RefreshToken(attrs['refresh'])
-#         data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
-#         return data
-
 class LocationSerializer(CountryFieldMixin, ModelSerializer):
     class Meta:
         model = Location
@@ -180,29 +134,6 @@ class TypeTransportSerializer(ModelSerializer):
         fields = ('id', 'name',)
 
 
-# class TransportSerializer(ModelSerializer):
-#     image = Base64ImageField(required=False)  # From DRF Extra Fields
-#     # name = TypeTransportSerializer(many=True, read_only=True)
-#     # name = serializers.CharField(source='name.name')
-#
-#     class Meta:
-#         model = Transport
-#         fields = ('id', 'type_transport', 'price', 'description', 'comfortable', 'image', 'place',)
-#
-#     def create(self, validated_data):
-#         image = validated_data.pop('image')
-#         data = validated_data.pop('data')
-#
-#         return Transport.objects.create(data=data, image=image)
-
-# class PlaceImageSerializer(ModelSerializer):
-#     image = Base64ImageField()  # From DRF Extra Fields
-#
-#     class Meta:
-#         model = PlaceImage
-#         fields = ('id', 'image', 'place',)
-#
-#
 class PlaceSerializer(ModelSerializer):
     class Meta:
         model = Place
@@ -419,14 +350,6 @@ class UserPlaceRelationSerializer(ModelSerializer):
     class Meta:
         model = UserPlaceRelation
         fields = ('id', 'place', 'in_bookmarks', 'rating', 'description_rating')
-
-
-class GroupSerializer(ModelSerializer):
-    places = PlaceListSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Group
-        fields = '__all__'
 
 
 

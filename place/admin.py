@@ -7,7 +7,7 @@ from django.contrib.admin import ModelAdmin, TabularInline
 # from modeltranslation.admin import TranslationAdmin
 from loguru import logger
 from mptt.admin import MPTTModelAdmin
-from imagekit.admin import AdminThumbnail
+# from imagekit.admin import AdminThumbnail
 
 
 # from geopy.geocoders import Nominatim
@@ -224,7 +224,7 @@ class GroupAdmin(ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image',
                                                                                  'followings',
-                                                                                 'image_social',)
+                                                                                 )
     list_display = ('pk', 'email', 'username', 'is_active', 'is_staff')
     list_display_links = ('email', )
     inlines = [OwnedAchievementInline]
