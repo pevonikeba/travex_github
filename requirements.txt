@@ -23,7 +23,7 @@ cssutils==2.4.0
 defusedxml==0.7.1
 Deprecated==1.2.13
 dj-rest-auth==2.2.4
-Django==4.0.3
+Django~=3.2.13
 django-allauth==0.50.0
 django-autoslug==1.9.8
 django-braces==1.15.0
@@ -130,3 +130,6 @@ whitenoise==6.0.0
 world==4.1.1
 wrapt==1.14.0
 WTForms==3.0.1
+
+loguru~=0.6.0
+djangorestframework-gis~=1.0

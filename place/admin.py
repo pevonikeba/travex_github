@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.gis import admin as gis_admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 # Register your models here.
@@ -8,12 +9,12 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from loguru import logger
 from mptt.admin import MPTTModelAdmin
 # from imagekit.admin import AdminThumbnail
+from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 
 
 # from geopy.geocoders import Nominatim
 from achievement.admin import OwnedAchievementInline
 from achievement.models import Achievement
-from place import models
 from place.models import Place, Group, PlaceImage, Transport, AccommodationOption, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
@@ -38,10 +39,25 @@ class NaturalPhenomenaInline(TabularInline):
     extra = 0
     model = NaturalPhenomena
 
-class LocationInline(TabularInline):
+
+class LocationInline(gis_admin.OSMGeoAdmin, gis_admin.TabularInline):
     extra = 0
     model = Location
     fk_name = "place"
+
+    def __init__(self, parent_model, admin_site):
+        self.admin_site = admin_site
+        self.parent_model = parent_model
+        self.opts = self.model._meta
+        self.has_registered_model = admin_site.is_registered(self.model)
+        overrides = FORMFIELD_FOR_DBFIELD_DEFAULTS.copy()
+        overrides.update(self.formfield_overrides)
+        self.formfield_overrides = overrides
+        if self.verbose_name is None:
+            self.verbose_name = self.model._meta.verbose_name
+        if self.verbose_name_plural is None:
+            self.verbose_name_plural = self.model._meta.verbose_name_plural
+
 
 class TransportInline(TabularInline):
     extra = 0
@@ -116,7 +132,7 @@ class ImageAdmin(ModelAdmin):
 
 
 @admin.register(Place)
-class PlaceAdmin(ModelAdmin):
+class PlaceAdmin(gis_admin.OSMGeoAdmin):
     save_on_top = True
     list_display = ('name', 'id', "home_page", "is_active", 'writer_user',)
     list_filter = ('home_page',)

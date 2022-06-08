@@ -11,6 +11,7 @@ from loguru import logger
 from place.serializers.place_nested import PlaceImageSerializer
 
 
+
 a = {
     "sections": [
         {
@@ -551,7 +552,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_nested(
                 title='Entertainments',
                 key='entertainments',
-                icon_name=IconNames.camera,
+                icon_name=IconNames.attractions_rounded,
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.entertainment_children,
@@ -559,7 +560,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_nested(
                 title='Natural Phenomenas',
                 key='natural_phenomenas',
-                icon_name=IconNames.grass,
+                icon_name=IconNames.star,
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.natural_phenomena_children,
@@ -576,7 +577,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_nested(
                 title='Uniqueness Places',
                 key='uniqueness_places',
-                icon_name=IconNames.done,
+                icon_name=IconNames.terrain,
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.uniqueness_place_children,
@@ -584,7 +585,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_nested(
                 title='Vibes',
                 key='vibes',
-                icon_name=IconNames.article,
+                icon_name=IconNames.surfing,
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.vibe_children,
@@ -592,7 +593,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_nested(
                 title='Where to take a pictures',
                 key='where_to_take_a_pictures',
-                icon_name=IconNames.article,
+                icon_name=IconNames.camera,
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.where_to_take_a_picture_children,
@@ -624,7 +625,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_nested(
                 title='Must sees',
                 key="must_sees",
-                icon_name=IconNames.article,
+                icon_name=IconNames.done,
                 display_type=DisplayTypes.drop_down,
                 obj=obj,
                 create_children=self.must_see_children,
@@ -640,7 +641,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_nested(
                 title='Flora and Fauna',
                 key="flora_faunas",
-                icon_name=IconNames.article,
+                icon_name=IconNames.grass,
                 display_type=DisplayTypes.grid,
                 obj=obj,
                 create_children=self.flora_fauna_children,
@@ -648,7 +649,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
             create_section_simple(
                 title='Climate and geography',
                 key='Climate and geography',
-                icon_name=IconNames.article,
+                icon_name=IconNames.cloud,
                 display_type=DisplayTypes.drop_down,
                 children=self.check_children(
                     [

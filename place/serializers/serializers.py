@@ -3,6 +3,7 @@ from loguru import logger
 from django_countries.serializers import CountryFieldMixin
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from achievement.serializers import AchievementSerializer
 from place.models import Place, PlaceImage, ClimaticCondition, \
@@ -15,32 +16,47 @@ from place.serializers.place_nested import PlaceImageSerializer, TransportSerial
     VibeSerializer, InterestingFactsSerializer, PracticalInformationSerializer
 
 
-class FollowingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'age', 'bio',
-                  'achievements', 'gender', 'language', 'image',)
+# class FollowingSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CustomUser
+#         fields = ('id', 'email', 'username', 'first_name', 'last_name', 'age', 'bio',
+#                   'achievements', 'gender', 'language', 'image',)
 
 
 class CustomUserPatchSerializer(serializers.ModelSerializer):
-    # followings = FollowingSerializer(many=True, read_only=True)
-    # followers = serializers.SerializerMethodField()
-    achievements = AchievementSerializer(many=True)
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'email', 'username', 'first_name', 'last_name',
+                  'age', 'bio', 'gender', 'language', 'image', )
+
+
+class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
     added_places_amount = serializers.SerializerMethodField()
     following_amount = serializers.SerializerMethodField()
     follower_amount = serializers.SerializerMethodField()
     achievement_level_amount = serializers.SerializerMethodField()
     is_follower = serializers.SerializerMethodField()
     is_following = serializers.SerializerMethodField()
-    social_auth_img = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+    # followings = FollowingSerializer(many=True, read_only=True)
+    # followers = serializers.SerializerMethodField()
+    achievements = AchievementSerializer(many=True, required=False)
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'age', 'bio', 'gender', 'language', 'image',
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'age', 'bio', 'gender', 'language', 'image',
                   # 'followings', 'followers',
-                  'added_places_amount', 'achievements', 'social_auth_img',
+                  'added_places_amount', 'achievements',
                   'following_amount', 'follower_amount', 'is_follower', 'is_following',
-                  'achievement_level_amount', )
+                  'achievement_level_amount',)
+
+    def get_image(self, user: CustomUser):
+        request = self.context.get('request')
+        if user.image:
+            return request.build_absolute_uri(user.image.url)
+        else:
+            social_auth_img = self.get_social_auth_img(user)
+            return social_auth_img or None
 
     def get_social_auth_img(self, user: CustomUser):
         image = None
@@ -68,12 +84,12 @@ class CustomUserPatchSerializer(serializers.ModelSerializer):
             return True
         return False
 
-    # def get_followers(self, obj):
-    #     followers = CustomUser.objects.filter(followings=obj)
-    #     response = FollowingSerializer(followers,
-    #                                    context={'request': self.context['request']},
-    #                                    many=True).data
-    #     return response
+        # def get_followers(self, obj):
+        #     followers = CustomUser.objects.filter(followings=obj)
+        #     response = FollowingSerializer(followers,
+        #                                    context={'request': self.context['request']},
+        #                                    many=True).data
+        #     return response
 
     def get_following_amount(self, obj: CustomUser):
         return obj.followings.count()
@@ -116,9 +132,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
 
 
-class LocationSerializer(CountryFieldMixin, ModelSerializer):
+class LocationSerializer(GeoFeatureModelSerializer): # CountryFieldMixin,
     class Meta:
         model = Location
+        geo_field = 'point'
         fields = "__all__"
 
 

@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 # from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.contrib.gis.db import models as gis_models
+
 # from django.contrib.gis.db import models as geomodels
 # from django_countries.fields import CountryField
 # from location_field.forms.spatial import LocationField
@@ -141,6 +143,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=50, null=True, blank=True)
     age = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)],
                                       null=True, blank=True)
+
     GENDER_CHOICES = [
         ('m', 'Male'),
         ('f', 'Female'),
@@ -247,30 +250,12 @@ FIELD_TYPE_CHOICES = (
 )
 
 
-# class AttributesFamily(models.Model):
-#     name = models.CharField(max_length=255)
-#     icon = models.CharField(max_length=255, choices=ICON_CHOICES)
-#
-#
-# class Attribute(models.Model):
-#     name = models.CharField(max_length=255)
-#     type = models.CharField(max_length=255, choices=FIELD_TYPE_CHOICES)
-#     family = models.ForeignKey(Family, on_delete=models.CASCADE)
-
-# To get input type of model field -> str
-# Place._meta.get_field('name').get_internal_type()
-
-# class MyPlaceManager(models.Manager):
-#     def get_queryset(self):
-#         return super().get_queryset().filter(writer_user=self.req)
-
 class ActivePlaceManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True)
 
 
 class Place(models.Model):
-    # families = models.ManyToManyField(AttributesFamily)
     is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
     # is_bookmarked = models.BooleanField(default=False)
@@ -389,6 +374,7 @@ class UserPlaceRelation(models.Model):
 
 class Location(models.Model):
     place = models.OneToOneField(Place, related_name="locations", on_delete=models.CASCADE, primary_key=True)
+    point = gis_models.PointField(srid=4326, null=True, blank=True)
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
     country = models.CharField(max_length=255, null=True, blank=True)
     state = models.CharField(max_length=255, null=True, blank=True)

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+import platform
 from datetime import timedelta
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
@@ -32,7 +33,7 @@ ALLOWED_HOSTS = ['go.attaplace.info', '3.67.98.251', '127.0.0.1', '159.223.216.1
 
 _VERSION = {
     "WORKING": False,  # set True while working on new version of project. When True apps (mobile, ...) not work
-    "WHITELIST": ['1.0.0', '1.1.0', '1.1.1', '1.2.0', ],
+    "WHITELIST": ['1.0.0', '1.1.0', '1.1.1', '1.2.0', '1.3.0', ],
 }
 
 # Application definition
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.gis',
     ############################
     'django_filters',
     'django_countries',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'mptt',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_gis',
     'djoser',
     # 'rest_framework_swagger',
     'rest_framework_simplejwt',
@@ -176,7 +179,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'travex.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 # 'default': {
@@ -188,10 +190,11 @@ WSGI_APPLICATION = 'travex.wsgi.application'
 #         'HOST': 'localhost',
 #         'PORT': '5432',
 #     }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'travex_db',
         'USER': 'travex_user',
         'PASSWORD': '123',
@@ -199,6 +202,10 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+if platform.system() == 'Darwin':
+    GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
+    GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
 
 # LEAFLET_CONFIG = {
 #     # "SPATIAL_EXTENT": (5.0, 44.0, 7.5, 46),

@@ -31,7 +31,7 @@ from place.serializers.serializers import PlaceSerializer, ClimaticConditionSeri
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
     LocationSerializer, ClimaticConditiommSerializer, \
-    CustomUserPatchSerializer
+    CustomUserPatchSerializer, CustomUserRetrieveSerializer
 from place.serializers.group_serializer import GroupSerializer
 from place.serializers.bookmark_serializer import BookmarkSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
@@ -317,7 +317,7 @@ class MyPlacesViewSet(mixins.ListModelMixin,
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Place.objects.filter(is_active=True, writer_user=self.request.user)
+        return Place.objects.filter(writer_user=self.request.user)
 
 
 def get_location(lat, lon):
@@ -458,14 +458,21 @@ class CustomUserViewSetFromDjoser(UserViewSet):
 
         return super().create(request, *args, **kwargs)
 
+    @action(["post"], detail=False)
+    def reset_password(self, request, *args, **kwargs):
+        response: Response = super().reset_password(request, args, kwargs)
+        if 300 > response.status_code >= 200:
+            return Response({'success': True, 'data': None})
+        return Response({'success': False, 'data': None})
 
-class FollowingViewSet(mixins.ListModelMixin,
-                       viewsets.GenericViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserPatchSerializer
 
-    def get_queryset(self):
-        return
+# class FollowingViewSet(mixins.ListModelMixin,
+#                        viewsets.GenericViewSet):
+#     queryset = CustomUser.objects.all()
+#     serializer_class = CustomUserPatchSerializer
+#
+#     def get_queryset(self):
+#         return
 
 
 class CustomUserViewSet(
@@ -476,8 +483,18 @@ class CustomUserViewSet(
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
 
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserPatchSerializer
+    default_serializer_class = CustomUserPatchSerializer
+    serializer_classes = {
+        'list': CustomUserRetrieveSerializer,
+        'retrieve': CustomUserRetrieveSerializer,
+        # 'create': ,
+        # 'put': ,
+        'patch': CustomUserPatchSerializer,
+    }
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        return self.serializer_classes.get(self.action, self.default_serializer_class)
 
     def get_queryset(self):
         queryset = CustomUser.objects.all()
