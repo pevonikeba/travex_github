@@ -40,7 +40,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
     image = serializers.SerializerMethodField()
     # followings = FollowingSerializer(many=True, read_only=True)
     # followers = serializers.SerializerMethodField()
-    achievements = AchievementSerializer(many=True, required=False)
+    achievements = AchievementSerializer(many=True, required=False, read_only=True, source='first_5_achievements')
 
     class Meta:
         model = CustomUser

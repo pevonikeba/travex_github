@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna, Cuisine, Entertainment, \
     NaturalPhenomena, Safe, UniquenessPlace, Vibe, WhereToTakeAPicture, InterestingFacts, PracticalInformation
-from place.serializers.serializers import CustomUserSerializer
+from place.serializers.serializers import CustomUserSerializer, CustomUserRetrieveSerializer
 from loguru import logger
 
 from place.serializers.place_nested import PlaceImageSerializer
@@ -251,7 +251,7 @@ def create_section_simple(title, key, icon_name, display_type, children) -> dict
 class PlaceRetrieveSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     place_images = PlaceImageSerializer(many=True, required=False)
-    writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
+    writer_user = CustomUserRetrieveSerializer(default=serializers.CurrentUserDefault())
     is_bookmarked = serializers.SerializerMethodField()
     is_wowed = serializers.SerializerMethodField()
     is_nahed = serializers.SerializerMethodField()

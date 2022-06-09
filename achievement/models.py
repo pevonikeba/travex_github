@@ -23,6 +23,7 @@ class Achievement(models.Model):
     level_increase_to = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     owner = models.ManyToManyField('place.CustomUser', through='OwnedAchievement', related_name='achievements')
 
+
     def __str__(self):
         return f'{self.title}: level increase to -> {self.level_increase_to}'
 

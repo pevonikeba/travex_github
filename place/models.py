@@ -161,6 +161,10 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['is_active', 'username']
 
+    @property
+    def first_5_achievements(self):
+        return self.achievements.all()[0:5]
+
     def __str__(self):
         return self.email
 

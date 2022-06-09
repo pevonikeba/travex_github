@@ -11,6 +11,7 @@ class AchievementSerializer(ModelSerializer):
         fields = '__all__'
 
 
+
 # class OwnedAchievementSerializer(ModelSerializer):
 #     class Meta:
 #         model = OwnedAchievement
