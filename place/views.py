@@ -521,15 +521,24 @@ class CustomUserViewSet(
 
     @action(detail=True, methods=['patch'])
     def add_or_delete_following(self, request, pk=None):
-        user: CustomUser = request.user
-        subscriber: CustomUser = CustomUser.objects.filter(pk=pk).first()
-        if subscriber:
-            if user.followings.filter(pk=pk).exists():
-                user.followings.remove(subscriber)
-                return Response({'unfollowing': subscriber.email})
+        request_user: CustomUser = request.user
+        following_user: CustomUser = CustomUser.objects.filter(pk=pk).first()
+
+        if following_user:
+            if request_user.followings.filter(pk=pk).exists():
+                request_user.followings.remove(following_user)
+                user_followers_amount = CustomUser.objects.filter(followings=following_user).count()
+                is_following = False
             else:
-                user.followings.add(subscriber)
-                return Response({'following': subscriber.email})
+                request_user.followings.add(following_user)
+                is_following = True
+                user_followers_amount = CustomUser.objects.filter(followings=following_user).count()
+            return Response(
+                {
+                    'is_following': is_following,
+                    'user_followers_amount': user_followers_amount,
+                }
+            )
 
 # class CustomUserDetailView(RetrieveUpdateDestroyAPIView):
 #     queryset = CustomUser.objects.all()
