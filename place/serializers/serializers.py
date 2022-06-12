@@ -9,7 +9,7 @@ from achievement.serializers import AchievementSerializer
 from place.models import Place, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, ClimaticConditiomm
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
     NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, WhereToTakeAPictureSerializer, \
@@ -349,12 +349,6 @@ class ClimaticConditionSerializer(ModelSerializer):
     class Meta:
         model = ClimaticCondition
         fields = ('id', 'condition', 'climate', 'description', '__str__')
-
-
-class ClimaticConditiommSerializer(ModelSerializer):
-    class Meta:
-        model = ClimaticConditiomm
-        fields = '__all__'
 
 
 class GeographicalFeatureSerializer(ModelSerializer):

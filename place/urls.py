@@ -3,7 +3,7 @@ from rest_framework.routers import SimpleRouter
 from place.views import PlaceViewSet, GroupViewSet, TypeOfTerrainViewSet, CategoryViewSet, \
     UserPlaceRelationView, TypeTransportViewSet, TypeCuisineViewSet, \
     TransportViewSet, PlaceImageViewSet, AccommodationOptionViewSet, MustSeeViewSet, FloraFaunaViewSet, \
-    LocationViewSet, ClimaticConditionViewSet, ClimaticConditiommViewSet, MyPlacesViewSet, BookmarkedPlaceViewSet, \
+    LocationViewSet, ClimaticConditionViewSet, MyPlacesViewSet, BookmarkedPlaceViewSet, \
     CuisineViewSet, EntertainmentViewSet, SafeViewSet, UniquenessPlaceViewSet, VibeViewSet, InterestingFactsViewSet, \
     WhereToTakeAPictureViewSet, PracticalInformationViewSet, NaturalPhenomenaViewSet
 
@@ -29,7 +29,6 @@ router.register(r'must_sees', MustSeeViewSet)
 router.register(r'flora_faunas', FloraFaunaViewSet)
 router.register(r'locations', LocationViewSet)
 router.register(r'climatic_condition', ClimaticConditionViewSet)
-router.register(r'climatic_conditiomms', ClimaticConditiommViewSet)
 
 router.register(r'place_relation', UserPlaceRelationView)
 router.register(r'type_transport', TypeTransportViewSet)

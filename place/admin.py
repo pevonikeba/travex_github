@@ -21,6 +21,7 @@ from place.models import Place, Group, PlaceImage, Transport, AccommodationOptio
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
     PracticalInformation, TypeTransport, TypeCuisine, Location
 
+
 # admin.site.register(WorldBorder, admin.ModelAdmin)
 
 class SafeInline(TabularInline):

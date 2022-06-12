@@ -21,7 +21,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelV
 from achievement.models import Achievement
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
-    Location, Bookmark, ClimaticConditiomm, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
+    Location, Bookmark, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
     InterestingFacts, PracticalInformation, WhereToTakeAPicture
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
@@ -30,7 +30,7 @@ from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, ClimaticConditionSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    LocationSerializer, ClimaticConditiommSerializer, \
+    LocationSerializer, \
     CustomUserPatchSerializer, CustomUserRetrieveSerializer
 from place.serializers.group_serializer import GroupSerializer
 from place.serializers.bookmark_serializer import BookmarkSerializer
@@ -201,9 +201,9 @@ class ClimaticConditionViewSet(PlaceNestedViewSet):
     serializer_class = ClimaticConditionSerializer
 
 
-class ClimaticConditiommViewSet(PlaceNestedViewSet):
-    queryset = ClimaticConditiomm.objects.all()
-    serializer_class = ClimaticConditiommSerializer
+# class ClimaticConditiommViewSet(PlaceNestedViewSet):
+#     queryset = ClimaticConditiomm.objects.all()
+#     serializer_class = ClimaticConditiommSerializer
 
 
 class CategoryViewSet(ModelViewSet):

@@ -310,20 +310,20 @@ class Place(models.Model):
         return f'{self.id}: {self.name}'
 # ----------------------------------------------------------------------------------------
 
-
-class ClimaticConditiomm(models.Model):
-    place = models.OneToOneField(
-        Place,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='climatic_conditiomm',
-    )
-    condition = models.CharField(max_length=255)
-    climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255)
-    description = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.condition} - {self.climate}'
+#
+# class ClimaticConditiomm(models.Model):
+#     place = models.OneToOneField(
+#         Place,
+#         on_delete=models.CASCADE,
+#         primary_key=True,
+#         related_name='climatic_conditiomm',
+#     )
+#     condition = models.CharField(max_length=255)
+#     climate = models.CharField(choices=CLIMATE_CHOICES, max_length=255)
+#     description = models.TextField(null=True, blank=True)
+#
+#     def __str__(self):
+#         return f'{self.condition} - {self.climate}'
 
 
 class UserPlaceRelation(models.Model):
