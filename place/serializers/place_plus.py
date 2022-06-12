@@ -1,7 +1,7 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
     PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, ClimaticConditiomm, GeographicalFeature, \
     Cuisine, Entertainment, NaturalPhenomena, TypeCuisine, Safe, HOW_DANGEROUS_CHOICES, UniquenessPlace, Vibe, \
-    WhereToTakeAPicture, InterestingFacts, PracticalInformation
+    WhereToTakeAPicture, InterestingFacts, PracticalInformation, Location
 from django.db import models
 from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer, \
     TypeCuisineSerializer
@@ -556,35 +556,37 @@ def get_plus_place():
                 }
             ]
         },
-        # {
-        #     "key": get_field_name(Place, 'climatic_conditiomm'),
-        #     "header": "Climate",
-        #     "is_nested": False,
-        #     "inputs": [
-        #         {
-        #             "key": get_field_name(ClimaticConditiomm, 'condition'),
-        #             "placeholder": 'Condition',
-        #             'title': 'Condition',
-        #             'field_type': FieldTypes.text_field,
-        #             'required': get_is_field_required(ClimaticConditiomm, 'condition'),
-        #         },
-        #         {
-        #             "key": get_field_name(ClimaticConditiomm, 'climate'),
-        #             "placeholder": "Climate",
-        #             'title': "Climate",
-        #             'field_type': FieldTypes.picker,
-        #             "options": get_choices_options(CLIMATE_CHOICES),
-        #             'required': get_is_field_required(ClimaticConditiomm, 'climate'),
-        #         },
-        #         {
-        #             'key': get_field_name(ClimaticConditiomm, 'description'),
-        #             "placeholder": 'Description',
-        #             'title': "Description",
-        #             'field_type': FieldTypes.text_field,
-        #             'required': get_is_field_required(ClimaticConditiomm, 'description'),
-        #         },
-        #     ]
-        # },
+        {
+
+            "key": get_field_name(Place, 'climatic_conditiomm'),
+            "url_key": 'climatic_conditiomms',
+            "header": "Climate",
+            "is_nested": False,
+            "inputs": [
+                {
+                    "key": get_field_name(ClimaticConditiomm, 'condition'),
+                    "placeholder": 'Condition',
+                    'title': 'Condition',
+                    'field_type': FieldTypes.char_field,
+                    'required': get_is_field_required(ClimaticConditiomm, 'condition'),
+                },
+                {
+                    "key": get_field_name(ClimaticConditiomm, 'climate'),
+                    "placeholder": "Climate",
+                    'title': "Climate",
+                    'field_type': FieldTypes.picker,
+                    "options": get_choices_options(CLIMATE_CHOICES),
+                    'required': get_is_field_required(ClimaticConditiomm, 'climate'),
+                },
+                {
+                    'key': get_field_name(ClimaticConditiomm, 'description'),
+                    "placeholder": 'Description',
+                    'title': "Description",
+                    'field_type': FieldTypes.text_field,
+                    'required': get_is_field_required(ClimaticConditiomm, 'description'),
+                },
+            ]
+        },
         {
             'key': None,
             'header': 'Climate and geography',
@@ -631,6 +633,21 @@ def get_plus_place():
 
             ]
         },
+        # {
+        #     'key': None,
+        #     'url_key': 'locations',
+        #     'header': 'Location',
+        #     'is_nested': False,
+        #     'inputs': [
+        #         {
+        #             'key': get_field_name(Location, 'city'),
+        #             'placeholder': 'City',
+        #             'title': 'City',
+        #             'field_type': FieldTypes.char_field,
+        #             'required': get_is_field_required(Location, 'city')
+        #         }
+        #     ]
+        # }
         # {
         #     'key': get_field_name(Place, 'geographical_feature'),
         #     'header': 'Geographical feature',

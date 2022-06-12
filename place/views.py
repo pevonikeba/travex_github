@@ -341,23 +341,22 @@ class LocationViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         if serializer.is_valid():
-            latitude = serializer.validated_data["latitude"]
-            longitude = serializer.validated_data['longitude']
-            logger.warning(latitude)
-            logger.warning(longitude)
-            location = get_location(latitude, longitude)
-            if location:
-                logger.info(location)
-                address = location.get("address")
-                logger.warning(address)
-                # extra_data = serializer.data
-                if address:
-                    country = address.get("country")
-                    state = address.get("state")
-                    county = address.get("county")
-                    city = address.get("city")
-                    # TODO: get continent
-                    serializer.save(country=country, city=city, state=state, county=county)
+            latitude = serializer.validated_data.get("latitude")
+            longitude = serializer.validated_data.get('longitude')
+            if latitude and longitude:
+                location = get_location(latitude, longitude)
+                if location:
+                    logger.info(location)
+                    address = location.get("address")
+                    logger.warning(address)
+                    # extra_data = serializer.data
+                    if address:
+                        country = address.get("country")
+                        state = address.get("state")
+                        county = address.get("county")
+                        city = address.get("city")
+                        # TODO: get continent
+                        serializer.save(country=country, city=city, state=state, county=county)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         # return super(LocationViewSet, self).create(request, args, kwargs)
 

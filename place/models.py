@@ -384,8 +384,8 @@ class Location(models.Model):
     state = models.CharField(max_length=255, null=True, blank=True)
     county = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=13, decimal_places=10)
-    longitude = models.DecimalField(max_digits=13, decimal_places=10)
+    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
     nearest_place = models.TextField(null=True, blank=True)
     # nearest_place = models.ForeignKey(Place, related_name="nearest_place_locations", on_delete=models.CASCADE)
 

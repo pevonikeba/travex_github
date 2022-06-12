@@ -29,7 +29,7 @@ router.register(r'must_sees', MustSeeViewSet)
 router.register(r'flora_faunas', FloraFaunaViewSet)
 router.register(r'locations', LocationViewSet)
 router.register(r'climatic_condition', ClimaticConditionViewSet)
-router.register(r'climatic_conditiomm', ClimaticConditiommViewSet)
+router.register(r'climatic_conditiomms', ClimaticConditiommViewSet)
 
 router.register(r'place_relation', UserPlaceRelationView)
 router.register(r'type_transport', TypeTransportViewSet)
