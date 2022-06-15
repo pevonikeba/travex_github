@@ -19,7 +19,7 @@ from place.serializers.place_nested import PlaceImageSerializer, TransportSerial
 # class FollowingSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = CustomUser
-#         fields = ('id', 'email', 'username', 'first_name', 'last_name', 'age', 'bio',
+#         fields = ('id', 'email', 'username', 'first_name', 'last_name', 'birth', 'bio',
 #                   'achievements', 'gender', 'language', 'image',)
 
 
@@ -27,7 +27,7 @@ class CustomUserPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'username', 'first_name', 'last_name',
-                  'age', 'bio', 'gender', 'language', 'image', )
+                  'birth', 'bio', 'gender', 'language', 'image', )
 
 
 class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
@@ -44,7 +44,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'age', 'bio', 'gender', 'language', 'image',
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'birth', 'bio', 'gender', 'language', 'image',
                   # 'followings', 'followers',
                   'added_places_amount', 'achievements',
                   'following_amount', 'follower_amount', 'is_follower', 'is_following',
@@ -112,7 +112,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
 
-        fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user',)
+        fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user',
+                  'birth', 'first_name', 'last_name', 'bio', )
 
     # def validate_password(self, value: str) -> str:
     #     """

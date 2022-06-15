@@ -141,8 +141,9 @@ class CustomUser(AbstractUser):
     # image = models.ImageField(upload_to='images/custom_user/', null=True, blank=True)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    age = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)],
-                                      null=True, blank=True)
+    # age = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)],
+    #                                   null=True, blank=True)
+    birth = models.DateField(null=True, blank=True)
 
     GENDER_CHOICES = [
         ('m', 'Male'),
