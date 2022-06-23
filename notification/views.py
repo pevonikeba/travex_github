@@ -3,12 +3,12 @@ from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from notification.models import Topic, Notification, UserDevice
+from notification.models import Topic, Notification, UserDevice, NotificationSend
 from rest_framework.decorators import action
 
 from place.models import CustomUser
 from .fcm_manager import FCMManager
-from .serializers import UserDeviceSerializer, NotificationSerializer
+from .serializers import UserDeviceSerializer, NotificationSerializer, NotificationSendSerializer
 
 
 class UserDeviceViewSet(viewsets.ModelViewSet):
@@ -17,17 +17,24 @@ class UserDeviceViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class NotificationViewSet(mixins.ListModelMixin,
-                          viewsets.GenericViewSet):
-    serializer_class = NotificationSerializer
-    queryset = Notification.objects.all()
+class NotificationSendViewSet(mixins.ListModelMixin,
+                              viewsets.GenericViewSet):
+    serializer_class = NotificationSendSerializer
+    queryset = NotificationSend.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         only_my = self.request.query_params.get('only_my')
         if only_my:
-            return Notification.objects.filter(user=self.request.user)
-        return super(NotificationViewSet, self).get_queryset()
+            return NotificationSend.objects.filter(users=self.request.user)
+        return super(NotificationSendViewSet, self).get_queryset()
+
+
+class NotificationViewSet(mixins.ListModelMixin,
+                          viewsets.GenericViewSet):
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.all()
+    permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=['POST'])
     def add_or_refresh_user_device(self, request):

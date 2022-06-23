@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from notification.models import UserDevice, Notification
+from notification.models import UserDevice, Notification, NotificationSend, Topic
+from place.serializers.serializers import CustomUserSerializer
 
 
 class UserDeviceSerializer(serializers.ModelSerializer):
@@ -9,7 +10,24 @@ class UserDeviceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topic
+        fields = '__all__'
+
+
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ('type', 'title', 'body', 'created_at', )
+        fields = '__all__'
+
+
+class NotificationSendSerializer(serializers.ModelSerializer):
+    notification = NotificationSerializer()
+    topic = TopicSerializer()
+    users = CustomUserSerializer(many=True)
+
+    class Meta:
+        model = NotificationSend
+        fields = '__all__'
+
