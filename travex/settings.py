@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'place',
     'achievement',
     'comment',
+    'notification',
 ]
 
 AUTH_USER_MODEL = 'place.CustomUser'
@@ -135,6 +136,10 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
+if platform.system() == 'Darwin':
+    FIREBASE_CRED_PATH = '/Users/arslion/Documents/Perman/travex_github/notification/serviceAccountKey.json'
+else:
+    FIREBASE_CRED_PATH = '/home/perman/travex_github/notification/serviceAccountKey.json'
 
 # APPEND_SLASH = False
 

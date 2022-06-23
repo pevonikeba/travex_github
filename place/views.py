@@ -19,6 +19,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 
 from achievement.models import Achievement
+from notification.models import UserDevice
+from notification.notifications import send_impression_notification
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
     Location, Bookmark, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
@@ -282,6 +284,8 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             is_wowed = True
             if place.nahed_users.filter(pk=request.user.id).exists():
                 place.nahed_users.remove(request.user)
+            # Send notification
+            send_impression_notification(user=place.writer_user)
 
         return Response({
             'is_wowed': is_wowed,

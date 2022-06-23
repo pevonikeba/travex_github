@@ -578,7 +578,6 @@ class BookmarkLike(models.Model):
         return f"{self.writer_user.username} - {self.place.name}"
 
 
-
 class Bookmark(BookmarkLike):
     pass
 
