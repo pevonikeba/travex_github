@@ -25,9 +25,8 @@ class NotificationSerializer(serializers.ModelSerializer):
 class NotificationSendSerializer(serializers.ModelSerializer):
     notification = NotificationSerializer()
     topic = TopicSerializer()
-    users = CustomUserSerializer(many=True)
 
     class Meta:
         model = NotificationSend
-        fields = '__all__'
+        fields = ('notification', 'topic', 'created_at', )
 
