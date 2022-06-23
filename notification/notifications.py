@@ -19,3 +19,7 @@ def send_impression_notification(user):
             FCMManager.send_token_push(notification_title,
                                        notification_body,
                                        tokens)
+
+
+# def send_topic_notification():
+#     FCMManager.send_topic_push()

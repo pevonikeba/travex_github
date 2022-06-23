@@ -12,4 +12,4 @@ class UserDeviceSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ('type', 'title', 'body',)
+        fields = ('type', 'title', 'body', 'created_at', )

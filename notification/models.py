@@ -13,6 +13,8 @@ class UserDevice(models.Model):
 
 class Topic(models.Model):
     title = models.CharField(max_length=255)
+    body = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     # image = models.ImageField(upload_to='images/notifications/topics/', null=True, blank=True)
 
     def __str__(self):
