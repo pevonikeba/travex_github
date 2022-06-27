@@ -285,7 +285,7 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             if place.nahed_users.filter(pk=request.user.id).exists():
                 place.nahed_users.remove(request.user)
             # Send notification
-            # send_impression_notification(user=place.writer_user)
+            send_impression_notification(user=place.writer_user)
 
         return Response({
             'is_wowed': is_wowed,

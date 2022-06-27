@@ -40,7 +40,9 @@ class NotificationAdmin(admin.ModelAdmin):
                 tokens = []
                 for user in users.all():
                     for user_device in user.user_devices.all():
-                        tokens.append(user_device.firebase_token)
+                        fb_token = user_device.firebase_token
+                        if fb_token:
+                            tokens.append(fb_token)
                 if tokens:
                     FCMManager.send_token_push(
                         title=notif_title,

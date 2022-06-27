@@ -12,10 +12,11 @@ def send_impression_notification(user):
         if tokens:
             notification_title = 'Impression'
             notification_body = 'You have been wowed by the user'
-            Notification.objects.create(type=Notification.IMPRESSION,
-                                        user=user,
+            notification = Notification.objects.create(
                                         title=notification_title,
                                         body=notification_body)
+            notification.users.add(user)
+            notification.save()
             FCMManager.send_token_push(notification_title,
                                        notification_body,
                                        tokens)
