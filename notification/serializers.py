@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-from notification.models import UserDevice, Notification, NotificationSend, Topic
-from place.serializers.serializers import CustomUserSerializer
-
+from notification.models import UserDevice, Notification, Topic
 
 class UserDeviceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,16 +15,9 @@ class TopicSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Notification
-        fields = '__all__'
+        fields = ('id', 'title', 'body', 'image', 'created_at', )
 
-
-class NotificationSendSerializer(serializers.ModelSerializer):
-    notification = NotificationSerializer()
-    topic = TopicSerializer()
-
-    class Meta:
-        model = NotificationSend
-        fields = ('notification', 'topic', 'created_at', )
 

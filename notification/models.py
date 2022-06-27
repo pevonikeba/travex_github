@@ -23,19 +23,21 @@ class Notification(models.Model):
     body = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/notifications/', null=True, blank=True)
     users = models.ManyToManyField(CustomUser, blank=True)
-
-    def __str__(self):
-        return f'{self.title}'
-
-
-class NotificationSend(models.Model):
-    notification = models.ForeignKey(Notification, on_delete=models.PROTECT)
-    topic = models.ForeignKey(Topic, on_delete=models.PROTECT, null=True, blank=True)
-    users = models.ManyToManyField(CustomUser, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.notification} - {self.topic} - {self.created_at}'
+        return f'{self.title}: {self.created_at}'
+
+
+# class NotificationSend(models.Model):
+#     notification = models.ForeignKey(Notification, on_delete=models.PROTECT)
+#     topic = models.ForeignKey(Topic, on_delete=models.PROTECT, null=True, blank=True)
+#     users = models.ManyToManyField(CustomUser, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return f'{self.notification} - {self.topic} - {self.created_at}'
 
  # IMPRESSION = 'IMP'
  #    OTHER = 'OTH'

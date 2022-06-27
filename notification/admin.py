@@ -2,7 +2,7 @@ from django.contrib import admin
 from loguru import logger
 
 from notification.fcm_manager import FCMManager
-from notification.models import UserDevice, Topic, Notification, NotificationSend
+from notification.models import UserDevice, Topic, Notification
 
 
 @admin.register(UserDevice)
