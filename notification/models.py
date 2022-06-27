@@ -22,6 +22,7 @@ class Notification(models.Model):
     title = models.CharField(max_length=255)
     body = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/notifications/', null=True, blank=True)
+    users = models.ManyToManyField(CustomUser, blank=True)
 
     def __str__(self):
         return f'{self.title}'
