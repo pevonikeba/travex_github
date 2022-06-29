@@ -285,7 +285,7 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             if place.nahed_users.filter(pk=request.user.id).exists():
                 place.nahed_users.remove(request.user)
             # Send notification
-            send_impression_notification(user=place.writer_user)
+            # send_impression_notification(place)
 
         return Response({
             'is_wowed': is_wowed,
@@ -461,12 +461,14 @@ class CustomUserViewSetFromDjoser(UserViewSet):
 
         return super().create(request, *args, **kwargs)
 
-    @action(["post"], detail=False)
-    def reset_password(self, request, *args, **kwargs):
-        response: Response = super().reset_password(request, args, kwargs)
-        if 300 > response.status_code >= 200:
-            return Response({'success': True, 'data': None})
-        return Response({'success': False, 'data': None})
+
+# class CustomUserPasswordViewSetFromDjoser(UserViewSet):
+#     @action(["post"], detail=False)
+#     def reset_password(self, request, *args, **kwargs):
+#         response: Response = super().reset_password(request, args, kwargs)
+#         if 300 > response.status_code >= 200:
+#             return Response({'success': True, 'data': None})
+#         return Response({'success': False, 'data': None})
 
 
 # class FollowingViewSet(mixins.ListModelMixin,

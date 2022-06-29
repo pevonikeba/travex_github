@@ -53,7 +53,8 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
     def get_image(self, user: CustomUser):
         request = self.context.get('request')
         if user.image:
-            return request.build_absolute_uri(user.image.url)
+            if request:
+                return request.build_absolute_uri(user.image.url)
         else:
             social_auth_img = self.get_social_auth_img(user)
             return social_auth_img or None
@@ -73,15 +74,19 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
         return Place.active_objects.filter(writer_user=obj).count()
 
     def get_is_follower(self, obj):
-        requested_user = self.context['request'].user
-        if obj.followings.filter(pk=requested_user.pk).exists():
-            return True
+        request = self.context.get('request')
+        if request:
+            requested_user: CustomUser = request.user
+            if obj.followings.filter(pk=requested_user.pk).exists():
+                return True
         return False
 
     def get_is_following(self, obj):
-        requested_user: CustomUser = self.context['request'].user
-        if requested_user.followings.filter(pk=obj.pk).exists():
-            return True
+        request = self.context.get('request')
+        if request:
+            requested_user: CustomUser = request.user
+            if requested_user.followings.filter(pk=obj.pk).exists():
+                return True
         return False
 
         # def get_followers(self, obj):

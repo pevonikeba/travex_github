@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.apple',
     'colorfield',
     'imagekit',
+    'cities',
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
     # "leaflet",
@@ -225,6 +226,21 @@ if platform.system() == 'Darwin':
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
+
+
+# CITIES_DATA_DIR = BASE_DIR / 'data'
+
+
+CITIES_FILES = {
+    # ...
+    'city': {
+       'filename': '/Users/arslion/Downloads/cities1000.txt',
+       # 'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+       # 'urls':     ['/Users/arslion/Downloads/'+'{filename}']
+    },
+    # ...
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {

@@ -274,8 +274,9 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
 
     def is_bookmark_like(self, obj, attr_name):
         request = self.context.get('request')
-        if getattr(obj, attr_name).filter(pk=request.user.id).exists():
-            return True
+        if request:
+            if getattr(obj, attr_name).filter(pk=request.user.id).exists():
+                return True
         return False
 
     def get_is_bookmarked(self, obj: Place):

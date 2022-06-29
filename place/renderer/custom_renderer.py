@@ -15,11 +15,11 @@ class CustomRenderer(JSONRenderer):
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         response_content = {}
+        request = renderer_context.get('request')
+        response = renderer_context.get('response')
         if is_client_error(renderer_context.get('response').status_code):
             response_content['success'] = False
             # logger.warning(renderer_context)
-            request = renderer_context.get('request')
-            response = renderer_context.get('response')
             error = response.data
             logger.warning(response.data)
             detail = data.get('detail')
@@ -39,6 +39,8 @@ class CustomRenderer(JSONRenderer):
                     error = data['token_error'] or data
             response_content['error'] = error
         else:
+            if request.path == '/auth/users/reset_password/' and request.method == 'POST':
+                renderer_context.get('response').status_code = 200
             NoneType = type(None)
             if not isinstance(data, str) and not isinstance(data, NoneType) and not isinstance(data, int):
                 if "access_token" in data:
