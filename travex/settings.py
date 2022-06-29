@@ -74,7 +74,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.apple',
     'colorfield',
     'imagekit',
-    'cities',
+    # 'cities',
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
     # "leaflet",
