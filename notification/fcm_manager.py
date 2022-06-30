@@ -70,4 +70,4 @@ class FCMManager:
         # registration token.
         response = messaging.send_multicast(message)
         # Response is a message ID string.
-        print('Successfully sent message:', response)
+        # print('Successfully sent message:', response)

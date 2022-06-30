@@ -24,10 +24,7 @@ class NotificationViewSet(mixins.ListModelMixin,
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        only_my = self.request.query_params.get('only_my')
-        if only_my:
-            return Notification.objects.filter(users=self.request.user)
-        return super(NotificationViewSet, self).get_queryset()
+        return Notification.objects.filter(users=self.request.user)
 
     @action(detail=False, methods=['POST'])
     def add_or_refresh_user_device(self, request):

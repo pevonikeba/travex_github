@@ -1,7 +1,7 @@
 from loguru import logger
 
 from notification.fcm_manager import FCMManager
-from notification.models import UserDevice, Notification
+from notification.models import UserDevice, Notification, Reference
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer
 
@@ -34,29 +34,32 @@ def data(data):
 
 
 def send_impression_notification(place):
-    logger.info(place.writer_user)
-    place_serializer = PlaceListSerializer(place)
-    logger.info(place_serializer.data)
+    user = place.writer_user
+    user_devices = UserDevice.objects.filter(user=user)
+    if user_devices.exists():
+        tokens = []
+        for ud in user_devices.all():
+            if ud.firebase_token:
+                tokens.append(ud.firebase_token)
+        if tokens:
+            notification_title = 'Impression'
+            # send by Firebase
+            FCMManager.send_token_push(notification_title,
+                                       'You have been wowed by the user',
+                                       tokens)
+            # save in database
+            place_main_ref, created = Reference.objects.get_or_create(type=Reference.PLACE,
+                                                                      title=place.name,
+                                                                      place=place,
+                                                                      ordering=1)
+            user_inline_ref, created = Reference.objects.get_or_create(type=Reference.USER,
+                                                                       title=place.writer_user.username,
+                                                                       writer_user=place.writer_user,
+                                                                       ordering=0)
+            notif = Notification.objects.create(title=notification_title,
+                                                body='ref[0] wowed your ref[1]',
+                                                main_reference=place_main_ref)
+            notif.users.add(place.writer_user)
+            notif.inline_references.add(user_inline_ref, place_main_ref)
 
-    title = 'Impression'
-    body = [
-        main_reference(MainReferenceTypes.place, 'Kamchatka', place_serializer.data),
-    ]
-    logger.info(body)
-    # user_devices = UserDevice.objects.filter(user=user)
-    # if user_devices.exists():
-    #     tokens = []
-    #     for ud in user_devices.all():
-    #         if ud.firebase_token:
-    #             tokens.append(ud.firebase_token)
-        # if tokens:
-        #     notification_title = 'Impression'
-        #     notification_body = 'You have been wowed by the user'
-        #     notification = Notification.objects.create(
-        #                                 title=notification_title,
-        #                                 body=notification_body)
-        #     notification.users.add(user)
-        #     notification.save()
-        #     FCMManager.send_token_push(notification_title,
-        #                                notification_body,
-        #                                tokens)
+

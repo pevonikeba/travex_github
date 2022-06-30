@@ -2,7 +2,7 @@ from django.contrib import admin
 from loguru import logger
 
 from notification.fcm_manager import FCMManager
-from notification.models import UserDevice, Topic, Notification
+from notification.models import UserDevice, Topic, Notification, Reference
 
 
 @admin.register(UserDevice)
@@ -21,6 +21,11 @@ class TopicAdmin(admin.ModelAdmin):
                                        body=obj.body)
 
         return super(TopicAdmin, self).response_change(request, obj)
+
+
+@admin.register(Reference)
+class ReferenceAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Notification)
