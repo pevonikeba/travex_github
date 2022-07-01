@@ -31,7 +31,7 @@ class NotificationSerializer(serializers.ModelSerializer):
         return {
             'type': 'Place',
             'title': place.name,
-            'data': PlaceListSerializer(place).data,
+            'data': PlaceListSerializer(place, context={'request': self.context.get('request')}).data,
         }
 
     def user_object(self, user):

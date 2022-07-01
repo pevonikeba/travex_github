@@ -104,10 +104,18 @@ class ThumbnailField(serializers.ImageField):
 
 class PlaceImageSerializer(serializers.ModelSerializer):
     # image = Base64ImageField(required=False)  # From DRF Extra Fields
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = PlaceImage
         fields = [field.name for field in model._meta.fields]
+
+    def get_image(self, obj: PlaceImage):
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.image.url)
+        return obj.image
+
 
 
 class MustSeeSerializer(ModelSerializer):
