@@ -170,6 +170,20 @@ class CustomUser(AbstractUser):
         return self.email
 
 
+class UserLocation(models.Model):
+    writer_user = models.OneToOneField(CustomUser, related_name="location", on_delete=models.CASCADE, primary_key=True)
+    point = gis_models.PointField(srid=4326, null=True, blank=True)
+    postal_code = models.CharField(max_length=20, blank=True, null=True)
+    # continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
+    # country = models.CharField(max_length=255, null=True, blank=True)
+    # state = models.CharField(max_length=255, null=True, blank=True)
+    # county = models.CharField(max_length=255, null=True, blank=True)
+    # city = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"Location of {self.writer_user}"
+
+
 def add_register_achievement(user: CustomUser) -> bool:
     on_register_achievement = Achievement.objects.filter(title=Achievement.ACHIEVEMENT_TITLE_CHOICES[0][0]).first()
     if on_register_achievement:
@@ -391,7 +405,7 @@ class Location(models.Model):
     # nearest_place = models.ForeignKey(Place, related_name="nearest_place_locations", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude} {self.nearest_place}"
+        return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude}"
 
 
 # class Location(MPTTModel):

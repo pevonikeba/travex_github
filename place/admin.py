@@ -19,7 +19,7 @@ from place.models import Place, Group, PlaceImage, Transport, AccommodationOptio
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine, Location
+    PracticalInformation, TypeTransport, TypeCuisine, Location, UserLocation
 
 
 # admin.site.register(WorldBorder, admin.ModelAdmin)
@@ -59,6 +59,24 @@ class LocationInline(gis_admin.OSMGeoAdmin, gis_admin.TabularInline):
         if self.verbose_name_plural is None:
             self.verbose_name_plural = self.model._meta.verbose_name_plural
 
+
+class UserLocationInline(gis_admin.OSMGeoAdmin, gis_admin.TabularInline):
+    extra = 0
+    model = UserLocation
+    fk_name = "writer_user"
+
+    def __init__(self, parent_model, admin_site):
+        self.admin_site = admin_site
+        self.parent_model = parent_model
+        self.opts = self.model._meta
+        self.has_registered_model = admin_site.is_registered(self.model)
+        overrides = FORMFIELD_FOR_DBFIELD_DEFAULTS.copy()
+        overrides.update(self.formfield_overrides)
+        self.formfield_overrides = overrides
+        if self.verbose_name is None:
+            self.verbose_name = self.model._meta.verbose_name
+        if self.verbose_name_plural is None:
+            self.verbose_name_plural = self.model._meta.verbose_name_plural
 
 class TransportInline(TabularInline):
     extra = 0
@@ -123,7 +141,12 @@ class PlaceInline(TabularInline):
 #     group_fieldsets = True
 
 @admin.register(Location)
-class ImageAdmin(ModelAdmin):
+class LocationAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(UserLocation)
+class UserLocationAdmin(ModelAdmin):
     pass
 
 
@@ -245,7 +268,7 @@ class CustomUserAdmin(UserAdmin):
                                                                                  )
     list_display = ('pk', 'email', 'username', 'is_active', 'is_staff')
     list_display_links = ('email', )
-    inlines = [OwnedAchievementInline]
+    inlines = [OwnedAchievementInline, UserLocationInline]
 
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):

@@ -5,7 +5,7 @@ from place.views import PlaceViewSet, GroupViewSet, TypeOfTerrainViewSet, Catego
     TransportViewSet, PlaceImageViewSet, AccommodationOptionViewSet, MustSeeViewSet, FloraFaunaViewSet, \
     LocationViewSet, ClimaticConditionViewSet, MyPlacesViewSet, BookmarkedPlaceViewSet, \
     CuisineViewSet, EntertainmentViewSet, SafeViewSet, UniquenessPlaceViewSet, VibeViewSet, InterestingFactsViewSet, \
-    WhereToTakeAPictureViewSet, PracticalInformationViewSet, NaturalPhenomenaViewSet
+    WhereToTakeAPictureViewSet, PracticalInformationViewSet, NaturalPhenomenaViewSet, UserLocationViewSet
 
 app_name = "place"
 

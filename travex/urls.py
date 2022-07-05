@@ -24,10 +24,12 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, To
 from allauth.account.views import LogoutView
 
 from travex.views import ActivateUserEmail, ResetPasswordView, eula, GoogleLogin, AppleLogin, MyTokenObtainPairView
-from place.views import CustomUserViewSetFromDjoser, check_version, CustomUserViewSet
+from place.views import CustomUserViewSetFromDjoser, check_version, CustomUserViewSet, UserLocationViewSet
 
 router = SimpleRouter()
 router.register(r'users/profiles', CustomUserViewSet)
+router.register(r'users/locations', UserLocationViewSet)
+
 # router.register(r'users/followings', )
 
 urlpatterns = [
@@ -49,6 +51,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('api/comments/', include('comment.urls')),
     path('api/notifications/', include('notification.urls', namespace='notification')),
+    path('api/locations/', include('location.urls', namespace='location')),
     path('logout', LogoutView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -74,7 +74,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.apple',
     'colorfield',
     'imagekit',
-    # 'cities',
+    'cities',
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
     # "leaflet",
@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'achievement',
     'comment',
     'notification',
+    'location',
 ]
 
 AUTH_USER_MODEL = 'place.CustomUser'
@@ -231,15 +232,16 @@ if platform.system() == 'Darwin':
 # CITIES_DATA_DIR = BASE_DIR / 'data'
 
 
-CITIES_FILES = {
-    # ...
-    'city': {
-       'filename': '/Users/arslion/Downloads/cities1000.txt',
-       # 'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
-       # 'urls':     ['/Users/arslion/Downloads/'+'{filename}']
-    },
-    # ...
-}
+# CITIES_FILES = {
+#     # ...
+#     'city': {
+#        # 'filename': '/Users/arslion/Downloads/cities500.txt',
+#        'filename': 'cities500.zip',
+#        'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+#        # 'urls':     ['/Users/arslion/Downloads/'+'{filename}']
+#     },
+#     # ...
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -278,7 +280,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -401,7 +403,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = BASE_DIR / 'media/'
 
 # SOCIAL_AUTH_JSONFIELD_ENABLED = True
 #

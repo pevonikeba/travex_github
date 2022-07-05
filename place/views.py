@@ -24,7 +24,7 @@ from notification.notifications import send_impression_notification
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
     Location, Bookmark, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
-    InterestingFacts, PracticalInformation, WhereToTakeAPicture
+    InterestingFacts, PracticalInformation, WhereToTakeAPicture, UserLocation
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkLikeSerializer
@@ -33,7 +33,7 @@ from place.serializers.serializers import PlaceSerializer, ClimaticConditionSeri
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
     LocationSerializer, \
-    CustomUserPatchSerializer, CustomUserRetrieveSerializer
+    CustomUserPatchSerializer, CustomUserRetrieveSerializer, UserLocationSerializer
 from place.serializers.group_serializer import GroupSerializer
 from place.serializers.bookmark_serializer import BookmarkSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
@@ -346,11 +346,13 @@ class LocationViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         if serializer.is_valid():
+
             latitude = serializer.validated_data.get("latitude")
             longitude = serializer.validated_data.get('longitude')
             if latitude and longitude:
                 location = get_location(latitude, longitude)
                 if location:
+                    logger.info('goood')
                     logger.info(location)
                     address = location.get("address")
                     logger.warning(address)
@@ -364,6 +366,12 @@ class LocationViewSet(ModelViewSet):
                         serializer.save(country=country, city=city, state=state, county=county)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         # return super(LocationViewSet, self).create(request, args, kwargs)
+
+
+class UserLocationViewSet(ModelViewSet):
+    queryset = UserLocation.objects.all()
+    serializer_class = UserLocationSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):

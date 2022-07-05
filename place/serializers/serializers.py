@@ -9,7 +9,7 @@ from achievement.serializers import AchievementSerializer
 from place.models import Place, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, UserLocation
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
     NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, WhereToTakeAPictureSerializer, \
@@ -48,7 +48,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
                   # 'followings', 'followers',
                   'added_places_amount', 'achievements',
                   'following_amount', 'follower_amount', 'is_follower', 'is_following',
-                  'achievement_level_amount',)
+                  'achievement_level_amount', )
 
     def get_image(self, user: CustomUser):
         request = self.context.get('request')
@@ -116,9 +116,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-
         fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user',
-                  'birth', 'first_name', 'last_name', 'bio', )
+                  'birth', 'first_name', 'last_name', 'bio',)
 
     # def validate_password(self, value: str) -> str:
     #     """
@@ -136,6 +135,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class UserLocationSerializer(GeoFeatureModelSerializer):
+    class Meta:
+        model = UserLocation
+        geo_field = 'point'
+        fields = '__all__'
 
 
 class LocationSerializer(GeoFeatureModelSerializer): # CountryFieldMixin,
