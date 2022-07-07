@@ -74,10 +74,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.apple',
     'colorfield',
     'imagekit',
-    'cities',
+    'drf_multiple_model',
     # 'location_field.apps.DefaultConfig',
     # 'django.contrib.gis',
     # "leaflet",
+    'cities',
     'place',
     'achievement',
     'comment',
@@ -232,16 +233,18 @@ if platform.system() == 'Darwin':
 # CITIES_DATA_DIR = BASE_DIR / 'data'
 
 
-# CITIES_FILES = {
-#     # ...
-#     'city': {
-#        # 'filename': '/Users/arslion/Downloads/cities500.txt',
-#        'filename': 'cities500.zip',
-#        'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
-#        # 'urls':     ['/Users/arslion/Downloads/'+'{filename}']
-#     },
-#     # ...
-# }
+CITIES_FILES = {
+    # ...
+    'city': {
+       'filename': '/Users/arslion/Downloads/cities500.txt',
+       # 'filename': 'cities500.zip',
+       'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+       # 'urls':     ['/Users/arslion/Downloads/'+'{filename}']
+    },
+    # ...
+}
+
+# CITIES_COUNTRY_MODEL = 'location.CustomCountryModel'
 
 
 AUTH_PASSWORD_VALIDATORS = [

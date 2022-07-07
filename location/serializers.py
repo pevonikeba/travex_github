@@ -1,5 +1,15 @@
 from rest_framework import serializers
 from cities.models import City, District, Country, PostalCode
+from rest_framework_gis.serializers import GeometrySerializerMethodField
+
+
+class LocationSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    country_name = serializers.CharField()
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+    # location = GeometrySerializerMethodField()
 
 
 class CitySerializer(serializers.ModelSerializer):
