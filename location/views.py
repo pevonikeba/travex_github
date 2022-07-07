@@ -139,7 +139,7 @@ def not_has_location_filtered_queryset(model, longitude: str, latitude: str):
     return queryset
 
 
-class TestViewSet(FlatMultipleModelAPIViewSet):
+class ChooseViewSet(FlatMultipleModelAPIViewSet):
     pagination_class = LimitPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', ]

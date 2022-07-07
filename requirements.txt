@@ -36,7 +36,6 @@ django-allauth==0.50.0
 django-appconf==1.0.5
 django-autoslug==1.9.8
 django-braces==1.15.0
-
 django-colorfield==0.6.3
 django-countries==7.3.2
 django-countries-plus==1.3.2
@@ -52,6 +51,7 @@ django-oauth-toolkit==1.7.1
 django-otp==1.1.3
 django-rest-auth==0.9.5
 django-rest-framework-social-oauth2==1.1.0
+django-rest-multiple-models==2.1.3
 django-templated-mail==1.1.1
 djangorestframework==3.13.1
 djangorestframework-gis==1.0
