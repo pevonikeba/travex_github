@@ -1,12 +1,11 @@
 import json
 
 # from rest_framework_simplejwt.locale import
-
-import requests
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from geopy import Nominatim
 from rest_framework import status, exceptions, filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -19,6 +18,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 
 from achievement.models import Achievement
+from location.views import get_location
 from notification.models import UserDevice
 from notification.notifications import send_impression_notification
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
@@ -325,45 +325,53 @@ class MyPlacesViewSet(mixins.ListModelMixin,
         return Place.objects.filter(writer_user=self.request.user)
 
 
-def get_location(lat, lon):
-    url = f'https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&accept-language=en&zoom=10'
-    try:
-        result = requests.get(url=url)
-        result_json = result.json()
-        logger.warning(result_json)
-        return result_json
-    except:
-        return None
+geolocator = Nominatim(user_agent="geoapiExercises")
+
+
+def city_state_country(coord):
+    location = geolocator.reverse(coord, exactly_one=True, language='en')
+    address = location.raw['address']
+    city = address.get('city', '')
+    state = address.get('state', '')
+    country = address.get('country', '')
+    return city, state, country
 
 
 class LocationViewSet(ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         if serializer.is_valid():
-
             latitude = serializer.validated_data.get("latitude")
             longitude = serializer.validated_data.get('longitude')
             if latitude and longitude:
+                logger.error(city_state_country(f"{latitude}, {longitude}"))
                 location = get_location(latitude, longitude)
-                if location:
-                    logger.info('goood')
-                    logger.info(location)
-                    address = location.get("address")
-                    logger.warning(address)
-                    # extra_data = serializer.data
-                    if address:
-                        country = address.get("country")
-                        state = address.get("state")
-                        county = address.get("county")
-                        city = address.get("city")
-                        # TODO: get continent
-                        serializer.save(country=country, city=city, state=state, county=county)
+                if not location:
+                    raise ValueError('Can\'t connect to nominatim server')
+                logger.info('goood')
+                logger.info(location)
+                address = location.get("address")
+                logger.warning(address)
+                # extra_data = serializer.data
+                if address:
+                    country = address.get("country")
+                    state = address.get("state")
+                    county = address.get("county")
+                    city = address.get("city")
+                    # TODO: get continent
+                    serializer.save(country=country,
+                                    city=city,
+                                    state=state,
+                                    county=county,
+                                    latitude=latitude,
+                                    longitude=longitude)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         # return super(LocationViewSet, self).create(request, args, kwargs)
 

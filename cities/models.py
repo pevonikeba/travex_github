@@ -190,7 +190,7 @@ class Region(Place, SlugModel):
         city = City.objects.filter(region=self).first()
         if not city:
             return None
-        return city.location.coords[0]
+        return city.location.coords[1] # edited
 
     @property
     def longitude(self):
@@ -198,7 +198,7 @@ class Region(Place, SlugModel):
         city = City.objects.filter(region=self).first()
         if not city:
             return None
-        return city.location.coords[1]
+        return city.location.coords[0] # edited
 
     # @property
     # def location(self):
@@ -251,7 +251,7 @@ class Subregion(Place, SlugModel):
         city = City.objects.filter(subregion=self).first()
         if not city:
             return None
-        return city.location.coords[0]
+        return city.location.coords[1] # edited
 
     @property
     def longitude(self):
@@ -259,7 +259,7 @@ class Subregion(Place, SlugModel):
         city = City.objects.filter(subregion=self).first()
         if not city:
             return None
-        return city.location.coords[1]
+        return city.location.coords[0] # edited
 
     def full_code(self):
         return ".".join([self.parent.parent.code, self.parent.code, self.code])
@@ -318,11 +318,11 @@ class City(BaseCity):
 
     @property
     def latitude(self):
-        return self.location.coords[0]
+        return self.location.coords[1] # edited
 
     @property
     def longitude(self):
-        return self.location.coords[1]
+        return self.location.coords[0] # edited
 
 
 class District(Place, SlugModel):
@@ -349,11 +349,11 @@ class District(Place, SlugModel):
 
     @property
     def latitude(self):
-        return self.location.coords[0]
+        return self.location.coords[1] # edited
 
     @property
     def longitude(self):
-        return self.location.coords[1]
+        return self.location.coords[0] # edited
 
     def slugify(self):
         if self.id:
@@ -435,11 +435,11 @@ class PostalCode(Place, SlugModel):
 
     @property
     def latitude(self):
-        return self.location.coords[0]
+        return self.location.coords[1] # edited
 
     @property
     def longitude(self):
-        return self.location.coords[1]
+        return self.location.coords[0] # edited
 
     @property
     def name_full(self):

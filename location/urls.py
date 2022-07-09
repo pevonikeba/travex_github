@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import SimpleRouter
 
 from location.views import CityViewSet, DistrictViewSet, CountryViewSet, PostalCodeViewSet, LocationViewSet, \
-    HomeAPIView, ChooseViewSet
+    HomeAPIView, ChooseViewSet, DetectView
 
 app_name = "location"
 
@@ -15,9 +15,8 @@ router.register('postal_codes', PostalCodeViewSet, basename='postal_codes')
 router.register('choose', ChooseViewSet, basename='choose')
 router.register('', LocationViewSet, basename='locations')
 
-# urlpatterns = [
-#     path('test/', HomeAPIView.as_view()),
-#
-# ]
+urlpatterns = [
+    path('detect/', DetectView.as_view()),
+]
 
-urlpatterns = router.urls
+urlpatterns += router.urls

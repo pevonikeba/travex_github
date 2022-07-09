@@ -150,6 +150,10 @@ class LocationSerializer(GeoFeatureModelSerializer): # CountryFieldMixin,
         geo_field = 'point'
         fields = "__all__"
 
+    def create(self, validated_data):
+        logger.info('ccccc')
+        return super(LocationSerializer, self).create(validated_data)
+
 
 class TypeCuisineSerializer(ModelSerializer):
     class Meta:

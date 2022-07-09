@@ -2,6 +2,7 @@ import mptt
 from colorfield.fields import ColorField
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 # from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import Point
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.gis.db import models as gis_models
@@ -404,6 +405,11 @@ class Location(models.Model):
     nearest_place = models.TextField(null=True, blank=True)
     # nearest_place = models.ForeignKey(Place, related_name="nearest_place_locations", on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        logger.error(self.latitude)
+        # self.point = Point(self.latitude)
+        super(Location, self).save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude}"
 

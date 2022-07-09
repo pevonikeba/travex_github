@@ -5,8 +5,12 @@ from django.contrib.gis.geos import Point
 from drf_multiple_model.pagination import MultipleModelLimitOffsetPagination
 from drf_multiple_model.views import ObjectMultipleModelAPIView, FlatMultipleModelAPIView
 from drf_multiple_model.viewsets import FlatMultipleModelAPIViewSet
+from geopy import Nominatim
 from loguru import logger
 from rest_framework import viewsets, mixins, filters
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from cities.models import City, District, Country, PostalCode, Region, Subregion
 
 from location.serializers import CitySerializer, DistrictSerializer, CountrySerializer, PostalCodeSerializer, \
@@ -176,3 +180,29 @@ class ChooseViewSet(FlatMultipleModelAPIViewSet):
         # )
 
         return querylist
+
+import requests
+
+def get_location(lat, lon):
+    url = f'https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&accept-language=en&zoom=10'
+    try:
+        result = requests.get(url=url)
+        result_json = result.json()
+        logger.warning(result_json)
+        return result_json
+    except:
+        return None
+
+
+class DetectView(APIView):
+    def get(self, request, format=None):
+        latitude = 37.9303
+        longitude = 58.369
+        get_location(latitude, longitude)
+
+        geolocator = Nominatim(user_agent="travel-attaplace")
+        coordinate = f"{longitude}, {latitude}"
+        location = geolocator.reverse(coordinate)
+        logger.info(location.address.country)
+        print(location.address, "\n")
+        return Response(location.address)
