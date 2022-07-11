@@ -196,13 +196,21 @@ def get_location(lat, lon):
 
 class DetectView(APIView):
     def get(self, request, format=None):
-        latitude = 37.9303
-        longitude = 58.369
-        get_location(latitude, longitude)
+        longitude = request.query_params.get('longitude')
+        latitude = request.query_params.get('latitude')
 
+        # location by url
+        # location_by_url = get_location(latitude, longitude)
+
+        # location by nominatim (detailed than url: for ex. has house number)
         geolocator = Nominatim(user_agent="travel-attaplace")
-        coordinate = f"{longitude}, {latitude}"
-        location = geolocator.reverse(coordinate)
-        logger.info(location.address.country)
-        print(location.address, "\n")
-        return Response(location.address)
+        coordinate = f"{latitude}, {longitude}"
+        location = geolocator.reverse(coordinate, language='en')
+        response = {}
+        if location and location.raw:
+            response['id'] = location.raw.get('place_id')
+            address = location.raw.get('address')
+            if address:
+                response = {**response, **address}
+        # logger.info(response)
+        return Response(response)
