@@ -1,7 +1,7 @@
 from place.models import CLIMATE_CHOICES, HOW_COMFORTABLE_CHOICES, TypeTransport, Category, Transport, Place, \
     PlaceImage, MustSee, AccommodationOption, FloraFauna, ClimaticCondition, GeographicalFeature, \
     Cuisine, Entertainment, NaturalPhenomena, TypeCuisine, Safe, HOW_DANGEROUS_CHOICES, UniquenessPlace, Vibe, \
-    WhereToTakeAPicture, InterestingFacts, PracticalInformation, Location
+    WhereToTakeAPicture, InterestingFacts, PracticalInformation
 from django.db import models
 from .serializers import TypeTransportSerializer, GeographicalFeatureSerializer, ClimaticConditionSerializer, \
     TypeCuisineSerializer

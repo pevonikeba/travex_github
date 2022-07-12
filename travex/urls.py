@@ -24,11 +24,11 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, To
 from allauth.account.views import LogoutView
 
 from travex.views import ActivateUserEmail, ResetPasswordView, eula, GoogleLogin, AppleLogin, MyTokenObtainPairView
-from place.views import CustomUserViewSetFromDjoser, check_version, CustomUserViewSet, UserLocationViewSet
+from place.views import CustomUserViewSetFromDjoser, check_version, CustomUserViewSet
 
 router = SimpleRouter()
 router.register(r'users/profiles', CustomUserViewSet)
-router.register(r'users/locations', UserLocationViewSet)
+# router.register(r'users/locations', UserLocationViewSet)
 
 # router.register(r'users/followings', )
 

@@ -9,17 +9,17 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from loguru import logger
 from mptt.admin import MPTTModelAdmin
 # from imagekit.admin import AdminThumbnail
-from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 
 
 # from geopy.geocoders import Nominatim
 from achievement.admin import OwnedAchievementInline
 from achievement.models import Achievement
+from location.admin import PlaceLocationInline, UserLocationInline
 from place.models import Place, Group, PlaceImage, Transport, AccommodationOption, UniquenessPlace, MustSee, \
     WhereToTakeAPicture, ClimaticCondition, Safe, Cuisine, Entertainment, \
     NaturalPhenomena, \
     Vibe, FloraFauna, Category, UserPlaceRelation, InterestingFacts, CustomUser, GeographicalFeature, \
-    PracticalInformation, TypeTransport, TypeCuisine, Location, UserLocation
+    PracticalInformation, TypeTransport, TypeCuisine
 
 
 # admin.site.register(WorldBorder, admin.ModelAdmin)
@@ -40,43 +40,6 @@ class NaturalPhenomenaInline(TabularInline):
     extra = 0
     model = NaturalPhenomena
 
-
-class LocationInline(gis_admin.OSMGeoAdmin, gis_admin.TabularInline):
-    extra = 0
-    model = Location
-    fk_name = "place"
-
-    def __init__(self, parent_model, admin_site):
-        self.admin_site = admin_site
-        self.parent_model = parent_model
-        self.opts = self.model._meta
-        self.has_registered_model = admin_site.is_registered(self.model)
-        overrides = FORMFIELD_FOR_DBFIELD_DEFAULTS.copy()
-        overrides.update(self.formfield_overrides)
-        self.formfield_overrides = overrides
-        if self.verbose_name is None:
-            self.verbose_name = self.model._meta.verbose_name
-        if self.verbose_name_plural is None:
-            self.verbose_name_plural = self.model._meta.verbose_name_plural
-
-
-class UserLocationInline(gis_admin.OSMGeoAdmin, gis_admin.TabularInline):
-    extra = 0
-    model = UserLocation
-    fk_name = "writer_user"
-
-    def __init__(self, parent_model, admin_site):
-        self.admin_site = admin_site
-        self.parent_model = parent_model
-        self.opts = self.model._meta
-        self.has_registered_model = admin_site.is_registered(self.model)
-        overrides = FORMFIELD_FOR_DBFIELD_DEFAULTS.copy()
-        overrides.update(self.formfield_overrides)
-        self.formfield_overrides = overrides
-        if self.verbose_name is None:
-            self.verbose_name = self.model._meta.verbose_name
-        if self.verbose_name_plural is None:
-            self.verbose_name_plural = self.model._meta.verbose_name_plural
 
 class TransportInline(TabularInline):
     extra = 0
@@ -140,16 +103,6 @@ class PlaceInline(TabularInline):
 # class TransportAdmin(TranslationAdmin):
 #     group_fieldsets = True
 
-@admin.register(Location)
-class LocationAdmin(ModelAdmin):
-    pass
-
-
-@admin.register(UserLocation)
-class UserLocationAdmin(ModelAdmin):
-    pass
-
-
 @admin.register(PlaceImage)
 class ImageAdmin(ModelAdmin):
     pass
@@ -160,7 +113,7 @@ class PlaceAdmin(gis_admin.OSMGeoAdmin):
     save_on_top = True
     list_display = ('name', 'id', "home_page", "is_active", 'writer_user',)
     list_filter = ('home_page',)
-    inlines = [ImageInline, LocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraFaunaInline]
+    inlines = [ImageInline, PlaceLocationInline, SafeInline,  TransportInline, CuisineInline, AccommodationOptionsInline, UniquenessPlaceInline, VibeInline, MustSeeInline, EntertainmentInline, NaturalPhenomenaInline, WhereToTakeAPictureInline, InterestingFactsInline, PracticalInformationInline, FloraFaunaInline]
 
     def get_achievement(self, choice_number) -> Achievement:
         return Achievement.objects.filter(title=Achievement.ACHIEVEMENT_TITLE_CHOICES[choice_number][0]).first()

@@ -9,7 +9,7 @@ from achievement.serializers import AchievementSerializer
 from place.models import Place, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
-    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser, Location, UserLocation
+    GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
     NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, WhereToTakeAPictureSerializer, \
@@ -137,24 +137,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserLocationSerializer(GeoFeatureModelSerializer):
-    class Meta:
-        model = UserLocation
-        geo_field = 'point'
-        fields = '__all__'
-
-
-class LocationSerializer(GeoFeatureModelSerializer): # CountryFieldMixin,
-    class Meta:
-        model = Location
-        geo_field = 'point'
-        fields = "__all__"
-
-    def create(self, validated_data):
-        logger.info('ccccc')
-        return super(LocationSerializer, self).create(validated_data)
-
-
 class TypeCuisineSerializer(ModelSerializer):
     class Meta:
         model = TypeCuisine
@@ -178,7 +160,7 @@ class PlaceSerializer(ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
     # images = serializers.StringRelatedField(many=True, required=False)
     place_images = PlaceImageSerializer(many=True, required=False)
-    locations = LocationSerializer()
+    # locations = LocationSerializer()
     transports = TransportSerializer(many=True, required=False)
     accommodation_options = AccommodationOptionSerializer(many=True, required=False)
     uniqueness_places = UniquenessPlaceSerializer(many=True, required=False)

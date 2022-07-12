@@ -170,19 +170,19 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
-
-class UserLocation(models.Model):
-    writer_user = models.OneToOneField(CustomUser, related_name="location", on_delete=models.CASCADE, primary_key=True)
-    point = gis_models.PointField(srid=4326, null=True, blank=True)
-    postal_code = models.CharField(max_length=20, blank=True, null=True)
-    # continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
-    # country = models.CharField(max_length=255, null=True, blank=True)
-    # state = models.CharField(max_length=255, null=True, blank=True)
-    # county = models.CharField(max_length=255, null=True, blank=True)
-    # city = models.CharField(max_length=255, null=True, blank=True)
-
-    def __str__(self):
-        return f"Location of {self.writer_user}"
+#
+# class UserLocation(models.Model):
+#     writer_user = models.OneToOneField(CustomUser, related_name="location", on_delete=models.CASCADE, primary_key=True)
+#     point = gis_models.PointField(srid=4326, null=True, blank=True)
+#     postal_code = models.CharField(max_length=20, blank=True, null=True)
+#     # continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
+#     # country = models.CharField(max_length=255, null=True, blank=True)
+#     # state = models.CharField(max_length=255, null=True, blank=True)
+#     # county = models.CharField(max_length=255, null=True, blank=True)
+#     # city = models.CharField(max_length=255, null=True, blank=True)
+#
+#     def __str__(self):
+#         return f"Location of {self.writer_user}"
 
 
 def add_register_achievement(user: CustomUser) -> bool:
@@ -391,27 +391,27 @@ class UserPlaceRelation(models.Model):
 #     'geom': 'MULTIPOLYGON',
 # }
 
-
-class Location(models.Model):
-    place = models.OneToOneField(Place, related_name="locations", on_delete=models.CASCADE, primary_key=True)
-    point = gis_models.PointField(srid=4326, null=True, blank=True)
-    continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
-    country = models.CharField(max_length=255, null=True, blank=True)
-    state = models.CharField(max_length=255, null=True, blank=True)
-    county = models.CharField(max_length=255, null=True, blank=True)
-    city = models.CharField(max_length=255, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-    nearest_place = models.TextField(null=True, blank=True)
-    # nearest_place = models.ForeignKey(Place, related_name="nearest_place_locations", on_delete=models.CASCADE)
-
-    def save(self, *args, **kwargs):
-        logger.error(self.latitude)
-        # self.point = Point(self.latitude)
-        super(Location, self).save(*args, **kwargs)
-    
-    def __str__(self):
-        return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude}"
+#
+# class Location(models.Model):
+#     place = models.OneToOneField(Place, related_name="locations", on_delete=models.CASCADE, primary_key=True)
+#     point = gis_models.PointField(srid=4326, null=True, blank=True)
+#     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
+#     country = models.CharField(max_length=255, null=True, blank=True)
+#     state = models.CharField(max_length=255, null=True, blank=True)
+#     county = models.CharField(max_length=255, null=True, blank=True)
+#     city = models.CharField(max_length=255, null=True, blank=True)
+#     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+#     longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+#     nearest_place = models.TextField(null=True, blank=True)
+#     # nearest_place = models.ForeignKey(Place, related_name="nearest_place_locations", on_delete=models.CASCADE)
+#
+#     def save(self, *args, **kwargs):
+#         logger.error(self.latitude)
+#         # self.point = Point(self.latitude)
+#         super(Location, self).save(*args, **kwargs)
+#
+#     def __str__(self):
+#         return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude}"
 
 
 # class Location(MPTTModel):

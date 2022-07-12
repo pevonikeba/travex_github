@@ -23,8 +23,9 @@ from notification.models import UserDevice
 from notification.notifications import send_impression_notification
 from place.models import Place, Group, ClimaticCondition, Category, UserPlaceRelation, GeographicalFeature, \
     TypeTransport, TypeCuisine, CustomUser, Transport, PlaceImage, AccommodationOption, MustSee, FloraFauna, \
-    Location, Bookmark, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
-    InterestingFacts, PracticalInformation, WhereToTakeAPicture, UserLocation
+    Bookmark, Cuisine, Entertainment, NaturalPhenomena, Safe, UniquenessPlace, Vibe, \
+    InterestingFacts, PracticalInformation, WhereToTakeAPicture
+from location.models import PlaceLocation, UserLocation
 from place.serializers.place.create import PlaceCreateSerializer
 from place.serializers.place.list import PlaceListSerializer
 from place.serializers.place.retrieve import PlaceRetrieveSerializer, PlaceOnAddDeleteBookmarkLikeSerializer
@@ -32,8 +33,7 @@ from place.serializers.place_plus import get_plus_place
 from place.serializers.serializers import PlaceSerializer, ClimaticConditionSerializer, \
     UserPlaceRelationSerializer, GeographicalFeatureSerializer, \
     TypeTransportSerializer, TypeCuisineSerializer, CustomUserSerializer, \
-    LocationSerializer, \
-    CustomUserPatchSerializer, CustomUserRetrieveSerializer, UserLocationSerializer
+    CustomUserPatchSerializer, CustomUserRetrieveSerializer
 from place.serializers.group_serializer import GroupSerializer
 from place.serializers.bookmark_serializer import BookmarkSerializer
 from place.serializers.place_nested import TransportSerializer, PlaceImageSerializer, MustSeeSerializer, \
@@ -323,63 +323,6 @@ class MyPlacesViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         return Place.objects.filter(writer_user=self.request.user)
-
-
-geolocator = Nominatim(user_agent="geoapiExercises")
-
-
-def city_state_country(coord):
-    location = geolocator.reverse(coord, exactly_one=True, language='en')
-    address = location.raw['address']
-    city = address.get('city', '')
-    state = address.get('state', '')
-    country = address.get('country', '')
-    return city, state, country
-
-
-class LocationViewSet(ModelViewSet):
-    queryset = Location.objects.all()
-    serializer_class = LocationSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        if serializer.is_valid():
-            latitude = serializer.validated_data.get("latitude")
-            longitude = serializer.validated_data.get('longitude')
-            if latitude and longitude:
-                logger.error(city_state_country(f"{latitude}, {longitude}"))
-                location = get_location(latitude, longitude)
-                if not location:
-                    raise ValueError('Can\'t connect to nominatim server')
-                logger.info('goood')
-                logger.info(location)
-                address = location.get("address")
-                logger.warning(address)
-                # extra_data = serializer.data
-                if address:
-                    country = address.get("country")
-                    state = address.get("state")
-                    county = address.get("county")
-                    city = address.get("city")
-                    # TODO: get continent
-                    serializer.save(country=country,
-                                    city=city,
-                                    state=state,
-                                    county=county,
-                                    latitude=latitude,
-                                    longitude=longitude)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # return super(LocationViewSet, self).create(request, args, kwargs)
-
-
-class UserLocationViewSet(ModelViewSet):
-    queryset = UserLocation.objects.all()
-    serializer_class = UserLocationSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class UserPlaceRelationView(UpdateModelMixin, GenericViewSet):

@@ -7,14 +7,16 @@ from drf_multiple_model.views import ObjectMultipleModelAPIView, FlatMultipleMod
 from drf_multiple_model.viewsets import FlatMultipleModelAPIViewSet
 from geopy import Nominatim
 from loguru import logger
-from rest_framework import viewsets, mixins, filters
+from rest_framework import viewsets, mixins, filters, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from cities.models import City, District, Country, PostalCode, Region, Subregion
+from location.models import PlaceLocation, UserLocation
 
 from location.serializers import CitySerializer, DistrictSerializer, CountrySerializer, PostalCodeSerializer, \
-    LocationSerializer
+    LocationSerializer, PlaceLocationSerializer, UserLocationSerializer
 
 
 class CityViewSet(mixins.ListModelMixin,
@@ -64,6 +66,7 @@ class PostalCodeViewSet(mixins.ListModelMixin,
                         viewsets.GenericViewSet):
     queryset = PostalCode.objects.all()
     serializer_class = PostalCodeSerializer
+    permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['code', ]
 
@@ -71,6 +74,7 @@ class PostalCodeViewSet(mixins.ListModelMixin,
 class LocationViewSet(mixins.ListModelMixin,
                       viewsets.GenericViewSet):
     serializer_class = LocationSerializer
+    permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', ]
 
@@ -100,7 +104,7 @@ class LimitPagination(MultipleModelLimitOffsetPagination):
 
 
 class HomeAPIView(FlatMultipleModelAPIView):
-    # permission_classes = (Isa,)
+    permission_classes = (IsAuthenticated)
     querylist = [
         {'queryset': City.objects.all(), 'serializer_class': LocationSerializer},
         {'queryset': District.objects.all(), 'serializer_class': LocationSerializer},
@@ -145,6 +149,7 @@ def not_has_location_filtered_queryset(model, longitude: str, latitude: str):
 
 class ChooseViewSet(FlatMultipleModelAPIViewSet):
     pagination_class = LimitPagination
+    permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', ]
 
@@ -195,13 +200,13 @@ def get_location(lat, lon):
 
 
 class DetectView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         longitude = request.query_params.get('longitude')
         latitude = request.query_params.get('latitude')
-
         # location by url
         # location_by_url = get_location(latitude, longitude)
-
         # location by nominatim (detailed than url: for ex. has house number)
         geolocator = Nominatim(user_agent="travel-attaplace")
         coordinate = f"{latitude}, {longitude}"
@@ -209,8 +214,90 @@ class DetectView(APIView):
         response = {}
         if location and location.raw:
             response['id'] = location.raw.get('place_id')
-            address = location.raw.get('address')
+            address: dict = location.raw.get('address')
             if address:
+                postcode = address.get('postcode')
+                if postcode:
+                    address['postal_code'] = postcode
                 response = {**response, **address}
         # logger.info(response)
         return Response(response)
+
+
+geolocator = Nominatim(user_agent="geoapiExercises")
+
+
+def city_state_country(coord):
+    location = geolocator.reverse(coord, exactly_one=True, language='en')
+    address = location.raw['address']
+    city = address.get('city', '')
+    state = address.get('state', '')
+    country = address.get('country', '')
+    return city, state, country
+
+
+class PlaceLocationViewSet(viewsets.ModelViewSet):
+    queryset = PlaceLocation.objects.all()
+    serializer_class = PlaceLocationSerializer
+    permission_classes = [IsAuthenticated]
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #
+    #     if serializer.is_valid():
+    #         latitude = serializer.validated_data.get("latitude")
+    #         longitude = serializer.validated_data.get('longitude')
+    #         if latitude and longitude:
+    #             logger.error(city_state_country(f"{latitude}, {longitude}"))
+    #             location = get_location(latitude, longitude)
+    #             if not location:
+    #                 raise ValueError('Can\'t connect to nominatim server')
+    #             logger.info('goood')
+    #             logger.info(location)
+    #             address = location.get("address")
+    #             logger.warning(address)
+    #             # extra_data = serializer.data
+    #             if address:
+    #                 country = address.get("country")
+    #                 state = address.get("state")
+    #                 county = address.get("county")
+    #                 city = address.get("city")
+    #                 # TODO: get continent
+    #                 serializer.save(country=country,
+    #                                 city=city,
+    #                                 state=state,
+    #                                 county=county,
+    #                                 latitude=latitude,
+    #                                 longitude=longitude)
+    #
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UserLocationViewSet(viewsets.ModelViewSet):
+    queryset = UserLocation.objects.all()
+    serializer_class = UserLocationSerializer
+    permission_classes = [IsAuthenticated]
+
+
+from geopy.geocoders import GeoNames
+
+
+class GeoPyChooseView(APIView):
+    def get(self, request, format=None):
+        longitude = request.query_params.get('longitude')
+        latitude = request.query_params.get('latitude')
+        search = request.query_params.get('search')
+
+        response = []
+
+        if not search:
+            return Response(response)
+        geo_names = GeoNames(username='travel_attaplace')
+        locations = geo_names.geocode(search, exactly_one=False)
+        if locations:
+            for l in locations:
+                response.append(l.raw)
+        return Response(response)
+
+
