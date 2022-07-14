@@ -1,11 +1,11 @@
 from django.contrib import admin
-from django.contrib.gis import admin as gis_admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 # Register your models here.
 from django.contrib.admin import ModelAdmin, TabularInline
 # from django.contrib.gis.admin import GISModelAdmin
 # from modeltranslation.admin import TranslationAdmin
+from django.contrib.gis.admin import OSMGeoAdmin
 from loguru import logger
 from mptt.admin import MPTTModelAdmin
 # from imagekit.admin import AdminThumbnail
@@ -23,6 +23,8 @@ from place.models import Place, Group, PlaceImage, Transport, AccommodationOptio
 
 
 # admin.site.register(WorldBorder, admin.ModelAdmin)
+from place.serializers.config import location_model_fields
+
 
 class SafeInline(TabularInline):
     extra = 0
@@ -109,7 +111,7 @@ class ImageAdmin(ModelAdmin):
 
 
 @admin.register(Place)
-class PlaceAdmin(gis_admin.OSMGeoAdmin):
+class PlaceAdmin(OSMGeoAdmin):
     save_on_top = True
     list_display = ('name', 'id', "home_page", "is_active", 'writer_user',)
     list_filter = ('home_page',)
@@ -214,11 +216,11 @@ class GroupAdmin(ModelAdmin):
 
 
 @admin.register(CustomUser)
-class CustomUserAdmin(UserAdmin):
+class CustomUserAdmin(OSMGeoAdmin):
     UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('image',
                                                                                  'birth',
                                                                                  'followings',
-                                                                                 )
+                                                                                 ) + location_model_fields
     list_display = ('pk', 'email', 'username', 'is_active', 'is_staff')
     list_display_links = ('email', )
     inlines = [OwnedAchievementInline, UserLocationInline]

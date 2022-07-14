@@ -124,8 +124,6 @@ class Thumbnail(ImageSpec):
     options = {'quality': 60}
 
 
-
-
 class Location(models.Model):
     location_id = models.IntegerField(null=True, blank=True)
     point = gis_models.PointField(srid=4326, null=True, blank=True)
