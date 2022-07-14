@@ -1,6 +1,7 @@
 from loguru import logger
 from rest_framework import serializers
 from place.models import Place, CustomUser, PlaceImage
+from place.serializers.config import location_model_fields
 from place.serializers.place_nested import PlaceImageSerializer
 from place.serializers.serializers import CustomUserPatchSerializer, CustomUserRetrieveSerializer
 
@@ -18,8 +19,8 @@ class PlaceListSerializer(serializers.ModelSerializer):
         model = Place
         fields = ('id', 'name', 'is_bookmarked', 'is_wowed', 'is_nahed',
                   'wows_count', 'nahs_count', 'categories',
-                  'description', 'place_images', 'rating', 'locations',
-                  'writer_user', 'home_page',)
+                  'description', 'place_images', 'rating',
+                  'writer_user', 'home_page',) + location_model_fields
         depth = 1
 
     # def get_is_wowed(self, obj: Place):

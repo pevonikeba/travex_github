@@ -41,10 +41,6 @@ class Location(models.Model):
     class Meta:
         abstract = True
 
-    # def save(self, *args, **kwargs):
-    #     if self.latitude and self.longitude:
-    #         logger.info("da")
-    #     return super(Location, self).save(args, kwargs)
 
 class PlaceLocation(Location):
     place = models.OneToOneField(Place, related_name="location", on_delete=models.CASCADE, primary_key=True)

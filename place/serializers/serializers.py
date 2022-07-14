@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import Point
 from loguru import logger
 
 from django_countries.serializers import CountryFieldMixin
@@ -10,6 +11,7 @@ from place.models import Place, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
     GeographicalFeature, PracticalInformation, TypeTransport, TypeCuisine, CustomUser
+from place.serializers.config import location_model_fields
 from place.serializers.place_nested import PlaceImageSerializer, TransportSerializer, MustSeeSerializer, \
     AccommodationOptionSerializer, FloraFaunaSerializer, CuisineSerializer, EntertainmentSerializer, \
     NaturalPhenomenaSerializer, SafeSerializer, UniquenessPlaceSerializer, WhereToTakeAPictureSerializer, \
@@ -27,10 +29,20 @@ class CustomUserPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'username', 'first_name', 'last_name',
-                  'birth', 'bio', 'gender', 'language', 'image', )
+                  'birth', 'bio', 'gender', 'language', 'image', ) + location_model_fields
+
+    def create(self, validated_data):
+        logger.info('Here')
+        latitude = validated_data.get('latitude')
+        longitude = validated_data.get('longitude')
+        point = None
+        if latitude and longitude:
+            point = Point(float(longitude), float(latitude), srid=4326)
+        validated_data['point'] = point
+        return self.Meta.model.objects.create(**validated_data)
 
 
-class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
+class CustomUserRetrieveSerializer(CustomUserPatchSerializer):  # CustomUserPatchSerializer
     added_places_amount = serializers.SerializerMethodField()
     following_amount = serializers.SerializerMethodField()
     follower_amount = serializers.SerializerMethodField()
@@ -48,7 +60,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):
                   # 'followings', 'followers',
                   'added_places_amount', 'achievements',
                   'following_amount', 'follower_amount', 'is_follower', 'is_following',
-                  'achievement_level_amount', )
+                  'achievement_level_amount', ) + location_model_fields
 
     def get_image(self, user: CustomUser):
         request = self.context.get('request')
@@ -117,7 +129,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user',
-                  'birth', 'first_name', 'last_name', 'bio',)
+                  'birth', 'first_name', 'last_name', 'bio',) + location_model_fields
 
     # def validate_password(self, value: str) -> str:
     #     """
@@ -156,11 +168,8 @@ class PlaceSerializer(ModelSerializer):
 
     id = serializers.ReadOnlyField()
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
-    # bookmarks = BookmarkPlaceSerializer(many=True, read_only=True)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
-    # images = serializers.StringRelatedField(many=True, required=False)
     place_images = PlaceImageSerializer(many=True, required=False)
-    # locations = LocationSerializer()
     transports = TransportSerializer(many=True, required=False)
     accommodation_options = AccommodationOptionSerializer(many=True, required=False)
     uniqueness_places = UniquenessPlaceSerializer(many=True, required=False)
@@ -180,7 +189,6 @@ class PlaceSerializer(ModelSerializer):
         transports_data = None
         category_data = validated_data.get('category')
         place_images_data = validated_data.get('place_images')
-        locations_data = validated_data.get('locations')
         if 'transports' in validated_data:
             transports_data = validated_data.pop('transports')
         accommodationOptions_data = validated_data.get('accommodationOption')
@@ -196,7 +204,6 @@ class PlaceSerializer(ModelSerializer):
         practical_information_data = validated_data.get('practical_informations')
         flora_fauna_data = validated_data.get('flora_fauna')
 
-        #
         place = Place.objects.create(**validated_data)
 
         if transports_data is not None:
@@ -208,12 +215,6 @@ class PlaceSerializer(ModelSerializer):
         if place_images_data is not None:
             for image_data in place_images_data:
                 PlaceImage.objects.create(place=place, **image_data)
-        if locations_data is not None:
-            for item in locations_data:
-                Location.objects.create(place=place, **item)
-        # if transports_data is not None:
-        #     for transport_data in transports_data:
-        #         Transport.objects.create(place=place, **transport_data)
         if accommodationOptions_data is not None:
             for accommodationOption_data in accommodationOptions_data:
                 AccommodationOption.objects.create(place=place, **accommodationOption_data)
@@ -251,96 +252,6 @@ class PlaceSerializer(ModelSerializer):
             for flora_faun_data in flora_fauna_data:
                 FloraFauna.objects.create(place=place, **flora_faun_data)
         return place
-
-# class PlaceSerializer(ModelSerializer):
-#
-#     class Meta:
-#         model = Place
-#         fields = '__all__'
-#
-#
-#     id = serializers.ReadOnlyField()
-#     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
-#     # print('writer_user: ', writer_user)
-#     # writer_user = CustomUserSerializer(many=True, read_only=True)
-#
-#     bookmark = BookmarkPlaceSerializer(many=True, read_only=True)
-#
-#     # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
-#     category = CategorySerializer(many=True, required=False)
-#
-#     # images = serializers.StringRelatedField(many=True, required=False)
-#     images = ImageSerializer(many=True, required=False)
-#
-#     location = LocationSerializer(many=True, required=False)
-#     transport = TransportSerializer(many=True, required=False)
-#     accommodation_Option = AccommodationOptionsSerializer(many=True, required=False)
-#     uniqueness_place = UniquenessPlaceSerializer(many=True, required=False)
-#     must_see = MustSeeSerializer(many=True, required=False)
-#     where_to_take_a_picture = WhereToTakeAPictureSerializer(many=True, required=False)
-#     cuisine = CuisineSerializer(many=True, required=False)
-#     safes = SafeSerializer(many=True, required=False)
-#     entertainment = EntertainmentSerializer(many=True, required=False)
-#     natural_phenomena = NaturalPhenomenaSerializer(many=True, required=False)
-#     vibe = VibeSerializer(many=True, required=False)
-#     interesting_fact = InterestingFactsSerializer(many=True, required=False)
-#     practical_information = PracticalInformationSerializer(many=True, required=False)
-#     flora_fauna = FloraFaunaSerializer(many=True, required=False)
-#
-#     # TODO: not working
-#     def create(self, validated_data):
-#         print('create aaaa: ')
-#         category_data = validated_data.pop('category')
-#         images_data = validated_data.pop('images')
-#         locations_data = validated_data.pop('locations')
-#         transports_data = validated_data.pop('transport')
-#         accommodationOptions_data = validated_data.pop('accommodationOptions')
-#         uniqueness_place_data = validated_data.pop('uniqueness_place')
-#         must_see_data = validated_data.pop('must_see')
-#         where_to_take_a_picture_data = validated_data.pop('where_to_take_a_picture')
-#         cuisines_data = validated_data.pop('cuisines')
-#         safes_data = validated_data.pop('safes')
-#         entertainments_data = validated_data.pop('entertainments')
-#         natural_phenomena_data = validated_data.pop('natural_phenomena')
-#         vibes_data = validated_data.pop('vibes')
-#         interesting_facts_data = validated_data.pop('interesting_facts')
-#         practical_information_data = validated_data.pop('practical_informations')
-#         flora_fauna_data = validated_data.pop('flora_fauna')
-#
-#         place = Place.objects.create(**validated_data)
-#         place.category.set(category_data)
-#
-#         for image_data in images_data:
-#             Image.objects.create(place=place, **image_data)
-#         for item in locations_data:
-#             Location.objects.create(place=place, **item)
-#         for transport_data in transports_data:
-#             Transport.objects.create(place=place, **transport_data)
-#         for accommodationOption_data in accommodationOptions_data:
-#             AccommodationOptions.objects.create(place=place, **accommodationOption_data)
-#         for uniquenes_place_data in uniqueness_place_data:
-#             UniquenessPlace.objects.create(place=place, **uniquenes_place_data)
-#         for must_se_data in must_see_data:
-#             MustSee.objects.create(place=place, **must_se_data)
-#         for where_to_take_a_pictur_data in where_to_take_a_picture_data:
-#             WhereToTakeAPicture.objects.create(place=place, **where_to_take_a_pictur_data)
-#         for cuisine_data in cuisines_data:
-#             Cuisine.objects.create(place=place, **cuisine_data)
-#         for safe_data in safes_data:
-#             Safe.objects.create(place=place, **safe_data)
-#         for entertainment_data in entertainments_data:
-#             Entertainment.objects.create(place=place, **entertainment_data)
-#         for natural_phenomen_data in natural_phenomena_data:
-#             NaturalPhenomena.objects.create(place=place, **natural_phenomen_data)
-#         for vibe_data in vibes_data:
-#             Vibe.objects.create(place=place, **vibe_data)
-#         for interesting_fact_data in interesting_facts_data:
-#             InterestingFacts.objects.create(place=place, **interesting_fact_data)
-#         for item in practical_information_data:
-#             PracticalInformation.objects.create(place=place, **item)
-#         for flora_faun_data in flora_fauna_data:
-#             FloraFauna.objects.create(place=place, **flora_faun_data)
-#         return place
 
 
 class ClimaticConditionSerializer(ModelSerializer):

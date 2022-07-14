@@ -247,7 +247,6 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
             return queryset
         return queryset
 
-
     @action(detail=False, methods=["get"])
     def plus_place(self, request):
         return Response(get_plus_place())
@@ -482,7 +481,6 @@ class CustomUserViewSet(
             return Response({"Error": 'You are not valid user'}, status=status.HTTP_400_BAD_REQUEST)
 
         return super().update(request, args, kwargs)
-
 
     @action(detail=True, methods=['patch'])
     def add_or_delete_following(self, request, pk=None):

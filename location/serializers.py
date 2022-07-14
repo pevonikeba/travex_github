@@ -39,24 +39,6 @@ class UserLocationSerializer(serializers.ModelSerializer):
         return UserLocation.objects.create(**validated_data)
 
 
-class UUUUUserLocationSerializer(GeoFeatureModelSerializer):
-    class Meta:
-        model = UserLocation
-        geo_field = 'point'
-        fields = '__all__'
-
-
-class PPPPPPLocationSerializer(GeoFeatureModelSerializer): # CountryFieldMixin,
-    class Meta:
-        model = PlaceLocation
-        geo_field = 'point'
-        fields = "__all__"
-
-    def create(self, validated_data):
-        logger.info('ccccc')
-        return super().create(validated_data)
-
-
 class LocationSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()

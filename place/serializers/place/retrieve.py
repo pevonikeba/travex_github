@@ -5,6 +5,7 @@ from rest_framework import serializers
 
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna, Cuisine, Entertainment, \
     NaturalPhenomena, Safe, UniquenessPlace, Vibe, WhereToTakeAPicture, InterestingFacts, PracticalInformation
+from place.serializers.config import location_model_fields
 from place.serializers.serializers import CustomUserSerializer, CustomUserRetrieveSerializer
 from loguru import logger
 
@@ -263,7 +264,7 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
         fields = ('id', 'place_images',
                   'is_bookmarked', 'is_wowed', 'is_nahed',
                   'wows_count', 'nahs_count',
-                  'locations', 'writer_user', 'sections', 'categories',)
+                  'writer_user', 'sections', 'categories',) + location_model_fields
         # depth = 1
 
     def get_wows_count(self, obj: Place):

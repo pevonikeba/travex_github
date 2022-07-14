@@ -22,7 +22,7 @@ from imagekit.processors import ResizeToFill, ResizeToFit
 
 # from achievement.models import Achievement
 from achievement.models import Achievement
-
+# from location.models import Location
 
 CONTINENT_CHOICES =(
     ("Asia", "Asia"),
@@ -124,7 +124,34 @@ class Thumbnail(ImageSpec):
     options = {'quality': 60}
 
 
-class CustomUser(AbstractUser):
+
+
+class Location(models.Model):
+    location_id = models.IntegerField(null=True, blank=True)
+    point = gis_models.PointField(srid=4326, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+    country = models.CharField(max_length=255, null=True, blank=True)
+    country_code = models.CharField(max_length=5, null=True, blank=True)
+    state = models.CharField(max_length=255, null=True, blank=True)
+    county = models.CharField(max_length=255, null=True, blank=True)
+    region = models.CharField(max_length=255, null=True, blank=True)
+    subregion = models.CharField(max_length=255, null=True, blank=True)
+    city = models.CharField(max_length=255, null=True, blank=True)
+    town = models.CharField(max_length=255, null=True, blank=True)
+    district = models.CharField(max_length=255, null=True, blank=True)
+    subdistrict = models.CharField(max_length=255, null=True, blank=True)
+    municipality = models.CharField(max_length=255, null=True, blank=True)
+    iso_3166_2_lvl4 = models.CharField(max_length=20, null=True, blank=True)
+    postal_code = models.CharField(max_length=15, null=True, blank=True)
+    road = models.CharField(max_length=255, null=True, blank=True)
+    house_number = models.CharField(max_length=10, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class CustomUser(Location, AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
     username = models.CharField(
         _("username"),
@@ -169,20 +196,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
-
-#
-# class UserLocation(models.Model):
-#     writer_user = models.OneToOneField(CustomUser, related_name="location", on_delete=models.CASCADE, primary_key=True)
-#     point = gis_models.PointField(srid=4326, null=True, blank=True)
-#     postal_code = models.CharField(max_length=20, blank=True, null=True)
-#     # continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
-#     # country = models.CharField(max_length=255, null=True, blank=True)
-#     # state = models.CharField(max_length=255, null=True, blank=True)
-#     # county = models.CharField(max_length=255, null=True, blank=True)
-#     # city = models.CharField(max_length=255, null=True, blank=True)
-#
-#     def __str__(self):
-#         return f"Location of {self.writer_user}"
 
 
 def add_register_achievement(user: CustomUser) -> bool:
@@ -275,15 +288,12 @@ class ActivePlaceManager(models.Manager):
         return super().get_queryset().filter(is_active=True)
 
 
-class Place(models.Model):
+class Place(Location, models.Model):
     is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
-    # is_bookmarked = models.BooleanField(default=False)
     bookmarked_users = models.ManyToManyField(CustomUser, through='Bookmark', related_name="bookmarks")
     wowed_users = models.ManyToManyField(CustomUser, through='Wow', related_name='wows')
     nahed_users = models.ManyToManyField(CustomUser, through='Nah', related_name='nahs')
-    # bookmark_place = models.ManyToManyField(CustomUser, verbose_name="bookmark_customuser", related_name="bookmark_customuser",
-    #                                         blank=True,)
     home_page = models.BooleanField(default=False)
     name = models.CharField(max_length=255, blank=False, default=f"Place name")
     nickname = models.CharField(max_length=255, null=True, blank=True)
@@ -294,34 +304,24 @@ class Place(models.Model):
     nearest_airport = models.TextField(null=True, blank=True)
     how_to_get_there = models.TextField(null=True, blank=True)
     population = models.BigIntegerField(null=True, blank=True)
-    # type_of_people_around = models.ForeignKey(TypeOfPeople, on_delete=models.CASCADE, blank=True, null=True,
-    #                                           related_name="civilizations")
     type_of_people_around = models.TextField(null=True, blank=True)
     nation = models.TextField(null=True, blank=True)
     language = models.CharField(max_length=255, null=True, blank=True)
     culture = models.TextField(null=True, blank=True)
     turist_rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
                                         null=True, blank=True, default=None)
-    # turist_description = models.TextField(blank=True, null=True)
-    # tourist_population_per_season_winter = models.BigIntegerField(null=True, blank=True)
-    # tourist_population_per_season_spring = models.BigIntegerField(null=True, blank=True)
-    # tourist_population_per_season_summer = models.BigIntegerField(null=True, blank=True)
-    # tourist_population_per_season_autumn = models.BigIntegerField(null=True, blank=True)
     currency = models.CharField(max_length=255, null=True, blank=True)
     currency_buying_advice = models.TextField(null=True, blank=True)
     simcards = models.TextField(null=True, blank=True)
     internet = models.TextField(null=True, blank=True)
     pay_online_or_by_card = models.CharField(max_length=255, null=True, blank=True)
     views = models.ManyToManyField(CustomUser, through="UserPlaceRelation", blank=True)
-    # geolocation = geomodels.PointField("Location in Map", geography=True, blank=True, null=True,
-    # srid=4326, help_text="Point(longitude latitude)")
-    # location = PlainLocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
-    # coordinate = geomodels.PointField(geography=True, spatial_index=True,default=Point(58.238056, 37.862499, srid=4326), blank=True, null=True)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)],
                                  null=True, blank=True, default=None)
-    # category = TreeForeignKey(Category, verbose_name="categorys", related_name="categorys", on_delete=models.CASCADE, null=True, blank=True)
+
     objects = models.Manager()  # The default manager.
     active_objects = ActivePlaceManager()  # The Dahl-specific manager.
+
     def __str__(self):
         return f'{self.id}: {self.name}'
 # ----------------------------------------------------------------------------------------
@@ -351,84 +351,6 @@ class UserPlaceRelation(models.Model):
 
     def __str__(self):
         return f"{self.user.username} {self.place.name}, {self.rating}"
-
-
-# class WorldBorder(geomodels.Model):
-#     # Regular Django fields corresponding to the attributes in the
-#     # world borders shapefile.
-#     name = models.CharField(max_length=50)
-#     area = models.IntegerField()
-#     pop2005 = models.IntegerField('Population 2005')
-#     fips = models.CharField('FIPS Code', max_length=2, null=True)
-#     iso2 = models.CharField('2 Digit ISO', max_length=2)
-#     iso3 = models.CharField('3 Digit ISO', max_length=3)
-#     un = models.IntegerField('United Nations Code')
-#     region = models.IntegerField('Region Code')
-#     subregion = models.IntegerField('Sub-Region Code')
-#     lon = models.FloatField()
-#     lat = models.FloatField()
-#
-#     # GeoDjango-specific: a geometry field (MultiPolygonField)
-#     mpoly = geomodels.MultiPolygonField()
-#
-#     # Returns the string representation of the model.
-#     def __str__(self):
-#         return self.name
-
-# Auto-generated `LayerMapping` dictionary for WorldBorder model
-# worldborder_mapping = {
-#     'fips': 'FIPS',
-#     'iso2': 'ISO2',
-#     'iso3': 'ISO3',
-#     'un': 'UN',
-#     'name': 'NAME',
-#     'area': 'AREA',
-#     'pop2005': 'POP2005',
-#     'region': 'REGION',
-#     'subregion': 'SUBREGION',
-#     'lon': 'LON',
-#     'lat': 'LAT',
-#     'geom': 'MULTIPOLYGON',
-# }
-
-#
-# class Location(models.Model):
-#     place = models.OneToOneField(Place, related_name="locations", on_delete=models.CASCADE, primary_key=True)
-#     point = gis_models.PointField(srid=4326, null=True, blank=True)
-#     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
-#     country = models.CharField(max_length=255, null=True, blank=True)
-#     state = models.CharField(max_length=255, null=True, blank=True)
-#     county = models.CharField(max_length=255, null=True, blank=True)
-#     city = models.CharField(max_length=255, null=True, blank=True)
-#     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-#     longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-#     nearest_place = models.TextField(null=True, blank=True)
-#     # nearest_place = models.ForeignKey(Place, related_name="nearest_place_locations", on_delete=models.CASCADE)
-#
-#     def save(self, *args, **kwargs):
-#         logger.error(self.latitude)
-#         # self.point = Point(self.latitude)
-#         super(Location, self).save(*args, **kwargs)
-#
-#     def __str__(self):
-#         return f"{self.continent} {self.country} {self.state} {self.city} {self.latitude} {self.longitude}"
-
-
-# class Location(MPTTModel):
-#     place = models.ForeignKey(Place, related_name="locations", on_delete=models.CASCADE)
-#     name = models.CharField(max_length=50, unique=True)
-#     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#     class MPTTMeta:
-#         order_insertion_by = ['name']
-#
-#     def __str__(self):
-#         return f'{self.name}'
-#
-# mptt.register(Location, order_insertion_by=['name'])
 
 
 class TypeTransport(models.Model):
