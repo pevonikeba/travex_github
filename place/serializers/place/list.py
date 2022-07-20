@@ -1,5 +1,7 @@
 from loguru import logger
 from rest_framework import serializers
+
+from location.serializers import PlaceLocationSerializer
 from place.models import Place, CustomUser, PlaceImage
 from place.serializers.config import location_model_fields
 from place.serializers.place_nested import PlaceImageSerializer
@@ -14,13 +16,14 @@ class PlaceListSerializer(serializers.ModelSerializer):
     is_nahed = serializers.SerializerMethodField()
     wows_count = serializers.SerializerMethodField()
     nahs_count = serializers.SerializerMethodField()
+    location = PlaceLocationSerializer(read_only=True)
 
     class Meta:
         model = Place
         fields = ('id', 'name', 'is_bookmarked', 'is_wowed', 'is_nahed',
                   'wows_count', 'nahs_count', 'categories',
                   'description', 'place_images', 'rating',
-                  'writer_user', 'home_page',) + location_model_fields
+                  'writer_user', 'home_page', 'location', ) + location_model_fields
         depth = 1
 
     # def get_is_wowed(self, obj: Place):

@@ -124,32 +124,32 @@ class Thumbnail(ImageSpec):
     options = {'quality': 60}
 
 
-class Location(models.Model):
-    location_id = models.IntegerField(null=True, blank=True)
-    point = gis_models.PointField(srid=4326, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-    country = models.CharField(max_length=255, null=True, blank=True)
-    country_code = models.CharField(max_length=5, null=True, blank=True)
-    state = models.CharField(max_length=255, null=True, blank=True)
-    county = models.CharField(max_length=255, null=True, blank=True)
-    region = models.CharField(max_length=255, null=True, blank=True)
-    subregion = models.CharField(max_length=255, null=True, blank=True)
-    city = models.CharField(max_length=255, null=True, blank=True)
-    town = models.CharField(max_length=255, null=True, blank=True)
-    district = models.CharField(max_length=255, null=True, blank=True)
-    subdistrict = models.CharField(max_length=255, null=True, blank=True)
-    municipality = models.CharField(max_length=255, null=True, blank=True)
-    iso_3166_2_lvl4 = models.CharField(max_length=20, null=True, blank=True)
-    postal_code = models.CharField(max_length=15, null=True, blank=True)
-    road = models.CharField(max_length=255, null=True, blank=True)
-    house_number = models.CharField(max_length=10, null=True, blank=True)
+# class Location(models.Model):
+#     location_id = models.IntegerField(null=True, blank=True)
+#     point = gis_models.PointField(srid=4326, null=True, blank=True)
+#     latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+#     longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+#     country = models.CharField(max_length=255, null=True, blank=True)
+#     country_code = models.CharField(max_length=5, null=True, blank=True)
+#     state = models.CharField(max_length=255, null=True, blank=True)
+#     county = models.CharField(max_length=255, null=True, blank=True)
+#     region = models.CharField(max_length=255, null=True, blank=True)
+#     subregion = models.CharField(max_length=255, null=True, blank=True)
+#     city = models.CharField(max_length=255, null=True, blank=True)
+#     town = models.CharField(max_length=255, null=True, blank=True)
+#     district = models.CharField(max_length=255, null=True, blank=True)
+#     subdistrict = models.CharField(max_length=255, null=True, blank=True)
+#     municipality = models.CharField(max_length=255, null=True, blank=True)
+#     iso_3166_2_lvl4 = models.CharField(max_length=20, null=True, blank=True)
+#     postal_code = models.CharField(max_length=15, null=True, blank=True)
+#     road = models.CharField(max_length=255, null=True, blank=True)
+#     house_number = models.CharField(max_length=10, null=True, blank=True)
+#
+#     class Meta:
+#         abstract = True
 
-    class Meta:
-        abstract = True
 
-
-class CustomUser(Location, AbstractUser):
+class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), blank=False, unique=True)
     username = models.CharField(
         _("username"),
@@ -286,7 +286,7 @@ class ActivePlaceManager(models.Manager):
         return super().get_queryset().filter(is_active=True)
 
 
-class Place(Location, models.Model):
+class Place(models.Model):
     is_active = models.BooleanField(default=False)
     writer_user = models.ForeignKey(CustomUser, verbose_name='writer_user', related_name="writer_user", on_delete=models.CASCADE)
     bookmarked_users = models.ManyToManyField(CustomUser, through='Bookmark', related_name="bookmarks")

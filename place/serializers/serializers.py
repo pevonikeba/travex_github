@@ -7,6 +7,8 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from achievement.serializers import AchievementSerializer
+from location.models import PlaceLocation
+from location.serializers import PlaceLocationSerializer
 from place.models import Place, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
@@ -29,7 +31,7 @@ class CustomUserPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'username', 'first_name', 'last_name',
-                  'birth', 'bio', 'gender', 'language', 'image', ) + location_model_fields
+                  'birth', 'bio', 'gender', 'language', 'image',) + location_model_fields
 
     def create(self, validated_data):
         logger.info('Here')
@@ -60,7 +62,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):  # CustomUserPatc
                   # 'followings', 'followers',
                   'added_places_amount', 'achievements',
                   'following_amount', 'follower_amount', 'is_follower', 'is_following',
-                  'achievement_level_amount', ) + location_model_fields
+                  'achievement_level_amount',) + location_model_fields
 
     def get_image(self, user: CustomUser):
         request = self.context.get('request')
@@ -124,6 +126,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):  # CustomUserPatc
 class CustomUserSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     password = serializers.CharField(max_length=255, write_only=True)
+
     # is_active = serializers.BooleanField()
 
     class Meta:
@@ -183,6 +186,28 @@ class PlaceSerializer(ModelSerializer):
     interesting_facts = InterestingFactsSerializer(many=True, required=False)
     practical_informations = PracticalInformationSerializer(many=True, required=False)
     flora_faunas = FloraFaunaSerializer(many=True, required=False)
+    location = PlaceLocationSerializer()
+
+    def update(self, instance, validated_data):
+        location_data = validated_data.pop('location', None)
+        logger.warning(location_data)
+        if location_data:
+            location = PlaceLocation.objects.filter(pk=instance.pk).first()
+            location_id = location_data.get('location_id')
+            latitude = location_data.get('latitude')
+            longitude = location_data.get('longitude')
+            if location:  # if place location exists
+                location.location_id = location_id
+                location.latitude = latitude
+                location.longitude = longitude
+                location.save()
+            else:  # if place location doesnt exists
+                PlaceLocation.objects.create(place=instance,
+                                             location_id=location_id,
+                                             latitude=latitude,
+                                             longitude=longitude)
+
+        return instance
 
     def create(self, validated_data):
         logger.info("create")
@@ -263,13 +288,10 @@ class ClimaticConditionSerializer(ModelSerializer):
 class GeographicalFeatureSerializer(ModelSerializer):
     class Meta:
         model = GeographicalFeature
-        fields = ('id', 'types_of_ecosystem', 'types_of_ecosystem_description', 'description', '__str__', )
+        fields = ('id', 'types_of_ecosystem', 'types_of_ecosystem_description', 'description', '__str__',)
 
 
 class UserPlaceRelationSerializer(ModelSerializer):
     class Meta:
         model = UserPlaceRelation
         fields = ('id', 'place', 'in_bookmarks', 'rating', 'description_rating')
-
-
-

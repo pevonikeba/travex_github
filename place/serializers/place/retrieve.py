@@ -3,6 +3,7 @@ from typing import List
 
 from rest_framework import serializers
 
+from location.serializers import PlaceLocationSerializer
 from place.models import Place, PlaceImage, Transport, AccommodationOption, MustSee, FloraFauna, Cuisine, Entertainment, \
     NaturalPhenomena, Safe, UniquenessPlace, Vibe, WhereToTakeAPicture, InterestingFacts, PracticalInformation
 from place.serializers.config import location_model_fields
@@ -258,13 +259,15 @@ class PlaceRetrieveSerializer(serializers.ModelSerializer):
     is_nahed = serializers.SerializerMethodField()
     wows_count = serializers.SerializerMethodField()
     nahs_count = serializers.SerializerMethodField()
+    location = PlaceLocationSerializer(read_only=True)
+
 
     class Meta:
         model = Place
         fields = ('id', 'place_images',
                   'is_bookmarked', 'is_wowed', 'is_nahed',
                   'wows_count', 'nahs_count',
-                  'writer_user', 'sections', 'categories',) + location_model_fields
+                  'writer_user', 'sections', 'categories', 'location', ) + location_model_fields
         # depth = 1
 
     def get_wows_count(self, obj: Place):

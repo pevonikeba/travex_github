@@ -8,6 +8,8 @@ from location.models import UserLocation, PlaceLocation
 
 
 class PlaceLocationSerializer(serializers.ModelSerializer):
+    place = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
+
     class Meta:
         model = PlaceLocation
         fields = '__all__'

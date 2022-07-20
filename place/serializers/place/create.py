@@ -1,4 +1,7 @@
 from rest_framework import serializers
+
+from location.models import PlaceLocation
+from location.serializers import PlaceLocationSerializer
 from place.models import Place, CustomUser
 from place.serializers.config import location_model_fields
 
@@ -10,9 +13,20 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class PlaceCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Place
-        fields = ('id', 'writer_user', ) + location_model_fields
-        depth = 1
     id = serializers.ReadOnlyField()
     writer_user = CustomUserSerializer(default=serializers.CurrentUserDefault())
+    location = PlaceLocationSerializer()
+
+    class Meta:
+        model = Place
+        fields = ('id', 'writer_user', 'location',) + location_model_fields
+        depth = 1
+
+    def create(self, validated_data):
+        location_data = validated_data.pop('location', None)
+        place = Place.objects.create(**validated_data)
+        if location_data:
+            PlaceLocation.objects.create(place=place, **location_data)
+        # for track_data in tracks_data:
+        #     Track.objects.create(album=album, **track_data)
+        return place
