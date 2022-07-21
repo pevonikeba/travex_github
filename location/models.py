@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.gis.db import models as gis_models
 from loguru import logger
 
+from location.config import geopy_response
 from place.models import Place, CustomUser
 
 CONTINENT_CHOICES =(
@@ -16,12 +17,11 @@ CONTINENT_CHOICES =(
 
 
 class Location(models.Model):
-    # place = models.OneToOneField(Place, related_name="locations", on_delete=models.CASCADE, primary_key=True)
-    # continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20, default="Asia")
+    name = models.CharField(max_length=255, null=True, blank=True)
     location_id = models.IntegerField(null=True, blank=True)
     point = gis_models.PointField(srid=4326, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=13, decimal_places=10, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=23, decimal_places=10, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=23, decimal_places=10, null=True, blank=True)
     country = models.CharField(max_length=255, null=True, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     state = models.CharField(max_length=255, null=True, blank=True)
@@ -41,6 +41,11 @@ class Location(models.Model):
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        logger.info(args)
+        # geopy_response
+        super().save(*args, **kwargs)
+
 
 class PlaceLocation(Location):
     place = models.OneToOneField(Place, related_name="location", on_delete=models.CASCADE, primary_key=True)
@@ -51,8 +56,15 @@ class PlaceLocation(Location):
 
 class UserLocation(Location):
     writer_user = models.OneToOneField(CustomUser, related_name="location", on_delete=models.CASCADE, primary_key=True)
+    HOME = 'hm'
+    WORK = 'wk'
+    OTHER = 'ot'
+    PLACE_TYPE_CHOICES = (
+        (HOME, 'Home'),
+        (WORK, 'Work'),
+        (OTHER, 'Other'),
+    )
+    place_type = models.CharField(max_length=2, choices=PLACE_TYPE_CHOICES, null=True, blank=True)
 
-    # def __str__(self):
-    #     return f"Location of {self.writer_user}"
 
 

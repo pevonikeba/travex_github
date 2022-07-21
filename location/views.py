@@ -6,6 +6,8 @@ from drf_multiple_model.pagination import MultipleModelLimitOffsetPagination
 from drf_multiple_model.views import ObjectMultipleModelAPIView, FlatMultipleModelAPIView
 from drf_multiple_model.viewsets import FlatMultipleModelAPIViewSet
 from geopy import Nominatim
+# from OSMPythonTools.nominatim import Nominatim as OSMPythonToolsNominatim
+
 from loguru import logger
 from rest_framework import viewsets, mixins, filters, status
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from cities.models import City, District, Country, PostalCode, Region, Subregion
+from location.config import geopy_response
 from location.models import PlaceLocation, UserLocation
 
 from location.serializers import CitySerializer, DistrictSerializer, CountrySerializer, PostalCodeSerializer, \
@@ -188,6 +191,7 @@ class ChooseViewSet(FlatMultipleModelAPIViewSet):
 
 import requests
 
+
 def get_location(lat, lon):
     url = f'https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&accept-language=en&zoom=10'
     try:
@@ -208,18 +212,9 @@ class DetectView(APIView):
         # location by url
         # location_by_url = get_location(latitude, longitude)
         # location by nominatim (detailed than url: for ex. has house number)
-        geolocator = Nominatim(user_agent="travel-attaplace")
-        coordinate = f"{latitude}, {longitude}"
-        location = geolocator.reverse(coordinate, language='en')
-        response = {}
-        if location and location.raw:
-            response['id'] = location.raw.get('place_id')
-            address: dict = location.raw.get('address')
-            if address:
-                postcode = address.get('postcode')
-                if postcode:
-                    address['postal_code'] = postcode
-                response = {**response, **address}
+
+        response = geopy_response(latitude, longitude)
+
         # logger.info(response)
         return Response(response)
 
