@@ -20,6 +20,8 @@ from location.models import PlaceLocation, UserLocation
 
 from location.serializers import CitySerializer, DistrictSerializer, CountrySerializer, PostalCodeSerializer, \
     LocationSerializer, PlaceLocationSerializer, UserLocationSerializer
+from place.models import Place
+from place.serializers.place.list import PlaceListSerializer
 
 
 class CityViewSet(mixins.ListModelMixin,
@@ -125,7 +127,7 @@ def has_location_filtered_queryset(model, longitude: str, latitude: str):
     return queryset
 
 
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Subquery, Q
 
 
 def not_2_has_location_filtered_queryset(model, longitude: str, latitude: str):
@@ -273,6 +275,31 @@ class UserLocationViewSet(viewsets.ModelViewSet):
     queryset = UserLocation.objects.all()
     serializer_class = UserLocationSerializer
     permission_classes = [IsAuthenticated]
+
+
+from rest_framework.exceptions import APIException
+
+
+class ServiceUnavailable(APIException):
+    status_code = 400
+    default_detail = 'Need longitude, latitude, radius in query params'
+    default_code = 'longitude_latitude_radius'
+
+
+class NearestPlacesViewSet(mixins.ListModelMixin,
+                           viewsets.GenericViewSet):
+    serializer_class = PlaceListSerializer
+
+    def get_queryset(self):
+        latitude = self.request.query_params.get('latitude')
+        longitude = self.request.query_params.get('longitude')
+        radius = float(self.request.query_params.get('radius')) * 1000  # convert to metr
+
+        if not longitude or not latitude or not radius:
+            raise ServiceUnavailable()
+
+        pnt = Point(float(longitude), float(latitude), srid=4326)
+        return Place.objects.annotate(distance=Distance('location__point', pnt)).filter(distance__lte=radius)
 
 
 from geopy.geocoders import GeoNames
