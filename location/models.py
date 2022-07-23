@@ -16,12 +16,36 @@ CONTINENT_CHOICES =(
 )
 
 
+class ChooseLocation(models.Model):
+    DISTRICT = 'District'
+    CITY = 'City'
+    SUBREGION = 'Subregion'
+    REGION = 'Region'
+    CHOOSE_LOCATION_CHOICES = (
+        (DISTRICT, 'District'),
+        (CITY, 'City'),
+        (SUBREGION, 'Subregion'),
+        (REGION, 'Region'),
+    )
+    # id = models.BigIntegerField(primary_key=True)
+    type = models.CharField(max_length=12, choices=CHOOSE_LOCATION_CHOICES)
+    name = models.CharField(max_length=255)
+    country_name = models.CharField(max_length=255)
+    latitude = models.DecimalField(max_digits=25, decimal_places=20, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=25, decimal_places=20, null=True, blank=True)
+
+    objects = models.Manager() # The default manager.
+
+    def __str__(self):
+        return f'{self.type}: {self.name} ({self.country_name})'
+
+
 class Location(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)
     location_id = models.IntegerField(null=True, blank=True)
     point = gis_models.PointField(srid=4326, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=23, decimal_places=10, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=23, decimal_places=10, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=25, decimal_places=20, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=25, decimal_places=20, null=True, blank=True)
     country = models.CharField(max_length=255, null=True, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     state = models.CharField(max_length=255, null=True, blank=True)

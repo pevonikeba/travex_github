@@ -151,6 +151,8 @@ def not_has_location_filtered_queryset(model, longitude: str, latitude: str):
 
     return queryset
 
+# class ChooseViewSet(mixins.ListModelMixin,
+#                     )
 
 class ChooseViewSet(FlatMultipleModelAPIViewSet):
     pagination_class = LimitPagination
