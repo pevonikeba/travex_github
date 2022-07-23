@@ -9,7 +9,7 @@ from location.models import UserLocation, PlaceLocation
 
 
 class PlaceLocationSerializer(serializers.ModelSerializer):
-    # place = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
+    place = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
 
     class Meta:
         model = PlaceLocation
@@ -17,7 +17,6 @@ class PlaceLocationSerializer(serializers.ModelSerializer):
         # exclude = ('point',)
 
     def create(self, validated_data):
-        logger.info(validated_data)
         latitude = validated_data.get('latitude')
         longitude = validated_data.get('longitude')
         point = None
