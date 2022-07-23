@@ -19,6 +19,7 @@ place/__pycache__/
 notification/__pycache__/
 comment/__pycache__/
 achievement/__pycache__/
+location/__pycache__/
 
 # Backup files #
 *.bak
