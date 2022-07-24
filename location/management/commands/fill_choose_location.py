@@ -6,15 +6,34 @@ from location.models import ChooseLocation
 
 
 def from_model_to_model(from_model, to_model, type_name: str):
-    for obj in from_model.objects.all():
-        to_model.objects.update_or_create(
-            pk=obj.pk,
-            name=obj.name,
-            longitude=obj.longitude,
-            latitude=obj.latitude,
-            country_name=obj.country_name,
-            type=type_name,
-        )
+    for from_obj in from_model.objects.all():
+        try:
+            to_obj = to_model.objects.get(pk=from_obj.pk)
+            to_obj.name = from_obj.name
+            to_obj.longitude = from_obj.longitude
+            to_obj.latitude = from_obj.latitude
+            to_obj.country_name = from_obj.country_name
+            to_obj.type = type_name
+            to_obj.save()
+        except to_model.DoesNotExist:
+            to_obj = to_model(
+                    pk=from_obj.pk,
+                    name=from_obj.name,
+                    longitude=from_obj.longitude,
+                    latitude=from_obj.latitude,
+                    country_name=from_obj.country_name,
+                    type=type_name,
+            )
+            to_obj.save()
+
+        # to_model.objects.update_or_create(
+        #     pk=obj.pk,
+        #     name=obj.name,
+        #     longitude=obj.longitude,
+        #     latitude=obj.latitude,
+        #     country_name=obj.country_name,
+        #     type=type_name,
+        # )
 
 
 class Command(BaseCommand):
@@ -32,7 +51,7 @@ class Command(BaseCommand):
         #
         #     poll.opened = False
         #     poll.save()
-        ChooseLocation.objects.all().delete()
+        # ChooseLocation.objects.all().delete()
         from_model_to_model(from_model=District, to_model=ChooseLocation, type_name=ChooseLocation.DISTRICT)
         from_model_to_model(from_model=City, to_model=ChooseLocation, type_name=ChooseLocation.CITY)
         from_model_to_model(from_model=Subregion, to_model=ChooseLocation, type_name=ChooseLocation.SUBREGION)

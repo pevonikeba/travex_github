@@ -8,7 +8,7 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from achievement.serializers import AchievementSerializer
 from location.models import PlaceLocation
-from location.serializers import PlaceLocationSerializer
+from location.serializers import PlaceLocationSerializer, UserLocationSerializerNew, UserLocationSerializer
 from place.models import Place, PlaceImage, ClimaticCondition, \
     FloraFauna, WhereToTakeAPicture, Vibe, MustSee, UniquenessPlace, AccommodationOption, \
     NaturalPhenomena, Entertainment, Cuisine, Safe, Transport, Category, UserPlaceRelation, InterestingFacts, \
@@ -28,10 +28,12 @@ from place.serializers.place_nested import PlaceImageSerializer, TransportSerial
 
 
 class CustomUserPatchSerializer(serializers.ModelSerializer):
+    location = UserLocationSerializer(read_only=True)
+
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'username', 'first_name', 'last_name',
-                  'birth', 'bio', 'gender', 'language', 'image',) + location_model_fields
+                  'birth', 'bio', 'gender', 'language', 'image', 'location', )
 
     def create(self, validated_data):
         logger.info('Here')
@@ -55,6 +57,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):  # CustomUserPatc
     # followings = FollowingSerializer(many=True, read_only=True)
     # followers = serializers.SerializerMethodField()
     achievements = AchievementSerializer(many=True, required=False, read_only=True, source='first_5_achievements')
+    location = UserLocationSerializer(read_only=True)
 
     class Meta:
         model = CustomUser
@@ -62,7 +65,7 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):  # CustomUserPatc
                   # 'followings', 'followers',
                   'added_places_amount', 'achievements',
                   'following_amount', 'follower_amount', 'is_follower', 'is_following',
-                  'achievement_level_amount',) + location_model_fields
+                  'achievement_level_amount', 'location', ) + location_model_fields
 
     def get_image(self, user: CustomUser):
         request = self.context.get('request')
@@ -190,7 +193,6 @@ class PlaceSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         location_data = validated_data.pop('location', None)
-        logger.warning(location_data)
         if location_data:
             location = PlaceLocation.objects.filter(pk=instance.pk).first()
             location_id = location_data.get('location_id')

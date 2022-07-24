@@ -479,7 +479,33 @@ class CustomUserViewSet(
         update_user = CustomUser.objects.filter(pk=kwargs.get('pk')).first()
         if update_user and request.user != update_user:
             return Response({"Error": 'You are not valid user'}, status=status.HTTP_400_BAD_REQUEST)
-
+        user_location = UserLocation.objects.filter(writer_user=update_user).first()
+        request_location = request.data.get('location')
+        if request_location:
+            request_location = json.loads(request_location)
+            request_location_id = request_location.get('location_id')
+            request_location_place_type = request_location.get('place_type')
+            request_location_longitude = request_location.get('longitude')
+            request_location_latitude = request_location.get('latitude')
+            if user_location:
+                if request_location_id:
+                    user_location.location_id = request_location_id
+                if request_location_place_type:
+                    user_location.place_type = request_location_place_type
+                if request_location_longitude:
+                    user_location.longitude = request_location_longitude
+                if request_location_latitude:
+                    user_location.latitude = request_location_latitude
+                user_location.save()
+                logger.info(user_location.writer_user)
+                logger.info(user_location.longitude)
+            else:
+                UserLocation.objects.create(
+                    writer_user=update_user,
+                    place_type=request_location_place_type,
+                    longitude=request_location_longitude,
+                    latitude=request_location_latitude,
+                )
         return super().update(request, args, kwargs)
 
     @action(detail=True, methods=['patch'])

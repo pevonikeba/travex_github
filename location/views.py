@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 
 from cities.models import City, District, Country, PostalCode, Region, Subregion
 from location.config import geopy_response
-from location.models import PlaceLocation, UserLocation
+from location.models import PlaceLocation, UserLocation, ChooseLocation
 
 from location.serializers import CitySerializer, DistrictSerializer, CountrySerializer, PostalCodeSerializer, \
     LocationSerializer, PlaceLocationSerializer, UserLocationSerializer
@@ -151,10 +151,22 @@ def not_has_location_filtered_queryset(model, longitude: str, latitude: str):
 
     return queryset
 
-# class ChooseViewSet(mixins.ListModelMixin,
-#                     )
 
-class ChooseViewSet(FlatMultipleModelAPIViewSet):
+class ChooseViewSet(mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', ]
+
+    def get_queryset(self):
+        longitude = self.request.query_params.get('longitude')
+        latitude = self.request.query_params.get('latitude')
+        requested_point = Point(float(longitude), float(latitude), srid=4326)
+
+        return ChooseLocation.has_locations.all()
+
+
+class ChooseViewSetOld(FlatMultipleModelAPIViewSet):
     pagination_class = LimitPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]

@@ -26,8 +26,6 @@ class PlaceCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         location_data = validated_data.pop('location', None)
         place = Place.objects.create(**validated_data)
-        logger.info(place)
-        logger.warning(validated_data)
         if location_data:
             PlaceLocation.objects.create(place=place, **location_data)
         return place
