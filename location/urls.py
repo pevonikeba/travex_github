@@ -3,7 +3,7 @@ from rest_framework.routers import SimpleRouter
 
 from location.views import CityViewSet, DistrictViewSet, CountryViewSet, PostalCodeViewSet, LocationViewSet, \
     HomeAPIView, ChooseViewSet, DetectView, GeoPyChooseView, PlaceLocationViewSet, UserLocationViewSet, \
-    NearestPlacesViewSet
+    NearestPlacesViewSet, ChooseViewSetOld
 
 app_name = "location"
 
@@ -13,7 +13,7 @@ router.register('countries', CountryViewSet, basename='countries')
 router.register('cities', CityViewSet, basename='cities')
 router.register('districts', DistrictViewSet, basename='districts')
 router.register('postal_codes', PostalCodeViewSet, basename='postal_codes')
-router.register('choose', ChooseViewSet, basename='choose')
+router.register('choose', ChooseViewSetOld, basename='choose')
 router.register('places', PlaceLocationViewSet, basename='place')
 router.register('users', UserLocationViewSet, basename='user')
 router.register('nearest_places', NearestPlacesViewSet, basename='nearest_places')
