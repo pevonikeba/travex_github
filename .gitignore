@@ -16,6 +16,7 @@ debug.log
 #Django apps cache
 travex/__pycache__/
 place/__pycache__/
+place/serializers/__pycache__/
 notification/__pycache__/
 comment/__pycache__/
 achievement/__pycache__/

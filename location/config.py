@@ -50,6 +50,7 @@ def service_to_location_data(validated_data):
 
     for key, value in response.items():
         if key in ('id', 'place_id'):
+            validated_data['location_id'] = response[key]
             continue
         if key == 'ISO3166-2-lvl4':
             validated_data['iso_3166_2_lvl4'] = response[key]

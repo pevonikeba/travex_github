@@ -109,6 +109,7 @@ class PlaceLocation(BaseLocation, ServiceLocation):
         if self.longitude and self.latitude:
             data = service_to_location_data({'longitude': self.longitude, 'latitude': self.latitude})
             self.data_to_field(data)
+            logger.info(data)
             self.name = data.get('name')
 
         return super(PlaceLocation, self).save(force_insert, force_update, using, update_fields)
