@@ -3,7 +3,13 @@ from rest_framework import serializers
 from cities.models import City, District, Country, PostalCode
 
 from location.config import service_to_location_data
-from location.models import UserLocation, PlaceLocation
+from location.models import UserLocation, PlaceLocation, ChooseLocation
+
+
+class ChooseLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChooseLocation
+        fields = '__all__'
 
 
 class PlaceLocationSerializer(serializers.ModelSerializer):

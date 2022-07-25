@@ -19,7 +19,7 @@ from location.config import geopy_response
 from location.models import PlaceLocation, UserLocation, ChooseLocation
 
 from location.serializers import CitySerializer, DistrictSerializer, CountrySerializer, PostalCodeSerializer, \
-    LocationSerializer, PlaceLocationSerializer, UserLocationSerializer
+    LocationSerializer, PlaceLocationSerializer, UserLocationSerializer, ChooseLocationSerializer
 from place.models import Place
 from place.serializers.place.list import PlaceListSerializer
 
@@ -155,6 +155,7 @@ def not_has_location_filtered_queryset(model, longitude: str, latitude: str):
 class ChooseViewSet(mixins.ListModelMixin,
                     viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
+    serializer_class = ChooseLocationSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', ]
 
@@ -162,8 +163,11 @@ class ChooseViewSet(mixins.ListModelMixin,
         longitude = self.request.query_params.get('longitude')
         latitude = self.request.query_params.get('latitude')
         requested_point = Point(float(longitude), float(latitude), srid=4326)
+        queryset = ChooseLocation.has_locations.annotate(
+            distance=Distance('point', requested_point)
+        ).order_by('distance')
 
-        return ChooseLocation.has_locations.all()
+        return queryset
 
 
 class ChooseViewSetOld(FlatMultipleModelAPIViewSet):

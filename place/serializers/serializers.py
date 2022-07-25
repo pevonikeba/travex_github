@@ -129,13 +129,14 @@ class CustomUserRetrieveSerializer(CustomUserPatchSerializer):  # CustomUserPatc
 class CustomUserSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     password = serializers.CharField(max_length=255, write_only=True)
+    location = UserLocationSerializer(read_only=True)
 
     # is_active = serializers.BooleanField()
 
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'username', 'image', 'is_active', 'password', 'user',
-                  'birth', 'first_name', 'last_name', 'bio',) + location_model_fields
+                  'birth', 'first_name', 'last_name', 'bio', 'location', ) + location_model_fields
 
     # def validate_password(self, value: str) -> str:
     #     """
@@ -209,7 +210,7 @@ class PlaceSerializer(ModelSerializer):
                                              latitude=latitude,
                                              longitude=longitude)
 
-        return instance
+        return super(PlaceSerializer, self).update(instance, validated_data)
 
     def create(self, validated_data):
         logger.info("create")
