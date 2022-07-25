@@ -421,10 +421,7 @@ class NaturalPhenomena(models.Model):
 
 class PlaceImage(models.Model):
     place = models.ForeignKey(Place, related_name="place_images", on_delete=models.CASCADE)
-    image = ProcessedImageField(upload_to='images/places/',
-                                processors=[ResizeToFit(720)],
-                                options={'quality': 60},
-                                null=True, blank=True)
+    image = models.ImageField(upload_to='images/places/', null=True, blank=True)
     image_thumb = Thumbnail(source='image')
 
     def __str__(self):

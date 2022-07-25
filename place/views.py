@@ -255,7 +255,7 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     def plus_place_get(self, request, pk=None):
         queryset = Place.objects.all()
         place = get_object_or_404(queryset, pk=pk)
-        serializer = PlaceSerializer(place)
+        serializer = PlaceSerializer(place, context=request.parser_context)
         return Response(serializer.data)
 
     @action(detail=True, methods=['post'])

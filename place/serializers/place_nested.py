@@ -1,5 +1,6 @@
 from drf_extra_fields.fields import Base64ImageField
 from imagekit.cachefiles import ImageCacheFile
+from loguru import logger
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
@@ -88,20 +89,6 @@ class TransportSerializer(serializers.ModelSerializer):
         # fields.append('image')
 
 
-class ThumbnailField(serializers.ImageField):
-    def __init__(self, spec, **kwargs):
-        self.spec = spec
-        super().__init__(**kwargs)
-
-    def to_representation(self, original_image):
-        if not original_image:
-            return None
-
-        cached = ImageCacheFile(self.spec(original_image))
-        cached.generate()
-        return super().to_representation(cached)
-
-
 class PlaceImageSerializer(serializers.ModelSerializer):
     # image = Base64ImageField(required=False)  # From DRF Extra Fields
     image = serializers.SerializerMethodField()
@@ -114,8 +101,7 @@ class PlaceImageSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request:
             return request.build_absolute_uri(obj.image.url)
-        return obj.image
-
+        return obj.image.url
 
 
 class MustSeeSerializer(ModelSerializer):
