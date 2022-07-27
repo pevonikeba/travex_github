@@ -222,7 +222,7 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
     filterset_fields = ['home_page', 'writer_user', 'categories']
-    search_fields = ['name', 'locations__country', 'locations__city', ]
+    search_fields = ['name', 'location__country', 'location__city', ]
     default_serializer_class = PlaceSerializer
     serializer_classes = {
         'list': PlaceListSerializer,
@@ -285,7 +285,6 @@ class PlaceViewSet(DestroyWithPayloadMixin, ModelViewSet):
                 place.nahed_users.remove(request.user)
             # Send notification
             send_impression_notification(place)
-            logger.info('aaaa')
 
         return Response({
             'is_wowed': is_wowed,
@@ -316,7 +315,7 @@ class MyPlacesViewSet(mixins.ListModelMixin,
     queryset = Place.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
     filterset_fields = ['writer_user', 'categories']
-    search_fields = ['name', 'locations__country', 'locations__city', ]
+    search_fields = PlaceViewSet.search_fields
     serializer_class = PlaceListSerializer
     permission_classes = [IsAuthenticated]
 
