@@ -100,8 +100,10 @@ class PlaceImageSerializer(serializers.ModelSerializer):
     def get_image(self, obj: PlaceImage):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(obj.image.url)
-        return obj.image.url
+            if obj.image:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
 
 
 class MustSeeSerializer(ModelSerializer):
