@@ -102,7 +102,9 @@ class PlaceImageSerializer(serializers.ModelSerializer):
         if request:
             if obj.image:
                 return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
+        else:
+            if obj.image:
+                return obj.image.url
         return None
 
 
