@@ -346,10 +346,51 @@ class BookmarkedPlaceViewSet(mixins.ListModelMixin,
         return Place.objects.filter(bookmarked_users=self.request.user)
 
 
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
+
+
 class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_nearest_places(self, radius_km: int):
+        radius_m = radius_km * 1000
+        latitude = self.request.query_params.get('latitude')
+        longitude = self.request.query_params.get('longitude')
+        if not longitude and not latitude:
+            return []
+        pnt = Point(float(longitude), float(latitude), srid=4326)
+        places = Place.objects.annotate(distance=Distance('location__point', pnt)).filter(distance__lte=radius_m)[:5]
+        return PlaceListSerializer(places, many=True, read_only=True).data
+
+    def get_5km_5items(self) -> dict:
+        return {
+            'id': 1001,
+            'name': '5km',
+            'places': self.get_nearest_places(5),
+        }
+
+    def get_10km_10items(self) -> dict:
+        return {
+            'id': 1002,
+            'name': '10km',
+            'places': self.get_nearest_places(10),
+        }
+
+    def get_50km_10items(self) -> dict:
+        return {
+            'id': 1003,
+            'name': '50km',
+            'places': self.get_nearest_places(50),
+        }
+
+    def list(self, request, *args, **kwargs):
+        logger.info('list')
+        data = super(GroupViewSet, self).list(request, args, kwargs).data
+        return Response(data + [self.get_5km_5items(), self.get_10km_10items(), self.get_50km_10items()])
+
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
 

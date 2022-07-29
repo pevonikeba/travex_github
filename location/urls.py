@@ -18,6 +18,7 @@ router.register('choose', ChooseViewSetOld, basename='choose')
 router.register('places', PlaceLocationViewSet, basename='place')
 router.register('users', UserLocationViewSet, basename='user')
 router.register('nearest_places', NearestPlacesViewSet, basename='nearest_places')
+# router.register('groups', NearestPlaces10kmFirst5, basename='nearest_places_10_km_first_5')
 router.register('', LocationViewSet, basename='locations')
 
 urlpatterns = [

@@ -308,16 +308,81 @@ class NearestPlacesViewSet(mixins.ListModelMixin,
                            viewsets.GenericViewSet):
     serializer_class = PlaceListSerializer
 
+    def get_radius(self):
+        return float(self.request.query_params.get('radius')) * 1000  # convert to metr
+
     def get_queryset(self):
         latitude = self.request.query_params.get('latitude')
         longitude = self.request.query_params.get('longitude')
-        radius = float(self.request.query_params.get('radius')) * 1000  # convert to metr
-
+        radius = self.get_radius()
         if not longitude or not latitude or not radius:
             raise ServiceUnavailable()
-
         pnt = Point(float(longitude), float(latitude), srid=4326)
         return Place.objects.annotate(distance=Distance('location__point', pnt)).filter(distance__lte=radius)
+
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.filter_queryset(self.get_queryset())
+    #     page = self.paginate_queryset(queryset)
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+    #
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     radius: float = self.get_radius()
+    #     if not radius:
+    #         return Response(serializer.data)
+    #     if radius == float(10*1000):
+    #         id = 1001
+    #         name = '10km'
+    #     elif radius == float(50*1000):
+    #         id = 1002
+    #         name = '50km'
+    #     elif radius == float(100*1000):
+    #         id = 1003
+    #         name = '100km'
+    #     else:
+    #         id = 1000
+    #         name = 'Unknown name'
+    #     logger.info(radius)
+    #     return Response({
+    #         'id': id,
+    #         'places': serializer.data,
+    #         'name': name,
+    #     })
+
+
+# class NearestPlaces10kmFirst5(mixins.ListModelMixin,
+#                            viewsets.GenericViewSet):
+#     serializer_class = PlaceListSerializer
+#     group_name = '10km'
+#     response_id = 1001
+#     first_5 = True
+#
+#     def get_queryset(self):
+#         latitude = self.request.query_params.get('latitude')
+#         longitude = self.request.query_params.get('longitude')
+#         if not longitude or not latitude:
+#             raise ServiceUnavailable()
+#         pnt = Point(float(longitude), float(latitude), srid=4326)
+#         places = Place.objects.annotate(distance=Distance('location__point', pnt)).filter(distance__lte=radius)
+#         if self.first_5:
+#             places[:5]
+#         return places
+#
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.filter_queryset(self.get_queryset())
+#         page = self.paginate_queryset(queryset)
+#         if page is not None:
+#             serializer = self.get_serializer(page, many=True)
+#             return self.get_paginated_response(serializer.data)
+#
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response({
+#             'id': self.response_id,
+#             'places': serializer.data,
+#             'name': self.group_name,
+#         })
+
 
 
 from geopy.geocoders import GeoNames
