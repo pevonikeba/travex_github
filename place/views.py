@@ -363,33 +363,48 @@ class GroupViewSet(ModelViewSet):
             return []
         pnt = Point(float(longitude), float(latitude), srid=4326)
         places = Place.objects.annotate(distance=Distance('location__point', pnt)).filter(distance__lte=radius_m)[:5]
-        return PlaceListSerializer(places, many=True, read_only=True).data
+        if not places.exists():
+            return None
+        return PlaceListSerializer(places, many=True, read_only=True, context=self.request.parser_context).data
 
-    def get_5km_5items(self) -> dict:
+    def get_5km_5items(self) -> dict or None:
+        places = self.get_nearest_places(5)
+        if not places: return None
         return {
             'id': 1001,
             'name': '5km',
-            'places': self.get_nearest_places(5),
+            'places': places,
         }
 
-    def get_10km_10items(self) -> dict:
+    def get_10km_10items(self) -> dict or None:
+        places = self.get_nearest_places(10)
+        if not places: return None
         return {
             'id': 1002,
             'name': '10km',
-            'places': self.get_nearest_places(10),
+            'places': places,
         }
 
-    def get_50km_10items(self) -> dict:
+    def get_50km_10items(self) -> dict or None:
+        places = self.get_nearest_places(50)
+        if not places: return None
         return {
             'id': 1003,
             'name': '50km',
-            'places': self.get_nearest_places(50),
+            'places': places,
         }
 
     def list(self, request, *args, **kwargs):
         logger.info('list')
         data = super(GroupViewSet, self).list(request, args, kwargs).data
-        return Response(data + [self.get_5km_5items(), self.get_10km_10items(), self.get_50km_10items()])
+        additional_data = []
+        if self.get_5km_5items():
+            additional_data.append(self.get_5km_5items())
+        if self.get_10km_10items():
+            additional_data.append(self.get_10km_10items())
+        if self.get_50km_10items():
+            additional_data.append(self.get_50km_10items())
+        return Response(data + additional_data)
 
     # renderer_classes = [CustomRenderer, BrowsableAPIRenderer]
 
