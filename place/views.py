@@ -132,6 +132,16 @@ class PlaceImageViewSet(PlaceNestedViewSet):
     queryset = PlaceImage.objects.all()
     serializer_class = PlaceImageSerializer
 
+    @action(detail=True, methods=['get'])
+    def create_multiple(self, request, pk=None):
+        place = Place.objects.filter(pk=pk).first()
+        if place:
+            images_data = request.FILES
+            logger.info(images_data)
+            for image_data in images_data.getlist('image'):
+                PlaceImage.objects.create(place=place, image=image_data)
+        return Response({})
+
 
 class CuisineViewSet(PlaceNestedViewSet):
     queryset = Cuisine.objects.all()
